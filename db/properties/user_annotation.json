@@ -1,0 +1,8 @@
+{
+  "name": "姓名",
+  "password": "密码",
+  "code": "行政区代码",
+  "role": "角色(省级用户|市级用户|x县级用户)",
+  "permission": "权限(province|city|county)",
+  "cluster": "用户组"
+}
