@@ -5,6 +5,7 @@ const Token = require('../model/token')
 const actions = require('../model/utils/actions')
 const observer = require('../model/status-observer/index')
 const {checkQuery, reportQuery, generalQuery} = require('../model/query-constructor')
+const pagenate = require('../model/pagenation')
 const response = {
     status: false,
     msg: 'failed',
@@ -19,7 +20,7 @@ response.clear = function () {
 /**
  * 获取季度图斑,只能获取上一级已经下发的图斑
  */
-router.post('/getJDTB', function (req, res, next) {
+router.post('/getJDTB1', function (req, res, next) {
     let token = req.headers.authorization
     let {name, code, permission} = Token.de(token).tokenKey
     let {tableName} = req.body
@@ -27,8 +28,25 @@ router.post('/getJDTB', function (req, res, next) {
     Tuban.find(tableName, condition, function (tag, values) {
         response.status = tag
         if (tag) {
-            response.msg = 'get TB success'
+            response.msg = 'get TB1 success'
             response.data = actions.modifyTubanByPermission(permission, values)
+        }
+        res.json(response);
+        response.clear()
+    })
+});
+
+router.post('/getJDTB', function (req, res, next) {
+    let token = req.headers.authorization
+    let {name, code, permission} = Token.de(token).tokenKey
+    let {tableName, currentPage, pageSize} = req.body
+    let condition = generalQuery(req.body, code)
+    Tuban.find(tableName, condition, function (tag, values) {
+        response.status = tag
+        if (tag) {
+            response.msg = 'get TB success'
+            let data = actions.modifyTubanByPermission(permission, values)
+            response.data = pagenate(data,pageSize,currentPage)
         }
         res.json(response);
         response.clear()
@@ -40,7 +58,7 @@ router.post('/getJDTB', function (req, res, next) {
  * 获取需要上报的图斑,省级无需上报,市级获取当前审核完成的图斑，县级获取已举证的图斑
  *
  */
-router.post('/getReport', function (req, res, next) {
+router.post('/getReport1', function (req, res, next) {
     let token = req.headers.authorization
     let {name, code, permission} = Token.de(token).tokenKey
     let {tableName} = req.body
@@ -51,8 +69,29 @@ router.post('/getReport', function (req, res, next) {
     Tuban.find(tableName, condition, function (tag, values) {
         response.status = tag
         if (tag) {
-            response.msg = 'getReport tuban success'
+            response.msg = 'getReport1 tuban success'
             response.data = actions.modifyTubanByPermission(permission, values)
+        }
+        res.json(response);
+        // return
+        response.clear()
+    })
+});
+
+router.post('/getReport', function (req, res, next) {
+    let token = req.headers.authorization
+    let {name, code, permission} = Token.de(token).tokenKey
+    let {tableName,pageSize,currentPage} = req.body
+
+    // 构造condition
+    let condition = reportQuery(req.body, code)
+
+    Tuban.find(tableName, condition, function (tag, values) {
+        response.status = tag
+        if (tag) {
+            response.msg = 'getReport tuban success'
+            let data = actions.modifyTubanByPermission(permission, values)
+            response.data = pagenate(data,pageSize,currentPage)
         }
         res.json(response);
         // return
@@ -64,7 +103,7 @@ router.post('/getReport', function (req, res, next) {
  * 在上一级以及本级都已经下发的图斑条件下
  * 获取需要审核的图斑,省级获取市级已经上报的图斑,市级获取县级上报上来的图斑，县级无审核权限
  */
-router.post('/getCheck', function (req, res, next) {
+router.post('/getCheck1', function (req, res, next) {
     let token = req.headers.authorization
     let {name, code, permission} = Token.de(token).tokenKey
     let {tableName} = req.body
@@ -75,8 +114,28 @@ router.post('/getCheck', function (req, res, next) {
     Tuban.find(tableName, condition, function (tag, values) {
         response.status = tag
         if (tag) {
-            response.msg = 'getCheck tuban success'
+            response.msg = 'getCheck1 tuban success'
             response.data = actions.modifyTubanByPermission(permission, values)
+        }
+        res.json(response);
+        response.clear()
+    })
+});
+
+router.post('/getCheck', function (req, res, next) {
+    let token = req.headers.authorization
+    let {name, code, permission} = Token.de(token).tokenKey
+    let {tableName,pageSize,currentPage} = req.body
+
+    // 构造condition
+    let condition = checkQuery(req.body, code)
+
+    Tuban.find(tableName, condition, function (tag, values) {
+        response.status = tag
+        if (tag) {
+            response.msg = 'getCheck tuban success'
+            let data = actions.modifyTubanByPermission(permission, values)
+            response.data = pagenate(data,pageSize,currentPage)
         }
         res.json(response);
         response.clear()
@@ -323,6 +382,23 @@ router.post('/fieldVerification', function (req, res, next) {
     })
 });
 
+router.post('/getCoordinates', function (req, res, next) {
+    let token = req.headers.authorization
+    let user = Token.de(token).tokenKey
+    let {JCBHs, tableName} = req.body
+    // 构建condition
+   Tuban.getCoordinate(JCBHs, tableName, function (tag, results) {
+       if(tag) {
+           response.status = true
+           response.msg = "getCoordinates success"
+           response.data = result
+       }
+       res.json(response)
+       response.clear()
+   })
+
+});
+
 const updateTuban = (tableName, content, condition, callback) => {
     Tuban.update(tableName, content, condition, function (tag, result) {
         if (tag) {
@@ -332,5 +408,7 @@ const updateTuban = (tableName, content, condition, callback) => {
         }
     })
 }
+
+
 
 module.exports = router;

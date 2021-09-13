@@ -67,7 +67,13 @@ router.post('/file', fileUpload, function (req, res, next) {
                     }
                     // data是json数组，这里要对数组进行一些操作
                     data.forEach((itm) => {
-                        Object.assign(itm, getNames(itm.XZQDM), getCodes(itm.XZQDM), {TBLY: ly})
+                        let codes = getCodes(itm.XZQDM)
+                        try {
+                            Object.assign(itm, getNames(itm.XZQDM), codes, {TBLY: ly})
+                        } catch (e) {
+                            console.log('e', e)
+                        }
+
                     })
                     // 插入省市属性
                     console.log("省市属性、图斑来源已经插入！")
@@ -78,7 +84,7 @@ router.post('/file', fileUpload, function (req, res, next) {
                             tuban.insertAndInitialize(incomeTable, data, function (tag, affectedRows) {
                                 if (tag) {
                                     // 这里插入成功后执行的操作。
-                                    console.log(affectedRows)
+                                    // console.log(affectedRows)
                                     res.send({
                                         status: true,
                                         affectedRows
@@ -128,7 +134,7 @@ router.post('/file', fileUpload, function (req, res, next) {
             )
         })
         .catch((err) => {
-            console.log(err)
+            // console.log(err)
             res.send({
                 status: false
             })

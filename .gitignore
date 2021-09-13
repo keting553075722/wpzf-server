@@ -21,3 +21,4 @@ secret/
 work-tables.propertries
 /logs/
 
+/model/utils/flat.js
