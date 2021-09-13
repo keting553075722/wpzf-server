@@ -8,6 +8,7 @@ const SQL = require('./sql/sql')
 const tuban = require('./properties/tuban_definition')
 const user = require('./properties/user_definition')
 const status = require('./properties/status_definition')
+const displayFields = Object.keys(tuban).filter(x=>x!=='coordinates')
 
 /**
  * 根据entry实体创建表
@@ -106,7 +107,10 @@ const selectSQL = function (tableName, condition) {
     //     }
     // }
     // sql = sql.substring(0, sql.length - 3)
-    let sql = `select * from ${tableName} `
+    let sql = `select *  from  ${tableName}`
+    // if(/\d{4}/.test(tableName)) {
+    //     sql = `select ${displayFields} from ${tableName} `
+    // }
     sql += SQL.where(condition)
     return sql
 
@@ -138,7 +142,7 @@ module.exports = {
         let sql = createSQL(tableName, objModel)
         db.query(sql, function (err, res, fields) {
             if (err) {
-                console.log(err)
+                // console.log(err)
                 callback(false, res, fields)
                 return
             }
@@ -171,11 +175,11 @@ module.exports = {
         if (mode === "append") {
             db.query(insertSql, function (err, res, fields) {
                 if (err) {
-                    console.log(err)
+                    // console.log(err)
                     callback(false, 0)
                     return
                 } else {
-                    console.log(`${tableName}插入${res.affectedRows}条数据`)
+                    // console.log(`${tableName}插入${res.affectedRows}条数据`)
                     callback(true, res.affectedRows)
                 }
             })
@@ -185,7 +189,8 @@ module.exports = {
                 if (!err) {
                     db.query(insertSql, function (err, res, fields) {
                         if (err) {
-                            console.log(err)
+                            // console.log(err)
+                            throw new Error(err)
                             callback(false, 0)
                             return
                         } else {
@@ -203,7 +208,7 @@ module.exports = {
         let sql = updateSQL(tableName, content, condition)
         db.query(sql, function (err, res, fields) {
             if (err) {
-                console.log(tableName + ' update failed', err)
+                // console.log(tableName + ' update failed', err)
                 callback(false, {})
                 return
             } else {
@@ -240,7 +245,7 @@ module.exports = {
         db.query(getColumn, function (err, res, fields) {
             let columns = []
             if (err) {
-                console.log(err)
+                // console.log(err)
                 callback(false)
                 return
             }

@@ -125,5 +125,16 @@ module.exports = {
                 callback(false, res, field)
             }
         })
-    }
+    },
+    getCoordinate(ids, tableName, callback){
+        let sql = `select coordinates from ${tableName}  where JCBH =  ${ids}`
+        DB.query(sql, function (err, res, field) {
+            if (!err) {
+                callback(true, res, field)
+            } else {
+                callback(false, res, field)
+            }
+        })
+    },
+
 }

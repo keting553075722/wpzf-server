@@ -59,7 +59,7 @@ DELIMITER ;
 `
         DB.query(triggerReplace, function (tag, row, fields) {
             if (tag) {
-                console.log(row, fields)
+                // console.log(row, fields)
             }
         })
     }
