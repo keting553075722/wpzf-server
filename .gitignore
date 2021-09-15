@@ -22,3 +22,6 @@ work-tables.propertries
 /logs/
 
 /model/utils/flat.js
+/db/entities-promise/
+/db/operators-promise.js
+/db/entities/tuban-promise.js
