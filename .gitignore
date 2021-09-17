@@ -25,3 +25,5 @@ work-tables.propertries
 /db/entities-promise/
 /db/operators-promise.js
 /db/entities/tuban-promise.js
+/model/utils/status-list.json
+/model/utils/users.json
