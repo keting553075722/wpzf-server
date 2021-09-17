@@ -14,7 +14,7 @@ module.exports = {
      */
     find(user, callback) {
         db.select('users', user, function (tag, val) {
-            if(tag && val.length===1){
+            if(tag && val.length != 0){
                 callback(true,val[0])
             }else {
                 callback(false,{})
