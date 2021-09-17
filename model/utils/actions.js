@@ -17,9 +17,18 @@ module.exports = {
 
         let content = {}
         content[dispatchField] = "1"
+
         content[dispatchPersonField] = user.name
         content[dispatchTimeField] = moment().format("YYYY-MM-DD HH:mm:ss")
         content[reportTimeField] = JZSJ
+        // 如果是省级一步到位下发给县级
+        if(user.permission === "province") {
+            content['CJXF'] = "1"
+            content['CJXFR'] = user.name
+            content['CJXFSJ'] = moment().format("YYYY-MM-DD HH:mm:ss")
+            content['XJJZSJ'] = JZSJ
+
+        }
 
 
         let condition = {
