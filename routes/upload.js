@@ -67,13 +67,7 @@ router.post('/file', fileUpload, function (req, res, next) {
                     }
                     // data是json数组，这里要对数组进行一些操作
                     data.forEach((itm) => {
-                        let codes = getCodes(itm.XZQDM)
-                        try {
-                            Object.assign(itm, getNames(itm.XZQDM), codes, {TBLY: ly})
-                        } catch (e) {
-                            console.log('e', e)
-                        }
-
+                        Object.assign(itm, getNames(itm.XZQDM), getCodes(itm.XZQDM), {TBLY: ly})
                     })
                     // 插入省市属性
                     console.log("省市属性、图斑来源已经插入！")
@@ -84,7 +78,7 @@ router.post('/file', fileUpload, function (req, res, next) {
                             tuban.insertAndInitialize(incomeTable, data, function (tag, affectedRows) {
                                 if (tag) {
                                     // 这里插入成功后执行的操作。
-                                    // console.log(affectedRows)
+                                    console.log(affectedRows)
                                     res.send({
                                         status: true,
                                         affectedRows
@@ -134,7 +128,7 @@ router.post('/file', fileUpload, function (req, res, next) {
             )
         })
         .catch((err) => {
-            // console.log(err)
+            console.log(err)
             res.send({
                 status: false
             })
@@ -144,7 +138,15 @@ router.post('/file', fileUpload, function (req, res, next) {
 router.post('/img', imgUpload.any(), function (req, res, next) {
     // 图片已经正确上传至指定文件夹，然后根据请求的数据将路径信息写入数据库。
     let files = req.files
-    let {tubanId, tableName} = JSON.parse(req.body.info)
+
+    let tubanId,tableName
+    if(req.body.info ) {
+        tubanId = JSON.parse(req.body.info).tubanId
+        tableName = JSON.parse(req.body.info).tableName
+    } else {
+        tubanId = req.query.TBBH
+        tableName= req.query.tableName
+    }
     let workTable = tableName
     // 构造condition
     let tblj = []

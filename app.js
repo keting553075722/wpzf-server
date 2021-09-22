@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // 静态资源服务器地址 用正斜杠 '/'代替
 app.use(express.static(path.join(__dirname, 'resources')));
@@ -34,18 +34,18 @@ app.use('/status', statusRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    next(createError(404));
+  next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 });
 
 
@@ -53,17 +53,20 @@ global.$workTablesPath = __dirname + config.activeTableRelativePath;
 global.$workTables = JSON.parse(fs.readFileSync($workTablesPath).toString());
 
 Array.prototype['pushItem'] = function (item) {
-    if (this.includes(item)) return
-    this.push(item)
-    fs.writeFileSync($workTablesPath, JSON.stringify(this))
+  if (this.includes(item)) return
+  this.push(item)
+  fs.writeFileSync($workTablesPath, JSON.stringify(this))
 }
 Array.prototype['removeItem'] = function (item) {
-    if (!this.includes(item)) return
-    let index = this.indexOf(item)
-    this.splice(index, 1)
-    fs.writeFileSync($workTablesPath, JSON.stringify(this))
+  if (!this.includes(item)) return
+  let index = this.indexOf(item)
+  this.splice(index, 1)
+  fs.writeFileSync($workTablesPath, JSON.stringify(this))
 }
 global.$statusObj = {}
-global.environmentPRODEV = config.serverEnv
-global.environmentPort = config.appPort
+// global.environmentPRODEV = config.serverEnv
+// global.environmentPort = config.appPort
+global.environmentPRODEV = 'windows'
+// global.environmentPRODEV = 'linux'
+global.environmentPort = '3008'
 module.exports = app;
