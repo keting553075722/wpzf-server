@@ -52,7 +52,7 @@ module.exports = {
      * @param type 错误类型，1权限不足，2参数错误
      * @param res
      */
-    responseFailed(msg, res) {
+    responseFailed(res, msg = 'failed',) {
         this.status = false
         this.msg = msg
         this.data = {}

@@ -28,7 +28,7 @@ const queryBuild = (body, code) => {
         // kind && (queryObj['TBLY'] = kind)
         //dispatch 字段缺省或者 '' 0 1
         // dispatch && (queryObj['CJXF'] = dispatch)
-        district.toString() && (queryObj['XZQDM'] = handleDistrict(district, code))
+        district && district.toString() && (queryObj['XZQDM'] = handleDistrict(district, code))
         check && (queryObj['CJSH'] = check)
         report && (queryObj['CJSB'] = report)
     } else {

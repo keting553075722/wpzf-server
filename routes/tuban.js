@@ -146,7 +146,7 @@ router.post('/report', async function (req, res, next) {
     findRes && findRes.results && await (async function () {
         let values = findRes.results
         if (!values.length) {
-            response.responseFailed('3', res)
+            response.responseFailed(res)
             return
         }
 
@@ -166,11 +166,11 @@ router.post('/report', async function (req, res, next) {
             updateRes && updateRes.results && response.responseSuccess(updateRes.results, res)
 
         } else {
-            response.responseFailed("report failed(没有下发图斑)", res)
+            response.responseFailed(res)
         }
     })()
 })
-;
+
 
 /**
  * 下发图斑，// 县级不会出发此按钮

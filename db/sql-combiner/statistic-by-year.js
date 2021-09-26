@@ -5,47 +5,27 @@
  */
 const SQL = require('./utils')
 const modifyTBName = (tableNames) => {
-  let result = []
-  tableNames.forEach(tableName => {
-    result.push(tableName['table_name'])
-  })
-  return result
+    let result = []
+    tableNames.forEach(tableName => {
+        result.push(tableName['table_name'])
+    })
+    return result
 }
 
-// const queryTables = () => {
-//   return new Promise((resolve, reject) => {
-//     const modifyTBName = (tableNames) => {
-//       let result = []
-//       tableNames.forEach(tableName => {
-//         result.push(tableName['table_name'])
-//       })
-//       return result
-//     }
-//     Tuban.queryTBTables(function (tag, result, field) {
-//       if (tag) {
-//         let tables = modifyTBName(result).slice()
-//         resolve(tables)
-//       } else {
-//         reject(new Error('queryTBTables failed'))
-//       }
-//     })
-//   })
-// }
+const proStatistic = (year, condition, dbRes) => {
+    // let dbRes = await Tuban.queryTBTables()
+    let tables = modifyTBName(dbRes.results).slice()
 
-const proStatistic =  (year, condition,dbRes) => {
-  // let dbRes = await Tuban.queryTBTables()
-  let tables = modifyTBName(dbRes.results).slice()
-
-  const statisticTables = tables.filter(x => x.indexOf(year) > -1)
-  let len = statisticTables.length
-  if (!len) {
-    return false
-  }
-  let whereStatement = ''
-  if (!(!condition || JSON.stringify(condition) === "{}")) {
-    whereStatement = SQL.where(condition)
-  }
-  let sql = `
+    const statisticTables = tables.filter(x => x.indexOf(year) > -1)
+    let len = statisticTables.length
+    if (!len) {
+        return false
+    }
+    let whereStatement = ''
+    if (!(!condition || JSON.stringify(condition) === "{}")) {
+        whereStatement = SQL.where(condition)
+    }
+    let sql = `
         Select 
         SMC,
         SDM,
@@ -69,8 +49,8 @@ const proStatistic =  (year, condition,dbRes) => {
         group by SDM
         `
 
-  for (let i = 1; i < len; i++) {
-    sql += `
+    for (let i = 1; i < len; i++) {
+        sql += `
         UNION ALL
         Select 
         SMC,
@@ -94,23 +74,23 @@ const proStatistic =  (year, condition,dbRes) => {
         ${whereStatement}
         group by SDM
         `
-  }
-  return sql
+    }
+    return sql
 }
 
-const cityStatistic =  (year, condition, dbRes) => {
-  // let  = await Tuban.queryTBTables()
-  let tables = modifyTBName(dbRes.results).slice()
-  const statisticTables = tables.filter(x => x.indexOf(year) > -1)
-  let len = statisticTables.length
-  if (!len) {
-    return false
-  }
-  let whereStatement = ''
-  if (!(!condition || JSON.stringify(condition) === "{}")) {
-    whereStatement = SQL.where(condition)
-  }
-  let sql = `
+const cityStatistic = (year, condition, dbRes) => {
+    // let  = await Tuban.queryTBTables()
+    let tables = modifyTBName(dbRes.results).slice()
+    const statisticTables = tables.filter(x => x.indexOf(year) > -1)
+    let len = statisticTables.length
+    if (!len) {
+        return false
+    }
+    let whereStatement = ''
+    if (!(!condition || JSON.stringify(condition) === "{}")) {
+        whereStatement = SQL.where(condition)
+    }
+    let sql = `
         Select 
         CMC,
         CDM,
@@ -135,8 +115,8 @@ const cityStatistic =  (year, condition, dbRes) => {
         `
 
 
-  for (let i = 1; i < len; i++) {
-    sql += `
+    for (let i = 1; i < len; i++) {
+        sql += `
         UNION ALL
         Select 
         CMC,
@@ -160,22 +140,23 @@ const cityStatistic =  (year, condition, dbRes) => {
         ${whereStatement}
         group by CDM
         `
-  }
-  return sql
+    }
+    return sql
 }
 
-const countyStatistic =  (year, condition, dbRes) => {
-  // let dbRes = await Tuban.queryTBTables()
-  let tables = modifyTBName(dbRes.results).slice()
-  let len = statisticTables.length
-  if (!len) {
-    return false
-  }
-  let whereStatement = ''
-  if (!(!condition || JSON.stringify(condition) === "{}")) {
-    whereStatement = SQL.where(condition)
-  }
-  let sql = `
+const countyStatistic = (year, condition, dbRes) => {
+    // let dbRes = await Tuban.queryTBTables()
+    let tables = modifyTBName(dbRes.results).slice()
+    const statisticTables = tables.filter(x => x.indexOf(year) > -1)
+    let len = statisticTables.length
+    if (!len) {
+        return false
+    }
+    let whereStatement = ''
+    if (!(!condition || JSON.stringify(condition) === "{}")) {
+        whereStatement = SQL.where(condition)
+    }
+    let sql = `
         Select 
         XMC,
         XDM,
@@ -200,8 +181,8 @@ const countyStatistic =  (year, condition, dbRes) => {
         `
 
 
-  for (let i = 1; i < len; i++) {
-    sql += `
+    for (let i = 1; i < len; i++) {
+        sql += `
         UNION ALL
         Select 
         XMC,
@@ -225,8 +206,8 @@ const countyStatistic =  (year, condition, dbRes) => {
         ${whereStatement}
         group by XDM
         `
-  }
-  return sql
+    }
+    return sql
 }
 //
 // const tablesOfYear = async (year) => {
@@ -235,6 +216,6 @@ const countyStatistic =  (year, condition, dbRes) => {
 // }
 
 
-module.exports = { proStatistic, cityStatistic, countyStatistic}
+module.exports = {proStatistic, cityStatistic, countyStatistic}
 
 

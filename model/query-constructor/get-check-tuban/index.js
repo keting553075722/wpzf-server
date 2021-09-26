@@ -18,7 +18,7 @@ const queryBuild = (body, code) => {
         // kind && (queryObj['TBLY'] = kind)
         // //dispatch 字段缺省或者 '' 0 1
         // dispatch && (queryObj['SJXF'] = dispatch)
-        district.toString() && (queryObj['XZQDM'] = handleDistrict(district, code))
+        district && district.toString() && (queryObj['XZQDM'] = handleDistrict(district, code))
         check && (queryObj['SJSH'] = check)
     } else if (userType === 1) {
         queryObj["XZQDM"] = code.substring(0, 4) + "%"
@@ -31,7 +31,7 @@ const queryBuild = (body, code) => {
         // kind && (queryObj['TBLY'] = kind)
         // //dispatch 字段缺省或者 '' 0 1
         // dispatch && (queryObj['CJXF'] = dispatch)
-        district.toString() && (queryObj['XZQDM'] = handleDistrict(district, code))
+        district && district.toString() && (queryObj['XZQDM'] = handleDistrict(district, code))
         check && (queryObj['CJSH'] = check)
         // report && (queryObj['CJSB'] = report)
     } else {

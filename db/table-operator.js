@@ -6,7 +6,7 @@
 const SQL = require('./sql-combiner/basic-sql')
 const processSQL = require('./sql-combiner/process')
 const {statisticByBatchSQL} = require('./sql-combiner/statistic-by-batch')
-const {proStatistic, cityStatistic, countyStatistic, tablesOfYear} = require('./sql-combiner/statistic-by-year')
+const {proStatistic, cityStatistic, countyStatistic} = require('./sql-combiner/statistic-by-year')
 const dbConfig = require('./db')
 const db = require('./db')
 
@@ -186,33 +186,34 @@ module.exports = {
      * @returns {Promise<unknown>}
      */
     statisticByYear(year, type, condition = {}) {
-        return new Promise( async (resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             let dbRes = await this.queryTBTables()
             if (type == '0') {
-                let sqlRes =  proStatistic(year, condition, dbRes)
-                sqlRes && db.query(sqlRes).then(
+                let sqlRes = proStatistic(year, condition, dbRes)
+                sqlRes ? db.query(sqlRes).then(
                     res => {
                         resolve(res)
                     }
-                ).catch(reject)
+                ).catch(reject) : reject('该年度没有数据')
+
             }
 
             if (type == '1') {
-                let sqlRes =  cityStatistic(year, condition, dbRes)
-                sqlRes && db.query(sqlRes).then(
+                let sqlRes = cityStatistic(year, condition, dbRes)
+                sqlRes ? db.query(sqlRes).then(
                     res => {
                         resolve(res)
                     }
-                ).catch(reject)
+                ).catch(reject) : reject('该年度没有数据')
             }
 
             if (type == '2') {
-                let sqlRes =  countyStatistic(year, condition, dbRes)
-                sqlRes && db.query(sqlRes).then(
+                let sqlRes = countyStatistic(year, condition, dbRes)
+                sqlRes ? db.query(sqlRes).then(
                     res => {
                         resolve(res)
                     }
-                ).catch(reject)
+                ).catch(reject) : reject('该年度没有数据')
             }
 
 
@@ -243,7 +244,12 @@ module.exports = {
      * @param year
      * @returns {Promise<*>}
      */
-    batchOfYear(year) {
-        return tablesOfYear(year)
+    async batchOfYear(year) {
+        let res = await this.queryTBTables()
+        let result = []
+        res.results.forEach(itm => {
+            result.push(itm['table_name'])
+        })
+        return result.filter(x => x.indexOf(year) > -1)
     }
 }
