@@ -1,30 +1,27 @@
 /**
- * @Description: 数据库连接池
+ * @Description: 数据库连接
  * @author zzh
  * @createTime 2021/4/1
  */
 
 const mysql = require('mysql'); // mysql node driver
-const { promisify } = require('util')
-const mysqlPoolConfig = require('./secret/mysql.pool.config-localhost');   // mysql配置文件
-
-const pool = mysql.createPool(mysqlPoolConfig)
+const mysqlConfig = require('./secret/mysql.pool.config-localhost');   // mysql配置文件
+// const connection = mysql.createConnection(mysqlConfig)
+const pool = mysql.createPool(mysqlConfig)
 
 module.exports = {
-    query(sql, callback) {
-        if (!sql) {
-            callback()
-            return
-        }
-        pool.query(sql, function (err, rows, fields) {
-            if (err) {
-                callback(err, null)
-            } else {
-                callback(null, rows, fields)
-            }
+    query(sql, params) {
+        return new Promise((resolve, reject) => {
+            if (!sql) return reject('must input a sql expression')
 
+            pool.getConnection((err, connection) => {
+                connection.query(sql, params, (err, results, fields) => {//执行sql语句
+                    connection.release();
+                    if (err) return reject(err)
+                    resolve({results, fields})
+                })
+            })
         })
     },
-    queryfy: promisify(pool.query),
-    name: mysqlPoolConfig.database
+    name: mysqlConfig.database
 }

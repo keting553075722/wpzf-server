@@ -3,30 +3,39 @@
  * @author zzh
  * @createTime 2021/6/10
  */
-const SQL = require('./sql')
-const Tuban = require('../entities/tuban')
-const queryTables = () => {
-  return new Promise((resolve, reject) => {
-    const modifyTBName = (tableNames) => {
-      let result = []
-      tableNames.forEach(tableName => {
-        result.push(tableName['table_name'])
-      })
-      return result
-    }
-    Tuban.queryTBTables(function (tag, result, field) {
-      if (tag) {
-        let tables = modifyTBName(result).slice()
-        resolve(tables)
-      } else {
-        reject(new Error('queryTBTables failed'))
-      }
-    })
+const SQL = require('./utils')
+const modifyTBName = (tableNames) => {
+  let result = []
+  tableNames.forEach(tableName => {
+    result.push(tableName['table_name'])
   })
+  return result
 }
 
-const proStatistic = async (year, condition) => {
-  let tables = await queryTables()
+// const queryTables = () => {
+//   return new Promise((resolve, reject) => {
+//     const modifyTBName = (tableNames) => {
+//       let result = []
+//       tableNames.forEach(tableName => {
+//         result.push(tableName['table_name'])
+//       })
+//       return result
+//     }
+//     Tuban.queryTBTables(function (tag, result, field) {
+//       if (tag) {
+//         let tables = modifyTBName(result).slice()
+//         resolve(tables)
+//       } else {
+//         reject(new Error('queryTBTables failed'))
+//       }
+//     })
+//   })
+// }
+
+const proStatistic =  (year, condition,dbRes) => {
+  // let dbRes = await Tuban.queryTBTables()
+  let tables = modifyTBName(dbRes.results).slice()
+
   const statisticTables = tables.filter(x => x.indexOf(year) > -1)
   let len = statisticTables.length
   if (!len) {
@@ -89,8 +98,9 @@ const proStatistic = async (year, condition) => {
   return sql
 }
 
-const cityStatistic = async (year, condition) => {
-  let tables = await queryTables()
+const cityStatistic =  (year, condition, dbRes) => {
+  // let  = await Tuban.queryTBTables()
+  let tables = modifyTBName(dbRes.results).slice()
   const statisticTables = tables.filter(x => x.indexOf(year) > -1)
   let len = statisticTables.length
   if (!len) {
@@ -154,9 +164,9 @@ const cityStatistic = async (year, condition) => {
   return sql
 }
 
-const countyStatistic = async (year, condition) => {
-  let tables = await queryTables()
-  const statisticTables = tables.filter(x => x.indexOf(year) > -1)
+const countyStatistic =  (year, condition, dbRes) => {
+  // let dbRes = await Tuban.queryTBTables()
+  let tables = modifyTBName(dbRes.results).slice()
   let len = statisticTables.length
   if (!len) {
     return false
@@ -218,12 +228,13 @@ const countyStatistic = async (year, condition) => {
   }
   return sql
 }
+//
+// const tablesOfYear = async (year) => {
+//   let tables = await queryTables()
+//   return tables.filter(x => x.indexOf(year) > -1)
+// }
 
-const tablesOfYear = async (year) => {
-  let tables = await queryTables()
-  return tables.filter(x => x.indexOf(year) > -1)
-}
 
-module.exports = { proStatistic, cityStatistic, countyStatistic, tablesOfYear }
+module.exports = { proStatistic, cityStatistic, countyStatistic}
 
 

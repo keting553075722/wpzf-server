@@ -3,7 +3,7 @@
  * @author zzh
  * @createTime 2021/4/1
  */
-const db = require('../operators')
+const db = require('../../../table-operator')
 
 module.exports = {
     /**
@@ -13,6 +13,7 @@ module.exports = {
      * @param callback
      */
     find(user, callback) {
+        return db.find('users', user)
         db.select('users', user, function (tag, val) {
             if(tag && val.length != 0){
                 callback(true,val[0])

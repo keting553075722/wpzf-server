@@ -3,7 +3,8 @@
  * @author zzh
  * @createTime 2021/4/14
  */
-const SQL = require('./sql')
+const SQL = require('./utils')
+const {role} = require('../properties/permission-mapper')
 
 /**
  * 审核举证进度条
@@ -61,15 +62,15 @@ module.exports = {
         `
 
         switch (permission) {
-            case "province":
+            case role["province"]:
                 sql = sqlSheng
                 groupBy = 'SDM'
                 break
-            case "city":
+            case role["city"]:
                 sql = sqlShi
                 groupBy = 'CDM'
                 break
-            case "county":
+            case role["county"]:
                 sql = sqlXian
                 groupBy = 'XDM'
                 break
