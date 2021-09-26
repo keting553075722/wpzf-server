@@ -52,6 +52,7 @@ const from = function (tableName) {
     } else return ` from ${tableName}`
 }
 
+
 module.exports = {
     where,
     groupBy,

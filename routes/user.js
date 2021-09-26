@@ -1,45 +1,41 @@
 var express = require('express');
 var router = express.Router();
 
-const User = require('../db/entities/uesr')
+const User = require('../db/entities/user')
 const Rights = require('../model/build-rights')
 const Token = require('../model/token')
+const response = require('../model/response-format')
 
-const response = {
-    status: false,
-    msg: '失败',
-    data: {}
-}
 /* GET user listing. */
-router.post('/login', function (req, res, next) {
+router.post('/login', async function (req, res, next) {
     // post请求参数存在body中
     let user = req.body
     // 数据库的操作
-    User.find(user, function (tag, user) {
-        response.status = tag
-        if (tag) {
-            let token = Token.en({
-                name: user.name,
-                code: user.code,
-                permission: user.permission,
-                cluster:user.cluster
-            })
-            response.msg = '成功'
-            response.data = {
-                name: user.name,
-                role: user.role,
-                token,
-                rights:Rights(user.code)
-            }
+    let dbRes = await User.find(user)
+    let dbUser = dbRes.results[0]
+    if (dbUser) {
+        let resInfo = {
+            name: dbUser['name'],
+            code: dbUser.code,
+            permission: dbUser.permission,
+            cluster: dbUser.cluster
         }
-        res.json(response);
-    })
+        let token = Token.en(resInfo)
+        response.status = true
+        response.msg = 'success'
+        response.data = {
+            name: resInfo.name,
+            role: resInfo.role,
+            token,
+            rights: Rights(resInfo.code)
+        }
+    }
+    res.json(response);
 });
 
 router.get('/loginOut', function (req, res, next) {
     res.send('loginOut success');
 });
-
 
 
 module.exports = router;

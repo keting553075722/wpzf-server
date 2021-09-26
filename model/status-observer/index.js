@@ -21,12 +21,15 @@ const init = () => {
 };
 
 /**
- *  @description 初始化指定table的status状态并将其挂载到$statusObj
+ * @description 初始化指定table的status状态并将其挂载到$statusObj
  * @param tableName
  */
 const initTableStatus = (tableName) => {
-    Tuban.find(tableName, {}, function (tag, values) {
-        if (tag) {
+    Tuban.find(tableName,
+        {}).then(
+        res => {
+            let values = res.results
+
             // 深拷贝一下
             let tempStatus = _.cloneDeep(statusSchema)
             const result = values
@@ -148,7 +151,7 @@ const initTableStatus = (tableName) => {
             values = result
             global.$statusObj[tableName] = tempStatus.filter(x => x['XF'] === '1')
         }
-    })
+    )
 };
 
 /**
@@ -172,8 +175,10 @@ const check = (tableName, code, permission) => {
     // 取出table批次的所有的记录
     // 如果是省级审核，就遍历所有的市
     // 如果是市级审核，就遍历该市所属的所有的县
-    Tuban.find(tableName, {}, function (tag, results) {
-        if (tag) {
+    Tuban.find(tableName, {}).then(
+        (res) => {
+            let results = res.results
+
             let status = global.$statusObj[tableName]
             let len = status.length
             for (let i = 0; i < len; i++) {
@@ -227,9 +232,7 @@ const check = (tableName, code, permission) => {
                     // }
                 }
             }
-
-        }
-    })
+        }).catch(console.log)
 };
 
 /**
@@ -295,7 +298,7 @@ const giveNotice = (tableName, permission, JCBHs) => {
         codes = codes.map(x => x + '00')
     }
 
-    codes.forEach((code,idx,arr)=>{
+    codes.forEach((code, idx, arr) => {
         let obj = global.$statusObj[tableName].find(x => x.CODE === code)
         if (obj) {
             obj['XF'] = 1

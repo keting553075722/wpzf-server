@@ -193,7 +193,7 @@ module.exports = {
      * @param {string} permission 请求user的权限信息
      * @returns tubans中指定字段的数组
      */
-    modifyTubanByPermission(permission, tubans) {
+    modifyTubanByPermission( tubans ,permission) {
         // 权限字段映射
         let fieldsMap = {
             // 省级视角观察一条图斑

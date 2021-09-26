@@ -12,16 +12,9 @@ module.exports = {
     },
     de(obj) {
         try {
-            let tokenKey = jwt.verify(obj, str)
-            return {
-                status: 'success',
-                tokenKey
-            }
+            return jwt.verify(obj, str)
         } catch (e) {
-            return {
-                status: 'failed',
-            }
+            return undefined
         }
-
     }
 }
