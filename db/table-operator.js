@@ -194,7 +194,7 @@ module.exports = {
                     res => {
                         resolve(res)
                     }
-                ).catch(reject) : reject('该年度没有数据')
+                ).catch(reject) : reject(`${year}年度没有数据`)
 
             }
 
@@ -204,7 +204,7 @@ module.exports = {
                     res => {
                         resolve(res)
                     }
-                ).catch(reject) : reject('该年度没有数据')
+                ).catch(reject) : reject(`${year}年度没有数据`)
             }
 
             if (type == '2') {
@@ -213,7 +213,7 @@ module.exports = {
                     res => {
                         resolve(res)
                     }
-                ).catch(reject) : reject('该年度没有数据')
+                ).catch(reject) : reject(`${year}年度没有数据`)
             }
         })
     },

@@ -10,7 +10,7 @@ const response = require('../model/response-format')
 const {role} = require('../db/properties/permission-mapper')
 const Token = require('../model/token')
 const Status = require('../db/entities/status')
-const { aggregateObjs, objsByCityGroup, objsByCountyGroup} = require('../model/obj-aggregate')
+const {aggregateObjs, objsByCityGroup, objsByCountyGroup} = require('../model/obj-aggregate')
 
 
 /* GET user listing. */
@@ -158,9 +158,18 @@ router.post('/statisticByYear', async function (req, res, next) {
             return
         }
 
-        let {year} = req.body
-        let dbRes = await Status.statisticByYear(year, '0')
-        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [aggregateObjs]) : response.responseFailed(res)
+        let {years} = req.body
+
+        let resObjs = {}
+        for (const year of years) {
+            let dbRes = await Status.statisticByYear(year, '0').then(res => res).catch(console.log)
+            dbRes && dbRes.results && (resObjs[year.toString()] = aggregateObjs(dbRes.results))
+        }
+
+        response.responseSuccess(resObjs, res)
+
+        // let dbRes = await Status.statisticByYear(year, '0')
+        // dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [aggregateObjs]) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/statisticByYear', e.message)
         response.responseFailed(res, e.message)
@@ -176,9 +185,14 @@ router.post('/statisticChildrenByYear', async function (req, res, next) {
             response.responseFailed(res)
             return
         }
-        let {year, condition} = req.body
-        let dbRes = await Status.statisticByYear(year, '1', condition)
-        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [objsByCityGroup]) : response.responseFailed(res)
+
+        let {years, condition} = req.body
+        let resObjs = {}
+        for (const year of years) {
+            let dbRes = await Status.statisticByYear(year, '1', condition).then(res => res).catch(console.log)
+            dbRes && dbRes.results && (resObjs[year.toString()] = objsByCityGroup(dbRes.results))
+        }
+        response.responseSuccess(resObjs, res)
     } catch (e) {
         console.log('/status/statisticChildrenByYear', e.message)
         response.responseFailed(res, e.message)
@@ -194,9 +208,13 @@ router.post('/statisticGrandsonByYear', async function (req, res, next) {
             response.responseFailed(res)
             return
         }
-        let {year, condition} = req.body
-        let dbRes = await Status.statisticByYear(year, '2', condition)
-        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [objsByCountyGroup]) : response.responseFailed(res)
+        let {years, condition} = req.body
+        let resObjs = {}
+        for (const year of years) {
+            let dbRes = await Status.statisticByYear(year, '2', condition).then(res => res).catch(console.log)
+            dbRes && dbRes.results && (resObjs[year.toString()] = objsByCountyGroup(dbRes.results))
+        }
+        response.responseSuccess(resObjs, res)
     } catch (e) {
         console.log('/status/statisticGrandsonByYear', e.message)
         response.responseFailed(res, e.message)
@@ -212,7 +230,7 @@ router.post('/batchOfYear', async function (req, res, next) {
             return
         }
         let {year} = req.body
-        let dbRes = await Status.batchOfYear(year)
+        let dbRes = await Status.batchOfYear(year).then(res => res).catch(console.log)
         dbRes ? response.responseSuccess(dbRes, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/batchOfYear', e.message)
