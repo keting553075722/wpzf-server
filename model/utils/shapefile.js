@@ -12,10 +12,13 @@ const toJSONArray = require('./geojson2objArray')
  * @param url
  * @param callback
  */
-module.exports = function (url,callback) {
-    shp.read(url).then(function (data) {
-        callback(true,toJSONArray(data))
-    }).catch(error=>{
-        callback(false)
+module.exports = function (url) {
+    return new Promise((resolve, reject) => {
+        shp.read(url).then(function (data) {
+            resolve(toJSONArray(data))
+        }).catch(error=>{
+            reject(error)
+        })
     })
+
 }

@@ -10,7 +10,7 @@ const response = require('../model/response-format')
 const {role} = require('../db/properties/permission-mapper')
 const Token = require('../model/token')
 const Status = require('../db/entities/status')
-const aggregateObjs = require('../model/obj-aggregate')
+const { aggregateObjs, objsByCityGroup, objsByCountyGroup} = require('../model/obj-aggregate')
 
 
 /* GET user listing. */
@@ -75,6 +75,7 @@ router.post('/statisticSelf', async function (req, res, next) {
             "city": "CDM",
             "county": "XDM",
         }
+
         let condition = {}
         condition[field[permission]] = code
 
@@ -177,7 +178,7 @@ router.post('/statisticChildrenByYear', async function (req, res, next) {
         }
         let {year, condition} = req.body
         let dbRes = await Status.statisticByYear(year, '1', condition)
-        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [aggregateObjs]) : response.responseFailed(res)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [objsByCityGroup]) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/statisticChildrenByYear', e.message)
         response.responseFailed(res, e.message)
@@ -195,7 +196,7 @@ router.post('/statisticGrandsonByYear', async function (req, res, next) {
         }
         let {year, condition} = req.body
         let dbRes = await Status.statisticByYear(year, '2', condition)
-        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [aggregateObjs]) : response.responseFailed(res)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [objsByCountyGroup]) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/statisticGrandsonByYear', e.message)
         response.responseFailed(res, e.message)
