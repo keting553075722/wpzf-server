@@ -131,9 +131,9 @@ module.exports = {
      * 查询所有的表
      * @returns {Promise<unknown>}
      */
-    queryTBTables() {
+    queryTBTables(mode = 'zj') {
         return new Promise((resolve, reject) => {
-            let sql = `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${dbConfig.name}' and t.TABLE_NAME like 'zj%' `
+            let sql = `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${dbConfig.name}' and t.TABLE_NAME like '${mode}%' `
             db.query(sql).then(
                 res => {
                     resolve(res)
@@ -215,27 +215,6 @@ module.exports = {
                     }
                 ).catch(reject) : reject('该年度没有数据')
             }
-
-
-            //     type == '1' && cityStatistic(year, condition).then(
-            //         sql => {
-            //             sql && db.query(sql).then(
-            //                 res => {
-            //                     resolve(res)
-            //                 }
-            //             ).catch(reject)
-            //         }
-            //     ).catch(reject)
-            //
-            //     type == '2' && countyStatistic(year, condition).then(
-            //         sql => {
-            //             sql && db.query(sql).then(
-            //                 res => {
-            //                     resolve(res)
-            //                 }
-            //             ).catch(reject)
-            //         }
-            //     ).catch(reject)
         })
     },
 

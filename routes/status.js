@@ -10,6 +10,7 @@ const response = require('../model/response-format')
 const {role} = require('../db/properties/permission-mapper')
 const Token = require('../model/token')
 const Status = require('../db/entities/status')
+const aggregateObjs = require('../model/obj-aggregate')
 
 
 /* GET user listing. */
@@ -29,7 +30,7 @@ router.post('/get', function (req, res, next) {
         result ? response.responseSuccess(result, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/get ', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
 })
 
@@ -55,9 +56,8 @@ router.post('/process', async function (req, res, next) {
         dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/process ', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
-
 });
 
 /**
@@ -82,10 +82,8 @@ router.post('/statisticSelf', async function (req, res, next) {
         dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/statisticSelf ', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
-
-
 });
 
 /**
@@ -105,7 +103,7 @@ router.post('/statisticChildren', async function (req, res, next) {
         dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/statisticChildren ', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
 
 });
@@ -129,7 +127,7 @@ router.post('/statisticGrandson', async function (req, res, next) {
         dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/statisticGrandson ', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
 });
 
@@ -142,7 +140,7 @@ router.post('/getCurrent', function (req, res, next) {
         $workTables ? response.responseSuccess($workTables.slice().reverse(), res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/getCurrent ', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
 });
 
@@ -161,10 +159,10 @@ router.post('/statisticByYear', async function (req, res, next) {
 
         let {year} = req.body
         let dbRes = await Status.statisticByYear(year, '0')
-        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [aggregateObjs]) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/statisticByYear', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
 });
 
@@ -179,10 +177,10 @@ router.post('/statisticChildrenByYear', async function (req, res, next) {
         }
         let {year, condition} = req.body
         let dbRes = await Status.statisticByYear(year, '1', condition)
-        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [aggregateObjs]) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/statisticChildrenByYear', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
 });
 
@@ -197,10 +195,10 @@ router.post('/statisticGrandsonByYear', async function (req, res, next) {
         }
         let {year, condition} = req.body
         let dbRes = await Status.statisticByYear(year, '2', condition)
-        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res, 'success', [aggregateObjs]) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/statisticGrandsonByYear', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
 });
 
@@ -208,18 +206,16 @@ router.post('/batchOfYear', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-
         if (user.permission !== role['province']) {
             response.responseFailed(res)
             return
         }
-
         let {year} = req.body
         let dbRes = await Status.batchOfYear(year)
         dbRes ? response.responseSuccess(dbRes, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/batchOfYear', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
 });
 
@@ -227,7 +223,6 @@ router.post('/startTask', function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-
         if (user.permission !== role['province']) {
             response.responseFailed(res)
             return
@@ -237,16 +232,14 @@ router.post('/startTask', function (req, res, next) {
         tableName ? response.responseSuccess('', res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/startTask', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
-
 });
 
 router.post('/endTask', function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-
         if (user.permission !== role['province']) {
             response.responseFailed(res)
             return
@@ -256,7 +249,7 @@ router.post('/endTask', function (req, res, next) {
         tableName ? response.responseSuccess('', res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/endTask', e.message)
-        response.responseFailed(res)
+        response.responseFailed(res, e.message)
     }
 });
 

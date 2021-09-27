@@ -8,7 +8,7 @@ const cityCascade = require('../../common-data/city-cascade')
 const queryBuild = (body, code) => {
     let userType = code.substring(2, 6) === "0000" ? 0 : code.substring(4, 6) === "00" ? 1 : 2
     let queryObj = {}
-    const { kind, dispatch, district, check, report, evidence } = body
+    const {kind, dispatch, district, check, report, evidence} = body
     if (userType === 0) {
         // 省级审核市级
         queryObj["XZQDM"] = code.substring(0, 2) + "%"

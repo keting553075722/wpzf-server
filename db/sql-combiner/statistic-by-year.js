@@ -13,7 +13,6 @@ const modifyTBName = (tableNames) => {
 }
 
 const proStatistic = (year, condition, dbRes) => {
-    // let dbRes = await Tuban.queryTBTables()
     let tables = modifyTBName(dbRes.results).slice()
 
     const statisticTables = tables.filter(x => x.indexOf(year) > -1)
@@ -79,7 +78,6 @@ const proStatistic = (year, condition, dbRes) => {
 }
 
 const cityStatistic = (year, condition, dbRes) => {
-    // let  = await Tuban.queryTBTables()
     let tables = modifyTBName(dbRes.results).slice()
     const statisticTables = tables.filter(x => x.indexOf(year) > -1)
     let len = statisticTables.length
@@ -145,7 +143,6 @@ const cityStatistic = (year, condition, dbRes) => {
 }
 
 const countyStatistic = (year, condition, dbRes) => {
-    // let dbRes = await Tuban.queryTBTables()
     let tables = modifyTBName(dbRes.results).slice()
     const statisticTables = tables.filter(x => x.indexOf(year) > -1)
     let len = statisticTables.length
@@ -209,12 +206,6 @@ const countyStatistic = (year, condition, dbRes) => {
     }
     return sql
 }
-//
-// const tablesOfYear = async (year) => {
-//   let tables = await queryTables()
-//   return tables.filter(x => x.indexOf(year) > -1)
-// }
-
 
 module.exports = {proStatistic, cityStatistic, countyStatistic}
 

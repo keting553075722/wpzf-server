@@ -5,7 +5,7 @@
  */
 const aggregateObjs = (objs) => {
     let keys = Object.keys(objs[0])
-    let acc = result.reduce((acc, cur, idx) => {
+    let acc = objs.reduce((acc, cur, idx) => {
         for (let i = 0; i < keys.length; i++) {
             if (i < 2)
                 acc[keys[i]] = cur[keys[i]]
