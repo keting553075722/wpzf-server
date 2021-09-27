@@ -13,7 +13,7 @@ const modifyTBName = (tableNames) => {
 }
 
 const proStatistic = (year, condition, dbRes) => {
-    let tables = modifyTBName(dbRes.results).slice()
+    let tables = dbRes.slice()
 
     const statisticTables = tables.filter(x => x.indexOf(year) > -1)
     let len = statisticTables.length
@@ -78,7 +78,7 @@ const proStatistic = (year, condition, dbRes) => {
 }
 
 const cityStatistic = (year, condition, dbRes) => {
-    let tables = modifyTBName(dbRes.results).slice()
+    let tables = dbRes.slice()
     const statisticTables = tables.filter(x => x.indexOf(year) > -1)
     let len = statisticTables.length
     if (!len) {
@@ -143,7 +143,7 @@ const cityStatistic = (year, condition, dbRes) => {
 }
 
 const countyStatistic = (year, condition, dbRes) => {
-    let tables = modifyTBName(dbRes.results).slice()
+    let tables = dbRes.slice()
     const statisticTables = tables.filter(x => x.indexOf(year) > -1)
     let len = statisticTables.length
     if (!len) {

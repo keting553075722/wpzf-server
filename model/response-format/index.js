@@ -47,12 +47,11 @@ module.exports = {
     },
 
     /**
-     * 失败消息格式化
-     * @param type 错误类型，1权限不足，2参数错误
-     * @param type 错误类型，1权限不足，2参数错误
+     *  失败消息格式化
      * @param res
+     * @param msg
      */
-    responseFailed(res, msg = 'failed',) {
+    responseFailed(res, msg = 'failed') {
         this.status = false
         this.msg = msg
         this.data = {}

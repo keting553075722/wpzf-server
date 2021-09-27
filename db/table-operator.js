@@ -136,7 +136,11 @@ module.exports = {
             let sql = `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${dbConfig.name}' and t.TABLE_NAME like '${mode}%' `
             db.query(sql).then(
                 res => {
-                    resolve(res)
+                    let result = []
+                    res.results.forEach(itm => {
+                        result.push(itm['table_name'])
+                    })
+                    resolve(result)
                 }
             ).catch(reject)
         })
@@ -225,10 +229,6 @@ module.exports = {
      */
     async batchOfYear(year) {
         let res = await this.queryTBTables()
-        let result = []
-        res.results.forEach(itm => {
-            result.push(itm['table_name'])
-        })
-        return result.filter(x => x.indexOf(year) > -1)
+        return res.filter(x => x.indexOf(year) > -1)
     }
 }

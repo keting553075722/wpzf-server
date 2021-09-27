@@ -10,6 +10,8 @@ const response = require('../model/response-format')
 const {role} = require('../db/properties/permission-mapper')
 const Token = require('../model/token')
 const Status = require('../db/entities/status')
+const Tuban = require('../db/entities/tuban')
+const uniqueArr = require('../model/utils/removeTheSame')
 const {aggregateObjs, objsByCityGroup, objsByCountyGroup} = require('../model/obj-aggregate')
 
 
@@ -237,6 +239,24 @@ router.post('/batchOfYear', async function (req, res, next) {
         response.responseFailed(res, e.message)
     }
 });
+
+router.post('/getTBYears', async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let user = Token.de(token)
+        if (!token || user.permission !== role['province']) {
+            response.responseFailed(res,response.msgType().common['1'])
+            return
+        }
+        let dbRes = await Tuban.queryTBTables().then(res => res).catch(console.log)
+        let years = dbRes.length ? dbRes.map(tableName => tableName.substr(3,4)) : []
+        response.responseSuccess(years, res, 'success', [uniqueArr])
+    } catch (e) {
+        console.log('/status/getTBYears', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
 
 router.post('/startTask', function (req, res, next) {
     try {
