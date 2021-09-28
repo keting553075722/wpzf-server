@@ -91,16 +91,8 @@ router.post('/queryTBTables', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        // let {JCBHs} = req.body
-        // const modifyTBName = (tableNames) => {
-        //     let result = []
-        //     tableNames.forEach(tableName => {
-        //         result.push(tableName['table_name'])
-        //     })
-        //     return result
-        // }
         let dbRes = await Tuban.queryTBTables().then(res => res).catch(console.log)
-        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.slice().reverse(), res) : response.responseFailed(res)
+        dbRes.length ? response.responseSuccess(dbRes.slice().reverse(), res) : response.responseFailed(res)
     } catch (e) {
         console.log('/tuban/queryTBTables', e.message)
         response.responseFailed(res, e.message)
