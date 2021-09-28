@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'resources')));
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
 app.use('/tuban', tubanRouter);
-// app.use('/upload', uploadRouter);
+app.use('/upload', uploadRouter);
 app.use('/status', statusRouter);
 
 // catch 404 and forward to error handler

@@ -60,6 +60,7 @@ module.exports = {
             let exist = await db.exist(tableName)
             !exist.results.length && await this.create(tableName)
             let insertStatus = await this.insert(tableName, objs)
+            let initialStatus = await this.update(tableName, tubanInitializeProps)
             return insertStatus
         } catch (e) {
             console.log('import failed ', e.message)
