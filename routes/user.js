@@ -19,7 +19,8 @@ router.post('/login', async function (req, res, next) {
                 name: dbUser['name'],
                 code: dbUser['code'],
                 permission: dbUser['permission'],
-                role: dbUser['role']
+                role: dbUser['role'],
+                cluster : dbUser['cluster'],
             }
             let token = Token.en(resInfo)
             response.status = true
@@ -27,6 +28,7 @@ router.post('/login', async function (req, res, next) {
             response.data = {
                 name: resInfo.name,
                 role: resInfo.role,
+                cluster : resInfo.cluster,
                 token,
                 rights: Rights(resInfo.code)
             }
