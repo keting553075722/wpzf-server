@@ -15,7 +15,7 @@ const ddConfig = {
 }
 
 const getServerIp = async () => {
-    return this.serverEnv == 'windows' ? ip.address() : await publicIp.v4().then(res => res).catch(console.log)
+    return this.serverEnv === 'windows' ? ip.address() : await publicIp.v4().then(res => res).catch(console.log)
 }
 
 const getMac = () => {

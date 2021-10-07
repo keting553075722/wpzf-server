@@ -179,7 +179,12 @@ router.post('/report', async function (req, res, next) {
                     content[TGFiled] = ''
                 }
                 let updateRes = await Tuban.update(tableName, content, condition)
-                updateRes && updateRes.results ? response.responseSuccess(updateRes.results.message, res) : response.responseFailed(res)
+                /*updateRes && updateRes.results ? response.responseSuccess(updateRes.results.message, res) : response.responseFailed(res)*/
+                updateRes && updateRes.results ? (function () {
+                    response.responseSuccess(updateRes.results.message, res)
+                    observer.report(tableName, code)
+                })() : response.responseFailed(res)
+
 
             } else {
                 response.responseFailed(res)
