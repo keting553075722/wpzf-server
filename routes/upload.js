@@ -73,10 +73,9 @@ router.post('/img', imgUpload.any(), async function (req, res, next) {
         let files = req.files
         let {tubanId, tableName} = JSON.parse(req.body.info)
         let tblj = []
-        /*let serverIp = await config.serverIp().then(res => res).catch(console.log)*/
-        let serverIp,splitChar,sliceNum
+        let serverIp = await config.serverIp().then(res => res).catch(console.log)
+      /*  let serverIp,splitChar,sliceNum
         if(config.serverEnv === 'windows'){
-            console.log('windows')
             serverIp=ip.address()
             splitChar='\\'
             sliceNum=5
@@ -84,15 +83,17 @@ router.post('/img', imgUpload.any(), async function (req, res, next) {
             serverIp=await publicIp.v4().then(res => res).catch(console.log)
             splitChar='\/'
             sliceNum=6
-        }
+        }*/
+        console.log('splitChar',config.splitChar)
         for (const file of files) {
             let path = file.path
-            let pathArr = path.split(splitChar)
-            pathArr = pathArr.slice(sliceNum)
+            let pathArr = path.split(config.splitChar)
+            console.log('pathArr',pathArr)
+            pathArr = pathArr.slice(5)
             path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
             tblj.push(path)
         }
-
+        console.log('TPLJ',tblj)
         let condition = {JCBH: tubanId}
         let content = {TPLJ: JSON.stringify(tblj)}
 
@@ -109,9 +110,9 @@ router.post('/attachment', attachmentUpload.any(), async function (req, res, nex
         let files = req.files
         let {tubanId, tableName} = JSON.parse(req.body.info)
         let fjlj = []
-        /*let serverIp = await config.serverIp().then(res => res).catch(console.log)*/
+        let serverIp = await config.serverIp().then(res => res).catch(console.log)
 
-        let serverIp,splitChar,sliceNum
+       /* let serverIp,splitChar,sliceNum
         if(config.serverEnv === 'windows'){
             console.log('windows')
             serverIp=ip.address()
@@ -121,16 +122,16 @@ router.post('/attachment', attachmentUpload.any(), async function (req, res, nex
             serverIp=await publicIp.v4().then(res => res).catch(console.log)
             splitChar='\/'
             sliceNum=6
-        }
+        }*/
         for (const file of files) {
             let path = file.path
-            let pathArr = path.split(splitChar)
-            pathArr = pathArr.slice(sliceNum)
+            let pathArr = path.split(config.splitChar)
+            pathArr = pathArr.slice(5)
             path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
             fjlj.push(path)
         }
 
-
+        console.log('FJLJ',fjlj)
         let condition = {JCBH: tubanId}
         let content = {FJLJ: JSON.stringify(fjlj)}
 

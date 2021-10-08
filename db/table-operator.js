@@ -57,7 +57,6 @@ module.exports = {
     update(tableName, content, condition) {
         return new Promise((resolve, reject) => {
             let sql = SQL.updateSQL(tableName, content, condition)
-            console.log('sql',sql)
             db.query(sql).then(
                 res => {
                     resolve(res)

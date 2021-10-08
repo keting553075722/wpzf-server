@@ -2,11 +2,9 @@ const ip = require('ip')
 const publicIp = require('public-ip')
 const os = require('os')
 
-const splitCharMap = {
-    windows: '\\',
-    linux: '\/'
+const splitCharMap = function (env) {
+    return env == 'linux' ? "\/": "\\"
 }
-
 const ddConfig = {
     appid: 'wpzf_dingoa',
     appkey: 'wpzf_dingoa-JFyyCo81V2EYyEVN3m',
@@ -15,7 +13,7 @@ const ddConfig = {
 }
 
 const getServerIp = async () => {
-    return this.serverEnv === 'windows' ? ip.address() : await publicIp.v4().then(res => res).catch(console.log)
+    return config.serverEnv == 'windows' ? ip.address() : await publicIp.v4().then(res => res).catch(console.log)
 }
 
 const getMac = () => {
@@ -30,12 +28,14 @@ const getMac = () => {
 
 }
 
-module.exports = {
+const config = {
     appPort: '3000',
     serverEnv: 'windows',   // 可选 'linux'  or  'windows'
     activeTableRelativePath: '/work-tables.propertries',
-    splitChar: splitCharMap[this.serverEnv],
+    splitChar: splitCharMap(this.serverEnv),
     serverIp: getServerIp,
     serverMac: getMac(),
     ddConfig: ddConfig
 }
+
+module.exports = config
