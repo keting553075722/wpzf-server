@@ -1,5 +1,5 @@
 const axios = require('axios')
-const {serverIp , serverMac, ddConfig} = require('../../../deploy-config')
+const {serverIp , serverMac, ddConfig} = require('../../../deploy-config/src/config')
 const {appid, appkey, appsecret, requesturl} = ddConfig
 const moment = require('moment')
 const {ramdom4} = require('../../utils/random4')

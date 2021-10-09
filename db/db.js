@@ -18,7 +18,8 @@ module.exports = {
                 connection.query(sql, params, (err, results, fields) => {//执行sql语句
                     connection.release();
                     if (err) return reject(err)
-                    resolve({results, fields})
+                    resolve(
+                        {results, fields})
                 })
             })
         })

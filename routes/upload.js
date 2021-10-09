@@ -21,7 +21,7 @@ const fs = require('fs')
 const getNames = require('../model/utils/getNames')
 const getCodes = require('../model/utils/getCodes')
 const response = require('../model/response-format')
-const config = require('../deploy-config')
+const config = require('../deploy-config/src/config')
 const ip = require('ip')
 const publicIp = require('public-ip')
 
@@ -74,6 +74,7 @@ router.post('/img', imgUpload.any(), async function (req, res, next) {
         let {tubanId, tableName} = JSON.parse(req.body.info)
         let tblj = []
         let serverIp = await config.serverIp().then(res => res).catch(console.log)
+        let sliceNum = config.serverEnv == 'windows' ? 5 : 6
       /*  let serverIp,splitChar,sliceNum
         if(config.serverEnv === 'windows'){
             serverIp=ip.address()
@@ -89,7 +90,7 @@ router.post('/img', imgUpload.any(), async function (req, res, next) {
             let path = file.path
             let pathArr = path.split(config.splitChar)
             console.log('pathArr',pathArr)
-            pathArr = pathArr.slice(5)
+            pathArr = pathArr.slice(sliceNum)
             path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
             tblj.push(path)
         }
@@ -111,7 +112,7 @@ router.post('/attachment', attachmentUpload.any(), async function (req, res, nex
         let {tubanId, tableName} = JSON.parse(req.body.info)
         let fjlj = []
         let serverIp = await config.serverIp().then(res => res).catch(console.log)
-
+        let sliceNum = config.serverEnv == 'windows' ? 5 : 6
        /* let serverIp,splitChar,sliceNum
         if(config.serverEnv === 'windows'){
             console.log('windows')
@@ -126,7 +127,7 @@ router.post('/attachment', attachmentUpload.any(), async function (req, res, nex
         for (const file of files) {
             let path = file.path
             let pathArr = path.split(config.splitChar)
-            pathArr = pathArr.slice(5)
+            pathArr = pathArr.slice(sliceNum)
             path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
             fjlj.push(path)
         }

@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var fs = require('fs')
 var cors = require('cors')
-var config = require('./deploy-config')
+var config = require('./deploy-config/src/config')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user');

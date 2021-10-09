@@ -1,0 +1,11 @@
+{
+  "appPort": "3000",
+  "serverEnv": "windows",
+  "activeTableRelativePath": "/work-tables.propertries",
+  "ddConfig": {
+    "appid": "wpzf_dingoa",
+    "appkey": "wpzf_dingoa-JFyyCo81V2EYyEVN3m",
+    "appsecret": "YuE274if7KQQqLVpELWsIFjl901hU7WI0BAMf2qg",
+    "requesturl": "http://localhost:8083/"
+  }
+}
