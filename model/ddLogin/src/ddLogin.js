@@ -1,7 +1,5 @@
 
-const appid = 'dingoa3ehg64tkdxwge7el'
-const appsecret = 'r2Xz4FB8EDLZ-vwModMZh1UinKqGIaeknP5-94XVim6gs7GDXeBbxS6Fh0GdxKsN'
-const REDIRECT_URI = "http://localhost:8083/"
+const {appid, appsecret, REDIRECT_URI} = require('../../../config.json').ddConfig
 
 const axios = require('axios')
 const api = axios.create({
