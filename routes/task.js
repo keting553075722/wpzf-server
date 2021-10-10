@@ -3,8 +3,8 @@
  * @Date : 2021/10/10 15:02
  * @Description : task
  */
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 const task = require('../db/entities/task')
 const moment = require('moment')
 const Token = require('../model/token')
@@ -27,3 +27,5 @@ router.post('/add', async function (req, res, next) {
         response.responseFailed(res, e.message)
     }
 })
+
+module.exports = router

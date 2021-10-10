@@ -23,28 +23,25 @@ const province = [
         children: [
             {
                 id: 111,
-                authName: "当期全部",
+                authName: "省级审核",
+                icon: "el-icon-menu",
+                path: "/main/sjsh",
+                tag: "sjsh",
+                cascade: cityCascade[0].children,
+                rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'upload', 'sendDown', 'view', 'details-reback'],
+                children: [],
+            }, {
+                id: 112,
+                authName: "省级卫片",
                 icon: "el-icon-menu",
                 path: "/main/jdtb",
                 tag: "",
                 cascade: cityCascade[0].children,
                 rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'upload', 'sendDown', 'view', 'details-reback'],
                 children: [],
-            }
-            ,
-            {
-                id: 112,
-                authName: "部级下发",
-                icon: "el-icon-menu",
-                path: "/main/bjxf",
-                tag: "bjxf",
-                cascade: cityCascade[0].children,
-                rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'upload', 'sendDown', 'view', 'details-reback'],
-                children: [],
-            }
-            , {
+            }, {
                 id: 113,
-                authName: "省级自提",
+                authName: "长江流域执法",
                 icon: "el-icon-menu",
                 path: "/main/sjzt",
                 tag: "sjzt",
@@ -52,16 +49,16 @@ const province = [
                 rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'upload', 'sendDown', 'view'],
                 children: [],
             }
-            , {
-                id: 114,
-                authName: "重点监测",
-                icon: "el-icon-menu",
-                path: "/main/zdjc",
-                tag: "zdjc",
-                cascade: cityCascade[0].children,
-                rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'upload', 'sendDown', 'view'],
-                children: [],
-            },
+            // , {
+            //     id: 114,
+            //     authName: "重点监测",
+            //     icon: "el-icon-menu",
+            //     path: "/main/zdjc",
+            //     tag: "zdjc",
+            //     cascade: cityCascade[0].children,
+            //     rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'upload', 'sendDown', 'view'],
+            //     children: [],
+            // },
         ],
     },
     {
@@ -89,6 +86,14 @@ const province = [
         tag: "tbjk",
         rights: [],
         children: [],
+    }, {
+        id: 16,
+        authName: "任务定制",
+        icon: "el-icon-monitor",
+        path: "/main/rwdz",
+        tag: "rwdz",
+        rights: [],
+        children: [],
     }
 ]
 
@@ -99,7 +104,7 @@ const city = [
         icon: "el-icon-menu",
         path: "/main/jdtb",
         tag: "jdtb",
-        rights: ['batch', 'district',  'dispatch', 'codeKey', 'refresh', 'sendDown', 'view'],
+        rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'sendDown', 'view'],
         children: [],
     }
     , {
@@ -108,7 +113,7 @@ const city = [
         icon: "el-icon-s-promotion",
         path: "/main/tbsb",
         tag: "tbsb",
-        rights: ['batch','check', 'codeKey', 'refresh'],
+        rights: ['batch', 'check', 'codeKey', 'refresh'],
         children: [],
     }
     , {
@@ -129,7 +134,7 @@ const county = [
         icon: "el-icon-menu",
         path: "/main/jdtb",
         tag: "jdtb",
-        rights: ['batch',  'evidence', 'codeKey', 'refresh', 'view', 'evidence'], //县级图斑界面的权限
+        rights: ['batch', 'evidence', 'codeKey', 'refresh', 'view', 'evidence'], //县级图斑界面的权限
         children: [],
     }
     , {
@@ -138,7 +143,7 @@ const county = [
         icon: "el-icon-s-promotion",
         path: "/main/tbsb",
         tag: "tbsb",
-        rights: ['batch',  'evidence', 'codeKey', 'refresh'],
+        rights: ['batch', 'evidence', 'codeKey', 'refresh'],
         children: []
     }
 ]
