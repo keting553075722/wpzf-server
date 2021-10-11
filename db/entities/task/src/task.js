@@ -8,19 +8,22 @@ const db = require('../../../table-operator')
 
 module.exports = {
     /**
-     * 查询所有的模板
+     * 查询模板
+     * @param fields
+     * @param condition
      * @returns {Promise<unknown>}
      */
-    find() {
-        return db.find('task-template')
+    find(fields, condition={}) {
+        return db.find('task_template', condition, fields)
     },
+
     /**
      * 添加新的任务模板
      * @param objs
      * @returns {Promise<unknown>}
      */
     add(objs) {
-        return db.insert('task-template', objs)
+        return db.insert('task_template', objs)
     }
 
 

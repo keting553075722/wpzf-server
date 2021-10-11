@@ -17,11 +17,12 @@ module.exports = {
      * 指定表中查询记录
      * @param tableName
      * @param condition
+     * @param fields
      * @returns {Promise<unknown>}
      */
-    find(tableName, condition) {
+    find(tableName, condition, fields) {
         return new Promise((resolve, reject) => {
-            const sql = SQL.selectSQL(tableName, condition)
+            const sql = SQL.selectSQL(tableName, condition, fields)
             db.query(sql).then(
                 res => {
                     resolve(res)
