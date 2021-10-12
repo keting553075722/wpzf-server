@@ -91,7 +91,8 @@ router.post('/queryTBTables', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let dbRes = await Tuban.queryTBTables().then(res => res).catch(console.log)
+        let {Id} = req.body
+        let dbRes = await Tuban.queryTBTables(Id).then(res => res).catch(console.log)
         dbRes.length ? response.responseSuccess(dbRes.slice().reverse(), res) : response.responseFailed(res)
     } catch (e) {
         console.log('/tuban/queryTBTables', e.message)

@@ -67,12 +67,14 @@ module.exports = {
         }
     },
 
+
     /**
      * 查询储存图斑的所有的表，模式zj%
+     * @param Id 默认是zj
      * @returns {Promise<unknown>}
      */
-    queryTBTables() {
-        return db.queryTBTables()
+    queryTBTables(Id) {
+        return db.queryTBTables(Id)
     }
 
 }

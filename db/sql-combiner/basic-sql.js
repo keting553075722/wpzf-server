@@ -116,9 +116,9 @@ const updateSQL = function (tableName, content, condition = {}) {
 
 /**
  * 查询指定表的指定记录
- * @param tableName
- * @param condition
- * @param fields
+ * @param{string} tableName
+ * @param{object} condition
+ * @param{array} fields
  * @returns {string}
  */
 const selectSQL = function (tableName, condition, fields = []) {

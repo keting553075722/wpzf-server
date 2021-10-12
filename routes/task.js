@@ -36,7 +36,7 @@ router.get('/get', async function (req, res, next) {
     try {
         const token = req.headers.authorization
         const {name, code, permission} = Token.de(token) // 权限判断一下
-
+        const {fields} = req.query
         const getRes = await task.find().then(res => res).catch(console.log)
         getRes && getRes.results ? response.responseSuccess(getRes.results, res) : response.responseFailed(res)
     } catch (e) {

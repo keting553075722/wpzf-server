@@ -15,9 +15,9 @@ const db = require('./db')
 module.exports = {
     /**
      * 指定表中查询记录
-     * @param tableName
-     * @param condition
-     * @param fields
+     * @param{string} tableName
+     * @param{object} condition
+     * @param{array} fields
      * @returns {Promise<unknown>}
      */
     find(tableName, condition, fields) {
