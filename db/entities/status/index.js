@@ -30,16 +30,17 @@ module.exports = {
      * @param condition
      * @returns {Promise<unknown>|void}
      */
-    statisticByYear(year, type, condition) {
-        return db.statisticByYear(year, type, condition)
+    statisticByYear(year, type, Id, condition) {
+        return db.statisticByYear(year, type, Id, condition)
     },
 
     /**
      * 返回数据库中指定年份的批次
      * @param year
+     * @param Id
      * @returns {Promise<*>}
      */
-    batchOfYear(year) {
-        return db.batchOfYear(year)
+    batchOfYear(year, Id) {
+        return db.batchOfYear(year, Id)
     }
 }

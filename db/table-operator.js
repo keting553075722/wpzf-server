@@ -189,12 +189,13 @@ module.exports = {
      * 按年统计，0统计省级，1统计市级，2统计县级
      * @param year
      * @param type
+     * @param Id
      * @param condition
      * @returns {Promise<unknown>}
      */
-    statisticByYear(year, type, condition = {}) {
+    statisticByYear(year, type, Id, condition = {}) {
         return new Promise(async (resolve, reject) => {
-            let dbRes = await this.queryTBTables()
+            let dbRes = await this.queryTBTables(Id)
             if (type == '0') {
                 let sqlRes = proStatistic(year, condition, dbRes)
                 sqlRes ? db.query(sqlRes).then(
@@ -228,10 +229,11 @@ module.exports = {
     /**
      * 一个年度的批次的查询
      * @param year
+     * @param Id 可缺省，默认是zj
      * @returns {Promise<*>}
      */
-    async batchOfYear(year) {
-        let res = await this.queryTBTables()
+    async batchOfYear(year, Id) {
+        let res = await this.queryTBTables(Id)
         return res.filter(x => x.indexOf(year) > -1)
     }
 }

@@ -135,7 +135,7 @@ router.post('/statisticGrandson', async function (req, res, next) {
 });
 
 /**
- * 当前工作表
+ * 当前工作表 *****
  */
 router.post('/getCurrent', function (req, res, next) {
     // post请求参数存在body中
@@ -160,11 +160,11 @@ router.post('/statisticByYear', async function (req, res, next) {
             return
         }
 
-        let {years} = req.body
+        let {years, Id} = req.body
 
         let resObjs = {}
         for (const year of years) {
-            let dbRes = await Status.statisticByYear(year, '0').then(res => res).catch(console.log)
+            let dbRes = await Status.statisticByYear(year, '0', Id).then(res => res).catch(console.log)
             dbRes && dbRes.results && (resObjs[year.toString()] = aggregateObjs(dbRes.results))
         }
 
@@ -188,10 +188,10 @@ router.post('/statisticChildrenByYear', async function (req, res, next) {
             return
         }
 
-        let {years, condition} = req.body
+        let {years, Id, condition} = req.body
         let resObjs = {}
         for (const year of years) {
-            let dbRes = await Status.statisticByYear(year, '1', condition).then(res => res).catch(console.log)
+            let dbRes = await Status.statisticByYear(year, '1', Id, condition).then(res => res).catch(console.log)
             dbRes && dbRes.results && (resObjs[year.toString()] = objsByCityGroup(dbRes.results))
         }
         response.responseSuccess(resObjs, res)
@@ -210,10 +210,10 @@ router.post('/statisticGrandsonByYear', async function (req, res, next) {
             response.responseFailed(res)
             return
         }
-        let {years, condition} = req.body
+        let {years, Id, condition} = req.body
         let resObjs = {}
         for (const year of years) {
-            let dbRes = await Status.statisticByYear(year, '2', condition).then(res => res).catch(console.log)
+            let dbRes = await Status.statisticByYear(year, '2', Id, condition).then(res => res).catch(console.log)
             dbRes && dbRes.results && (resObjs[year.toString()] = objsByCountyGroup(dbRes.results))
         }
         response.responseSuccess(resObjs, res)
@@ -231,8 +231,8 @@ router.post('/batchOfYear', async function (req, res, next) {
             response.responseFailed(res)
             return
         }
-        let {year} = req.body
-        let dbRes = await Status.batchOfYear(year).then(res => res).catch(console.log)
+        let {year, Id} = req.body
+        let dbRes = await Status.batchOfYear(year, Id).then(res => res).catch(console.log)
         dbRes ? response.responseSuccess(dbRes, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/batchOfYear', e.message)
@@ -248,7 +248,9 @@ router.post('/getTBYears', async function (req, res, next) {
             response.responseFailed(res,response.msgType().common['1'])
             return
         }
-        let dbRes = await Tuban.queryTBTables().then(res => res).catch(console.log)
+
+        let {Id} = req.body
+        let dbRes = await Tuban.queryTBTables(Id).then(res => res).catch(console.log)
         let years = dbRes.length ? dbRes.map(tableName => tableName.substr(3,4)) : []
         response.responseSuccess(years, res, 'success', [uniqueArr])
     } catch (e) {
