@@ -87,13 +87,13 @@ router.post('/getCheck', async function (req, res, next) {
 /**
  * 获取数据库中存在的图斑的表,省级角色才能查询
  */
-router.post('/queryTBTables', async function (req, res, next) {
+router.get('/queryTBTables', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {Id} = req.body
+        let {Id} = req.query
         let dbRes = await Tuban.queryTBTables(Id).then(res => res).catch(console.log)
-        dbRes.length ? response.responseSuccess(dbRes.slice().reverse(), res) : response.responseFailed(res)
+        dbRes ? response.responseSuccess(dbRes.slice().reverse(), res) : response.responseFailed(res)
     } catch (e) {
         console.log('/tuban/queryTBTables', e.message)
         response.responseFailed(res, e.message)
