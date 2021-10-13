@@ -288,4 +288,23 @@ router.post('/fieldVerification', async function (req, res, next) {
     dbRes && dbRes.results && response.responseSuccess(dbRes.results, res)
 
 });
+
+/* GET tuban Info. */
+/**
+ * 省级审核界面点击查看或许图斑及拆分图斑信息
+ */
+router.post('/lookJDTB', async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let {name, code, permission} = Token.de(token)
+        let {tableName,JCBH} = req.body
+        let condition = JCBH
+        let dbRes = await Tuban.likefind(tableName, condition)
+
+        dbRes && dbRes.results && response.responseSuccess(dbRes.results, res)
+    } catch (e) {
+        console.log('/tuban/lookJDTB', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
 module.exports = router;

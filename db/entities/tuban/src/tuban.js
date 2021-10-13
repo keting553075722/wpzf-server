@@ -5,7 +5,7 @@
  */
 const db = require('../../../table-operator')
 const tubanInitializeProps = require('../../../properties/tuban-initialize')
-
+const excelInitializeProps = require('../../../properties/excel-initialize')
 
 module.exports = {
 
@@ -17,6 +17,16 @@ module.exports = {
      */
     find(tableName, condition) {
         return db.find(tableName, condition)
+    },
+
+    /**
+     * 模糊查询指定条件的图斑记录（用于图斑拆分）
+     * @param tableName
+     * @param condition
+     * @returns {Promise<unknown>}
+     */
+    likefind(tableName, condition) {
+        return db.likefind(tableName, condition)
     },
 
     /**
@@ -41,12 +51,21 @@ module.exports = {
     },
 
     /**
-     * 创建一张表
+     * 创建一张表(excel)
      * @param tableName
      * @returns {Promise<unknown>}
      */
     create(tableName) {
         return db.create(tableName)
+    },
+
+    /**
+     * 创建一张表
+     * @param tableName
+     * @returns {Promise<unknown>}
+     */
+    createExcelTable(tableName) {
+        return db. createExcelTable(tableName)
     },
 
     /**
@@ -60,7 +79,27 @@ module.exports = {
             let exist = await db.exist(tableName)
             !exist.results.length && await this.create(tableName)
             let insertStatus = await this.insert(tableName, objs)
+            console.log('success')
             let initialStatus = await this.update(tableName, tubanInitializeProps)
+            return insertStatus
+        } catch (e) {
+            console.log('import failed ', e.message)
+        }
+    },
+
+
+    /**
+     * 导入Excel表，新建批次或者在原批次导入
+     * @param tableName
+     * @param objs
+     * @returns {Promise<unknown>}
+     */
+    async importExcel(tableName, objs) {
+        try {
+            let exist = await db.exist(tableName)
+            !exist.results.length && await this.createExcelTable(tableName)
+            let insertStatus = await this.insert(tableName, objs)
+            let initialStatus = await this.update(tableName,excelInitializeProps)
             return insertStatus
         } catch (e) {
             console.log('import failed ', e.message)
@@ -73,6 +112,14 @@ module.exports = {
      */
     queryTBTables() {
         return db.queryTBTables()
-    }
+    },
+
+    /**
+     * 查询储存图斑的所有的表，模式sjsh%
+     * @returns {Promise<unknown>}
+     */
+    sjshqueryTBTables() {
+        return db.sjshqueryTBTables()
+    },
 
 }

@@ -6,6 +6,7 @@
 const db = require('../db')
 const SQL = require('./utils')
 const tuban = require('../properties/tuban-definition.json')
+const excel = require('../properties/excel-definition.json')
 const user = require('../properties/user_definition.json')
 const status = require('../properties/status_definition.json')
 
@@ -16,6 +17,23 @@ const status = require('../properties/status_definition.json')
  * @returns {string}
  */
 const createTableSQL = function (tableName, entity = tuban) {
+    // 根据tableName，entry实体创建表
+    // 组装sql
+    let fields = Object.keys(entity)
+    let sql = `CREATE TABLE ${tableName} (`
+    fields.forEach(field => {
+        sql += field + " " + entity[field] + ","
+    })
+    sql = sql.substring(0, sql.length - 1) + ")"
+    return sql
+}
+/**
+ * 根据entry实体创建表
+ * @param tableName
+ * @param entity 默认是图斑
+ * @returns {string}
+ */
+const createExcelTableSQL = function (tableName, entity = excel) {
     // 根据tableName，entry实体创建表
     // 组装sql
     let fields = Object.keys(entity)
@@ -136,7 +154,8 @@ module.exports = {
     quaryAllTableNameSQL,
     deleteSQL,
     updateSQL,
-    selectSQL
+    selectSQL,
+    createExcelTableSQL
 }
 
 

@@ -8,6 +8,7 @@ const express = require('express')
 const router = express.Router()
 const Token = require('../model/token')
 const {fileUpload} = require('../model/multer-config/multer-files-upload')
+const {excelUpload} = require('../model/multer-config/multer-excel-upload')
 const moment = require('moment')
 const path = require('path')
 const mkdirp = require('mkdirp')
@@ -24,6 +25,11 @@ const response = require('../model/response-format')
 const config = require('../deploy-config/src/config')
 const ip = require('ip')
 const publicIp = require('public-ip')
+
+const multer = require('connect-multiparty')
+const XLSX= require('xlsx');
+const multiparMiddleware = multer()
+const excelKey = require('../db/properties/excel-annotation.json')
 
 /**
  * 配置文件上传下载相关的路由
@@ -52,6 +58,7 @@ router.post('/file', fileUpload, async function (req, res, next) {
         let shpWithExt = readDir.filter(x => x.split('.')[1] === "shp")[0]
         let shpWithoutExt = shpWithExt.split('.')[0]
         let url = unZipPath + "\/" + shpWithoutExt
+        console.log('url',url)
         let JsonData = await shapefile(url)
         JsonData.forEach((itm) => {
             let codes = getCodes(itm.XZQDM)
@@ -144,8 +151,60 @@ router.post('/attachment', attachmentUpload.any(), async function (req, res, nex
     }
 });
 
+router.post('/excel', excelUpload, async function (req, res, next) {
+    try {
+        let user = Token.de(req.headers.authorization)
+        let file = req.file
+        let {year, jd, ly} = JSON.parse(req.body.info)
+        let incomeTable = `sjsh_${year}_${jd}`
+        let fileName = `${moment().format("HH时mm分ss秒")}--${user.name}--${file.originalname}`
+        let filePath = path.join(__dirname, "../resources/uploads/excel/") + incomeTable + '/' + moment().format("YYYY-MM-DD")
+        mkdirp.sync(filePath)
+
+        filePath = filePath + '/' + fileName
+        fs.writeFileSync(filePath, req.file.buffer)
+
+        let excelData = [];   //用来保存
+        let reqData = [];
+        const workbook = XLSX.readFile(filePath);
+        const sheetNames = workbook.SheetNames;
+        for (var sheet in workbook.Sheets) {
+            if (workbook.Sheets.hasOwnProperty(sheet)) {
+                //fromTo = workbook.Sheets[sheet]['!ref'];
+                //解析excel文件得到数据
+                excelData = excelData.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet],{
+                    header:0,
+                    defval:"null"
+                }));
+            }
+        }
+        for(var i=0;i<excelData.length;i++){
+            var obj = excelData[i]
+            for(var key in obj){
+                var newKey=excelKey[key]
+                if(newKey){
+                    obj[newKey]=obj[key]
+                    delete obj[key]
+                }
+            }
+        }
+
+        console.log('excelData',excelData)
+        let importRes = await Tuban.importExcel(incomeTable, excelData)
+
+        importRes && importRes.results ? response.responseSuccess(importRes.results.message, res) : response.responseFailed(res)
+
+
+    } catch (e) {
+        console.log('/upload/shapefile ', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
 router.get('/download', function (req, res, next) {
 
 })
+
+
 
 module.exports = router

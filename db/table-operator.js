@@ -31,6 +31,25 @@ module.exports = {
     },
 
     /**
+     * 指定表中模糊查询记录
+     * @param tableName
+     * @param condition
+     * @returns {Promise<unknown>}
+     */
+    likefind(tableName, condition) {
+        return new Promise((resolve, reject) => {
+            let len=condition.length
+            let sql = `select *  from  ${tableName} where left(${tableName}.JCBH,${len}) ='${condition}'`
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
+
+    /**
      * 指定表中插入记录
      * @param tableName
      * @param objs
@@ -89,6 +108,25 @@ module.exports = {
     create(tableName) {
         return new Promise((resolve, reject) => {
             let sql = SQL.createTableSQL(tableName)
+            console.log('sql',sql)
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
+
+    /**
+     * 创建一张指定schema的表，默认是tuban
+     * @param tableName
+     * @returns {Promise<unknown>}
+     */
+    createExcelTable(tableName) {
+        return new Promise((resolve, reject) => {
+            let sql = SQL.createExcelTableSQL(tableName)
+            console.log('sql',sql)
             db.query(sql).then(
                 res => {
                     resolve(res)
@@ -136,6 +174,7 @@ module.exports = {
     queryTBTables(mode = 'zj') {
         return new Promise((resolve, reject) => {
             let sql = `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${dbConfig.name}' and t.TABLE_NAME like '${mode}%' `
+            console.log('sql',sql)
             db.query(sql).then(
                 res => {
                     let result = []
@@ -147,6 +186,26 @@ module.exports = {
             ).catch(reject)
         })
     },
+
+    /**
+     * 查询所有的表
+     * @returns {Promise<unknown>}
+     */
+    sjshqueryTBTables(mode = 'sjsh') {
+        return new Promise((resolve, reject) => {
+            let sql = `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${dbConfig.name}' and t.TABLE_NAME like '${mode}%' `
+            db.query(sql).then(
+                res => {
+                    let result = []
+                    res.results.forEach(itm => {
+                        result.push(itm['table_name'])
+                    })
+                    resolve(result)
+                }
+            ).catch(reject)
+        })
+    },
+
 
     /**
      * 省市县查询进度

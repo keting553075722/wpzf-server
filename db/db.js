@@ -5,8 +5,8 @@
  */
 
 const mysql = require('mysql'); // mysql node driver
-/*const mysqlConfig = require('./secret/mysql.pool.config-localhost');   // mysql配置文件*/
-const mysqlConfig = require('./secret/mysql.pool.config');   // mysql配置文件
+const mysqlConfig = require('./secret/mysql.pool.config-localhost');   // mysql配置文件
+/*const mysqlConfig = require('./secret/mysql.pool.config');   // mysql配置文件*/
 // const connection = mysql.createConnection(mysqlConfig)
 const pool = mysql.createPool(mysqlConfig)
 module.exports = {

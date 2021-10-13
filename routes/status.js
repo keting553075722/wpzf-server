@@ -257,6 +257,24 @@ router.post('/getTBYears', async function (req, res, next) {
     }
 });
 
+router.post('/sjshTBYears', async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let user = Token.de(token)
+        if (!token || user.permission !== role['province']) {
+            response.responseFailed(res,response.msgType().common['1'])
+            return
+        }
+        let dbRes = await Tuban.sjshqueryTBTables().then(res => res).catch(console.log)
+        let years = dbRes.length ? dbRes.map(tableName => tableName) : []
+        response.responseSuccess(years, res, 'success', [uniqueArr])
+    } catch (e) {
+        console.log('/status/getTBYears', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
+
 
 router.post('/startTask', function (req, res, next) {
     try {
