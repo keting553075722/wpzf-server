@@ -155,9 +155,9 @@ router.get('/getworktable', function (req, res, next) {
     // post请求参数存在body中
     try {
         let {Id} = req.query
-        $workTables ? response.responseSuccess($workTables.slice().reverse(), res) : response.responseFailed(res)
+        $workTables && $workTables[Id] ? response.responseSuccess($workTables[Id].slice().reverse(), res) : response.responseFailed(res)
     } catch (e) {
-        console.log('/status/getCurrent ', e.message)
+        console.log('/status/getworktable ', e.message)
         response.responseFailed(res, e.message)
     }
 });
