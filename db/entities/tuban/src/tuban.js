@@ -51,7 +51,7 @@ module.exports = {
     },
 
     /**
-     * 创建一张表(excel)
+     * 创建一张表
      * @param tableName
      * @returns {Promise<unknown>}
      */
@@ -79,7 +79,6 @@ module.exports = {
             let exist = await db.exist(tableName)
             !exist.results.length && await this.create(tableName)
             let insertStatus = await this.insert(tableName, objs)
-            console.log('success')
             let initialStatus = await this.update(tableName, tubanInitializeProps)
             return insertStatus
         } catch (e) {
@@ -106,13 +105,15 @@ module.exports = {
         }
     },
 
+
     /**
      * 查询储存图斑的所有的表，模式zj%
+     * @param Id 默认是zj
      * @returns {Promise<unknown>}
      */
-    queryTBTables() {
-        return db.queryTBTables()
-    },
+    // queryTBTables() {
+    //     return db.queryTBTables()
+    // },
 
     /**
      * 查询储存图斑的所有的表，模式sjsh%
@@ -121,5 +122,8 @@ module.exports = {
     sjshqueryTBTables() {
         return db.sjshqueryTBTables()
     },
+    queryTBTables(Id) {
+        return db.queryTBTables(Id)
+    }
 
 }

@@ -14,6 +14,7 @@ router.post('/login', async function (req, res, next) {
         // 数据库的操作
         let dbRes = await User.find(user)
         let dbUser = dbRes.results[0]
+
         if (dbUser) {
             let resInfo = {
                 name: dbUser['name'],
@@ -23,6 +24,7 @@ router.post('/login', async function (req, res, next) {
                 cluster : dbUser['cluster'],
             }
             let token = Token.en(resInfo)
+            let menu = await Rights(resInfo.code)
             response.status = true
             response.msg = 'success'
             response.data = {
@@ -30,7 +32,7 @@ router.post('/login', async function (req, res, next) {
                 role: resInfo.role,
                 cluster : resInfo.cluster,
                 token,
-                rights: Rights(resInfo.code)
+                rights:menu
             }
         }
         res.send(response)

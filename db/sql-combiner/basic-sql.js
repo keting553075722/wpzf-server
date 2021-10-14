@@ -134,13 +134,14 @@ const updateSQL = function (tableName, content, condition = {}) {
 
 /**
  * 查询指定表的指定记录
- * @param tableName
- * @param condition
+ * @param{string} tableName
+ * @param{object} condition
+ * @param{array} fields
  * @returns {string}
  */
-const selectSQL = function (tableName, condition) {
-
-    let sql = `select *  from  ${tableName}`
+const selectSQL = function (tableName, condition, fields = []) {
+    let filedStr = fields.length ? fields.toString() : '*'
+    let sql = `select ${filedStr}  from  ${tableName}`
     sql += SQL.where(condition)
     return sql
 
