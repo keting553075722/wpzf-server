@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Tuban = require('../db/entities/tuban')
+const Task = require('../db/entities/Task')
 const Token = require('../model/token')
 const actions = require('../model/utils/actions')
 const observer = require('../model/status-observer/index')
@@ -87,13 +88,13 @@ router.post('/getCheck', async function (req, res, next) {
 /**
  * 获取数据库中存在的图斑的表,省级角色才能查询
  */
- router.post('/queryTBTables', async function (req, res, next) {
+router.get('/queryTBTables', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {Id} = req.body
+        let {Id} = req.query
         let dbRes = await Tuban.queryTBTables(Id).then(res => res).catch(console.log)
-        dbRes.length ? response.responseSuccess(dbRes.slice().reverse(), res) : response.responseFailed(res)
+        dbRes ? response.responseSuccess(dbRes.slice().reverse(), res) : response.responseFailed(res)
     } catch (e) {
         console.log('/tuban/queryTBTables', e.message)
         response.responseFailed(res, e.message)
@@ -274,6 +275,30 @@ router.post('/evidence', async function (req, res, next) {
         response.responseFailed(res, e.message)
     }
 });
+
+router.get('/getdisplayfields', async function (req, res, next) {
+    try {
+        // 全局权限校验模块
+        // let token = req.headers.authorization
+        // let user = Token.de(token)
+        // let {JZLX, WFLX, WFMJ, BZ, JCBHs, tableName} = req.body
+        // 构建condition
+        // let {content, condition} = actions.evidence(user, JZLX, WFLX, WFMJ, BZ, JCBHs)
+        let {Id} = req.query
+        let condition = {Id}
+        let findRes = await Task.find(['FieldsDetails'], condition).then(res => res).catch(console.log)
+
+
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+
+    } catch (e) {
+        console.log('/tuban/evidence', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
+
+
 
 /**
  * 外业核查，只有县级才回触发此按钮

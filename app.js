@@ -59,6 +59,13 @@ app.use(function (err, req, res, next) {
 global.$workTablesPath = __dirname + config.activeTableRelativePath;
 global.$workTables = JSON.parse(fs.readFileSync($workTablesPath).toString());
 
+
+// 根据表名获取Id
+global.getId = (tableName) => {
+    return tableName.split('_')[0]
+}
+
+
 Array.prototype['pushItem'] = function (item) {
     if (this.includes(item)) return
     this.push(item)
@@ -76,6 +83,8 @@ String.prototype.toBytes = function (encoding) {
     let buff = new Buffer(this, encoding)
     return buff
 }
+
+
 global.$statusObj = {}
 global.environmentPRODEV = config.serverEnv
 global.environmentPort = config.appPort

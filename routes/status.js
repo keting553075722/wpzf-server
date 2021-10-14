@@ -5,6 +5,7 @@
  */
 const express = require('express');
 const router = express.Router();
+const Rights = require('../model/build-rights')
 const {statusAdd, statusDel} = require('../model/status-observer')
 const response = require('../model/response-format')
 const {role} = require('../db/properties/permission-mapper')
@@ -30,6 +31,19 @@ router.post('/get', function (req, res, next) {
         let result
         $statusObj[tableName] && $statusObj[tableName].length && (result = $statusObj[tableName].filter((itm) => itm["TYPE"] === type && itm["CODE"].substring(0, len) === code.substring(0, len)))
         result ? response.responseSuccess(result, res) : response.responseFailed(res)
+    } catch (e) {
+        console.log('/status/get ', e.message)
+        response.responseFailed(res, e.message)
+    }
+})
+
+router.get('/getMenu',async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let {name, code, permission} = Token.de(token)
+        // todo 需要进行校验
+        let menuRes = await Rights(code)
+        menuRes ? response.responseSuccess(menuRes, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/get ', e.message)
         response.responseFailed(res, e.message)
@@ -137,12 +151,13 @@ router.post('/statisticGrandson', async function (req, res, next) {
 /**
  * 当前工作表 *****
  */
-router.post('/getCurrent', function (req, res, next) {
+router.get('/getworktable', function (req, res, next) {
     // post请求参数存在body中
     try {
-        $workTables ? response.responseSuccess($workTables.slice().reverse(), res) : response.responseFailed(res)
+        let {Id} = req.query
+        $workTables && $workTables[Id] ? response.responseSuccess($workTables[Id].slice().reverse(), res) : response.responseFailed(res)
     } catch (e) {
-        console.log('/status/getCurrent ', e.message)
+        console.log('/status/getworktable ', e.message)
         response.responseFailed(res, e.message)
     }
 });
@@ -240,7 +255,7 @@ router.post('/batchOfYear', async function (req, res, next) {
     }
 });
 
-router.post('/getTBYears', async function (req, res, next) {
+router.get('/getTBYears', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
@@ -249,7 +264,7 @@ router.post('/getTBYears', async function (req, res, next) {
             return
         }
 
-        let {Id} = req.body
+        let {Id} = req.query
         let dbRes = await Tuban.queryTBTables(Id).then(res => res).catch(console.log)
         let years = dbRes.length ? dbRes.map(tableName => tableName.substr(3,4)) : []
         response.responseSuccess(years, res, 'success', [uniqueArr])
