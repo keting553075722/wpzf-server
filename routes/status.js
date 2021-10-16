@@ -21,15 +21,15 @@ const {aggregateObjs, objsByCityGroup, objsByCountyGroup} = require('../model/ob
  * 上级检测下级处于工作状态的状态对象
  *  处于工作状态的才能检测
  */
-router.post('/get', function (req, res, next) {
+router.get('/get', function (req, res, next) {
     try {
         let token = req.headers.authorization
         let {name, code, permission} = Token.de(token)
-        let {tableName} = req.body
+        let {Id, tableName} = req.query
         let type = permission === role["province"] ? "1" : "2"
         let len = permission === role["province"] ? 2 : 4
         let result
-        $statusObj[tableName] && $statusObj[tableName].length && (result = $statusObj[tableName].filter((itm) => itm["TYPE"] === type && itm["CODE"].substring(0, len) === code.substring(0, len)))
+        $statusObj[Id][tableName] && $statusObj[Id][tableName].length && (result = $statusObj[Id][tableName].filter((itm) => itm["TYPE"] === type && itm["CODE"].substring(0, len) === code.substring(0, len)))
         result ? response.responseSuccess(result, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/get ', e.message)
