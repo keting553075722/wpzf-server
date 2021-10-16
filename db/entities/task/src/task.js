@@ -24,6 +24,10 @@ module.exports = {
      */
     add(objs) {
         return db.insert('task_template', objs)
+    },
+
+    update(content, condition) {
+        return db.update('task_template', content, condition)
     }
 
 
