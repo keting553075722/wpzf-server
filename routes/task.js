@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 const task = require('../db/entities/task')
 const appendFields = require('../db/properties/tuban/append-fields.json')
+const zjVisibleFields = require('../db/properties/visibleFields/zj.json')
 const moment = require('moment')
 const Token = require('../model/token')
 const response = require('../model/response-format')
@@ -78,17 +79,21 @@ router.get('/get', async function (req, res, next) {
 router.get('/getvisiblefields', async function (req, res, next) {
     try {
         const {Id} = req.query
-        let fields = ['FieldsDetails']
-        const getRes = await task.find(fields, {Id}).then(res => res).catch(console.log)
-        let visibleFields = getRes && getRes.results[0] ? getRes.results[0]['FieldsDetails'] :'[]'
-        visibleFields = JSON.parse(visibleFields).filter(itm => itm['isVisible'] == '是')
-
-        const resData = {}
-        for (let visibleField of visibleFields) {
-            if(visibleField['nameEn'] != 'JCBH')
-                resData[visibleField['nameEn']] = visibleField['name']
+        if(Id && Id !== 'zj') {
+            let fields = ['FieldsDetails']
+            const getRes = await task.find(fields, {Id}).then(res => res).catch(console.log)
+            let visibleFields = getRes && getRes.results[0] ? getRes.results[0]['FieldsDetails'] :'[]'
+            visibleFields = JSON.parse(visibleFields).filter(itm => itm['isVisible'] == '是')
+            const resData = {}
+            for (let visibleField of visibleFields) {
+                if(visibleField['nameEn'] != 'JCBH')
+                    resData[visibleField['nameEn']] = visibleField['name']
+            }
+            response.responseSuccess(resData, res)
+        } else if(Id == 'zj') {
+            response.responseSuccess(zjVisibleFields, res)
         }
-        response.responseSuccess(resData, res)
+
     } catch (e) {
         console.log('/task/getvisiblefields', e.message)
         response.responseFailed(res, e.message)
