@@ -329,13 +329,15 @@ const giveNotice = (tableName, permission, JCBHs) => {
  */
 const statusAdd = (tableName) => {
     let Id = getId(tableName)
-    if (!global.$workTables[Id].includes(tableName)) {
+    // 有没有对应的Id,
+    if(!global.$workTables[Id]) {
+        global.$workTables[Id] = []
+        console.log(`workTables[${Id}]不存在，创建成功`);
+    }
+    if(!global.$workTables[Id].includes(tableName)){
         global.$workTables[Id].pushItem(tableName);
-        initTableStatus(tableName); // 添加挂载
-        console.log(`${tableName}不存在workTables,新增挂载到statusObj`);
-    } else {
-        initTableStatus(tableName); // 已经存在的更新
-        console.log(`${tableName}已存在workTables,更新statusObj[${tableName}]`);
+        initTableStatus(tableName);
+        console.log(`workTables[${Id}][${tableName}]不存在,创建成功`);
     }
 };
 
@@ -349,8 +351,7 @@ const statusDel = (tableName) => {
         console.log(`statusObj[${tableName}]不存在,无需删除`);
     } else {
         global.$workTables[Id].removeItem(tableName);
-        delete global.$statusObj[Id][tableName];
-        console.log(`statusObj[${tableName}]删除成功`);
+        console.log(`statusObj[${Id}][${tableName}]删除成功`);
     }
 };
 

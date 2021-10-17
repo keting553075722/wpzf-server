@@ -69,13 +69,17 @@ global.getId = (tableName) => {
 Array.prototype['pushItem'] = function (item) {
     if (this.includes(item)) return
     this.push(item)
-    fs.writeFileSync($workTablesPath, JSON.stringify(this))
+    let Id = getId(item)
+    $workTables[Id] = this
+    fs.writeFileSync($workTablesPath, JSON.stringify($workTables))
 }
 Array.prototype['removeItem'] = function (item) {
     if (!this.includes(item)) return
     let index = this.indexOf(item)
     this.splice(index, 1)
-    fs.writeFileSync($workTablesPath, JSON.stringify(this))
+    let Id = getId(item)
+    $workTables[Id] = this
+    fs.writeFileSync($workTablesPath, JSON.stringify($workTables))
 }
 
 
