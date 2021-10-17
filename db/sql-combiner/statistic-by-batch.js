@@ -16,8 +16,8 @@ const province_sum = (tableName, condition) => {
         SMC,
         SDM,
         COUNT( *) COUNT_TB, -- 季度图斑总数
-        SUM(Shape_Area) SUM_Area, -- 季度图斑总面积
-        SUM(mj) SUM_MJ, -- 季度图斑总面积(平方米)
+        SUM(AREA) SUM_Area, -- 季度图斑总面积
+        SUM(AREA) SUM_MJ, -- 季度图斑总面积(平方米)
         COUNT( SJXF = '1' or null) COUNT_XF, 
         COUNT( CJSB = '1' or null) COUNT_SB,
         COUNT( JZLX = '合法' or null) COUNT_HF, 
@@ -58,8 +58,8 @@ const cities = (tableName, condition) => {
         CMC,
         CDM,
         COUNT( *) COUNT_TB,
-        SUM(Shape_Area) SUM_Area,
-        SUM(mj) SUM_MJ, -- 季度图斑总面积(平方米)
+        SUM(AREA) SUM_Area, -- 季度图斑总面积
+        SUM(AREA) SUM_MJ, -- 季度图斑总面积(平方米)
         COUNT( JZLX = '合法' or null) COUNT_HF, 
         COUNT( JZLX = '违法' or null) COUNT_WF, 
         COUNT( CJXF = '1' or null) COUNT_XF,

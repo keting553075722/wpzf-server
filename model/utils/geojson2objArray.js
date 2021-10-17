@@ -20,7 +20,6 @@ module.exports = function (geoJSON) {
             if(isNull(properties[propertiesKey])) {
                 polygonObj[propertiesKey] = ''
             } else if(isDate(properties[propertiesKey])){
-                // polygonObj[propertiesKey] = JSON.stringify(properties[propertiesKey])
                 let cin = JSON.stringify(properties[propertiesKey])
                 if(cin = '{}')
                     polygonObj[propertiesKey] = ''

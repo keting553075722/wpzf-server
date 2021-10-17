@@ -9,12 +9,13 @@ const router = express.Router()
 const Token = require('../model/token')
 const {fileUpload} = require('../model/multer-config/multer-files-upload')
 const {excelUpload} = require('../model/multer-config/multer-excel-upload')
+const {imageUpload} = require('../model/multer-config/multer-imgs-upload')
+const {attachmentUpload} = require('../model/multer-config/multer-attachment-upload')
 const moment = require('moment')
 const path = require('path')
 const mkdirp = require('mkdirp')
 
-const imgUpload = require('../model/multer-config/multer-imgs-upload')
-const attachmentUpload = require('../model/multer-config/multer-attachment-upload')
+
 const shapefile = require('../model/utils/shapefile')
 const Tuban = require('../db/entities/tuban')
 const compressing = require('compressing')
@@ -28,7 +29,6 @@ const publicIp = require('public-ip')
 
 const multer = require('connect-multiparty')
 const XLSX= require('xlsx');
-const multiparMiddleware = multer()
 const excelKey = require('../db/properties/excel/excel-annotation.json')
 
 /**
@@ -37,14 +37,14 @@ const excelKey = require('../db/properties/excel/excel-annotation.json')
 
 // 新建任务/接续上传两种 todo
 // post请求，携带上传的zip格式的文件
-router.post('/file', fileUpload, async function (req, res, next) {
+router.post('/shapefile', fileUpload, async function (req, res, next) {
     try {
         let user = Token.de(req.headers.authorization)
         let file = req.file
-        let {year, jd, ly} = JSON.parse(req.body.info)
-        let incomeTable = `zj_${year}_${jd}`
+        let {Id, year, jd, ly} = req.query
+        let incomeTable = `${Id}_${year}_${jd}`
         let fileName = `${moment().format("HH时mm分ss秒")}--${user.name}--${file.originalname}`
-        let filePath = path.join(__dirname, "../resources/uploads/shapefiles/") + incomeTable + '/' + moment().format("YYYY-MM-DD")
+        let filePath = path.join(__dirname, "../resources/uploads/shapefiles/") + `${Id}/${year}/${jd}` + '/' + moment().format("YYYY-MM-DD")
         mkdirp.sync(filePath)
 
         filePath = filePath + '/' + fileName
@@ -75,26 +75,38 @@ router.post('/file', fileUpload, async function (req, res, next) {
     }
 })
 
-router.post('/img', imgUpload.any(), async function (req, res, next) {
+router.post('/img', imageUpload, async function (req, res, next) {
     try {
+        let user = Token.de(req.headers.authorization)
         let files = req.files
-        let {tubanId, tableName} = JSON.parse(req.body.info)
+        let {tubanId, tableName} = req.query
+        let tableInfo = getInfo(tableName)
+        let fileName
+        // let filePath = path.join(__dirname, "../resources/evidence/") + `${Id}/${year}/${jd}/${tubanId}`
+        let filePath = path.join(__dirname, "../resources/evidence/") + `${tableInfo.Id}\\${tableInfo.year}\\${tableInfo.batch}\\${tubanId}`+`\\images`
+        mkdirp.sync(filePath)
+        let filePathArr = []
+        for (let file of files) {
+            let tempPath = ''
+            fileName = `${moment().format("YYYY-MM-DD HH时mm分ss秒")}--${user.name}--${file.originalname}`
+            tempPath = filePath + '/' + fileName
+            fs.writeFileSync(tempPath, file.buffer)
+            filePathArr.push(tempPath)
+        }
+
         let tblj = []
         let serverIp = await config.serverIp().then(res => res).catch(console.log)
         let sliceNum = config.serverEnv == 'windows' ? 5 : 6
 
-        for (const file of files) {
-            let path = file.path
-            let pathArr = path.split(config.splitChar)
-            console.log('pathArr',pathArr)
+        for (let filePathArrElement of filePathArr) {
+            let pathArr = filePathArrElement.split(config.splitChar)
             pathArr = pathArr.slice(sliceNum)
-            path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
+            let path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
             tblj.push(path)
         }
 
         let condition = {JCBH: tubanId}
         let content = {TPLJ: JSON.stringify(tblj)}
-
         let dbRes = await Tuban.update(tableName, content, condition).then(res => res).catch(console.log)
         dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
     } catch (e) {
@@ -103,19 +115,32 @@ router.post('/img', imgUpload.any(), async function (req, res, next) {
     }
 });
 
-router.post('/attachment', attachmentUpload.any(), async function (req, res, next) {
+router.post('/attachment', attachmentUpload, async function (req, res, next) {
     try {
+        let user = Token.de(req.headers.authorization)
         let files = req.files
-        let {tubanId, tableName} = JSON.parse(req.body.info)
+        let {tubanId, tableName, Id} = req.query
+        let tableInfo = getInfo(tableName)
+        let fileName
+        let filePath = path.join(__dirname, "../resources/evidence/") + `${tableInfo.Id}\\${tableInfo.year}\\${tableInfo.batch}\\${tubanId}`+`\\attachments`
+        mkdirp.sync(filePath)
+        let filePathArr = []
+        for (let file of files) {
+            let tempPath = ''
+            fileName = `${moment().format("YYYY-MM-DD HH时mm分ss秒")}--${user.name}--${file.originalname}`
+            tempPath = filePath + '/' + fileName
+            fs.writeFileSync(tempPath, file.buffer)
+            filePathArr.push(tempPath)
+        }
+
         let fjlj = []
         let serverIp = await config.serverIp().then(res => res).catch(console.log)
         let sliceNum = config.serverEnv == 'windows' ? 5 : 6
 
-        for (const file of files) {
-            let path = file.path
-            let pathArr = path.split(config.splitChar)
+        for (let filePathArrElement of filePathArr) {
+            let pathArr = filePathArrElement.split(config.splitChar)
             pathArr = pathArr.slice(sliceNum)
-            path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
+            let path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
             fjlj.push(path)
         }
 
@@ -167,10 +192,7 @@ router.post('/excel', excelUpload, async function (req, res, next) {
                 }
             }
         }
-
-        console.log('excelData',excelData)
         let importRes = await Tuban.importExcel(incomeTable, excelData)
-
         importRes && importRes.results ? response.responseSuccess(importRes.results.message, res) : response.responseFailed(res)
 
 

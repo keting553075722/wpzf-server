@@ -65,6 +65,10 @@ global.getId = (tableName) => {
     return tableName.split('_')[0]
 }
 
+global.getInfo = (tableName) => {
+    const [Id, year, batch] = tableName.split('_')
+    return {Id, year, batch}
+}
 
 Array.prototype['pushItem'] = function (item) {
     if (this.includes(item)) return
@@ -81,7 +85,6 @@ Array.prototype['removeItem'] = function (item) {
     $workTables[Id] = this
     fs.writeFileSync($workTablesPath, JSON.stringify($workTables))
 }
-
 
 String.prototype.toBytes = function (encoding) {
     let buff = new Buffer(this, encoding)
