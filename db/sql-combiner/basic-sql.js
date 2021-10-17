@@ -5,10 +5,10 @@
  */
 const db = require('../db')
 const SQL = require('./utils')
-const tuban = require('../properties/tuban-definition.json')
-const excel = require('../properties/excel-definition.json')
-const user = require('../properties/user_definition.json')
-const status = require('../properties/status_definition.json')
+const getSchema = require('../../model/combine-fields')
+const excel = require('../properties/excel/excel-definition.json')
+const user = require('../properties/user/user_definition.json')
+const status = require('../properties/status/status_definition.json')
 
 /**
  * 根据entry实体创建表
@@ -16,13 +16,15 @@ const status = require('../properties/status_definition.json')
  * @param entity 默认是图斑
  * @returns {string}
  */
-const createTableSQL = function (tableName, entity = tuban) {
+const createTableSQL =async function (tableName) {
     // 根据tableName，entry实体创建表
     // 组装sql
-    let fields = Object.keys(entity)
+    let id = getId(tableName)
+    let schema = await getSchema(id).then(res=>res).catch(console.log)
+    let fields = Object.keys(schema)
     let sql = `CREATE TABLE ${tableName} (`
     fields.forEach(field => {
-        sql += field + " " + entity[field] + ","
+        sql += field + " " + schema[field] + ","
     })
     sql = sql.substring(0, sql.length - 1) + ")"
     return sql

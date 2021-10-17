@@ -10,8 +10,6 @@ const {proStatistic, cityStatistic, countyStatistic} = require('./sql-combiner/s
 const dbConfig = require('./db')
 const db = require('./db')
 
-
-
 module.exports = {
     /**
      * 指定表中查询记录
@@ -107,9 +105,8 @@ module.exports = {
      * @returns {Promise<unknown>}
      */
     create(tableName) {
-        return new Promise((resolve, reject) => {
-            let sql = SQL.createTableSQL(tableName)
-            console.log('sql',sql)
+        return new Promise(async (resolve, reject) => {
+            let sql = await SQL.createTableSQL(tableName)
             db.query(sql).then(
                 res => {
                     resolve(res)
@@ -127,7 +124,6 @@ module.exports = {
     createExcelTable(tableName) {
         return new Promise((resolve, reject) => {
             let sql = SQL.createExcelTableSQL(tableName)
-            console.log('sql',sql)
             db.query(sql).then(
                 res => {
                     resolve(res)

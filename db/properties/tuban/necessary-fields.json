@@ -1,0 +1,5 @@
+{
+  "JCBH": "VARCHAR(255) PRIMARY KEY",
+  "XZQDM": "VARCHAR(255)",
+  "AREA": "VARCHAR(255)"
+}

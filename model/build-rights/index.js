@@ -6,7 +6,7 @@
 const {cloneDeep} = require('lodash')
 const cityCascade = require('../common-data/city-cascade')
 const {province, city, county} = require('./lib/rights')
-const task = require('../../db/entities/task')
+const Task = require('../../db/entities/task')
 const provinceRights = ['fileUpload', 'giveNotice', 'refresh', 'cascadeSearch', 'look']
 const cityRights = ['giveNotice', 'refresh', 'cascadeSearch', 'look']
 const countyRights = ['refresh', 'look', 'check']
@@ -28,7 +28,7 @@ const templateItem = (Id, Name, idx) => {
 
 const getMenu = async (code) => {
     let addMenus = []
-    let findRes = await task.find(['Id', 'Name']).then(res => res).catch(console.log)
+    let findRes = await Task.find(['Id', 'Name']).then(res => res).catch(console.log)
     if (findRes && findRes.results && findRes.results.length) {
         for (let result of findRes.results) {
             let temMenu = templateItem(result.Id, result.Name)

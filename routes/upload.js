@@ -29,7 +29,7 @@ const publicIp = require('public-ip')
 const multer = require('connect-multiparty')
 const XLSX= require('xlsx');
 const multiparMiddleware = multer()
-const excelKey = require('../db/properties/excel-annotation.json')
+const excelKey = require('../db/properties/excel/excel-annotation.json')
 
 /**
  * 配置文件上传下载相关的路由
@@ -62,12 +62,12 @@ router.post('/file', fileUpload, async function (req, res, next) {
         let JsonData = await shapefile(url)
         JsonData.forEach((itm) => {
             let codes = getCodes(itm.XZQDM)
-            Object.assign(itm, getNames(itm.XZQDM), codes, {TBLY: ly})
+            Object.assign(itm, getNames(itm.XZQDM), codes)
         })
         console.log("省市属性、图斑来源已经插入！")
         let importRes = await Tuban.importTuban(incomeTable, JsonData)
 
-        importRes && importRes.results ? response.responseSuccess(importRes.results.message, res) : response.responseFailed(res)
+        importRes && importRes.results ? response.responseSuccess(importRes.results.message, res) : response.responseFailed(res, importRes)
 
     } catch (e) {
         console.log('/upload/shapefile ', e.message)

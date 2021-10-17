@@ -4,8 +4,7 @@
  * @createTime 2021/4/1
  */
 const db = require('../../../table-operator')
-const tubanInitializeProps = require('../../../properties/tuban-initialize')
-const excelInitializeProps = require('../../../properties/excel-initialize')
+const excelInitializeProps = require('../../../properties/excel/excel-initialize')
 
 module.exports = {
 
@@ -76,16 +75,26 @@ module.exports = {
      */
     async importTuban(tableName, objs) {
         try {
+            let msg = ''
             let exist = await db.exist(tableName)
             !exist.results.length && await this.create(tableName)
-            let insertStatus = await this.insert(tableName, objs)
-            let initialStatus = await this.update(tableName, tubanInitializeProps)
-            return insertStatus
+            let insertStatus = await this.insert(tableName, objs).then(res=>res).catch(err=>{console.log(err.message);msg = err.message})
+            !insertStatus && await this.dropTable(tableName)
+            return msg ? msg : insertStatus
         } catch (e) {
             console.log('import failed ', e.message)
         }
     },
 
+    async dropTable(tableName) {
+        try {
+            let exist = await db.exist(tableName)
+            exist.results.length && await db.drop(tableName)
+            return true
+        } catch (e) {
+            console.log('drop failed ', e.message)
+        }
+    },
 
     /**
      * 导入Excel表，新建批次或者在原批次导入

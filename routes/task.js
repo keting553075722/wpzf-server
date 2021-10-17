@@ -6,6 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const task = require('../db/entities/task')
+const appendFields = require('../db/properties/tuban/append-fields.json')
 const moment = require('moment')
 const Token = require('../model/token')
 const response = require('../model/response-format')
@@ -21,11 +22,13 @@ router.post('/add', async function (req, res, next) {
         const lastUpdateTime = CreateTime
         const lastUpdateName = Creator
         const waitAdd = {Id, Name, FieldsDetails, Description, CreateTime, Creator,lastUpdateTime,lastUpdateName}
-        const define = {}
+        let define = {}
         waitAdd['Define'] = define
         FieldsDetails.forEach(field => {
             define[field.nameEn] = field.type
         })
+        define['JCBH'] = "VARCHAR(255) PRIMARY KEY"
+        define = Object.assign(define, appendFields)
         const addRes = await task.add([waitAdd]).then(res => res).catch(console.log)
         addRes && addRes.results ? response.responseSuccess(addRes.results, res) : response.responseFailed(res, '模板Id冲突')
     } catch (e) {

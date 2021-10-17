@@ -4,8 +4,7 @@
  * @Description : task.js
  */
 
-const db = require('../../../table-operator')
-
+db = require('../../../table-operator') // 存在一个问题，有时加上const会获取不到
 module.exports = {
     /**
      * 查询模板
@@ -29,7 +28,6 @@ module.exports = {
     update(content, condition) {
         return db.update('task_template', content, condition)
     }
-
 
 }
 

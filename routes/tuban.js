@@ -218,7 +218,7 @@ router.post('/giveNotice', async function (req, res, next) {
 
         dbRes && dbRes.results ? (function () {
             response.responseSuccess(dbRes.results.message, res)
-            dbRes.results.matchRows && observer.giveNotice(tableName, permission, JCBHs)
+            dbRes.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
         })() : response.responseFailed(res)
     } catch (e) {
         console.log('/tuban/giveNotice', e.message)
@@ -245,7 +245,7 @@ router.post('/reback', async function (req, res, next) {
 
         dbRes && dbRes.results ? (function () {
             response.responseSuccess(dbRes.results.message, res)
-            dbRes.results.matchRows && observer.reback(tableName, code, type)
+            dbRes.results.affectedRows && observer.reback(tableName, code, type)
         })() : response.responseFailed(res)
     } catch (e) {
         console.log('/tuban/giveNotice', e.message)
