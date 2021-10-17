@@ -311,7 +311,7 @@ const giveNotice = (tableName, permission, JCBHs) => {
     }
     let Id = getId(tableName)
     !global.$statusObj[Id] && (global.$statusObj[Id] = {})
-    console.log($statusObj)
+
     codes.forEach((code, idx, arr) => {
         let obj = global.$statusObj[Id][tableName].find(x => x.CODE === code)
         if (obj) {
