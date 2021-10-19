@@ -8,6 +8,7 @@ const router = express.Router();
 const task = require('../db/entities/task')
 const appendFields = require('../db/properties/tuban/append-fields.json')
 const zjVisibleFields = require('../db/properties/visibleFields/zj.json')
+const {cloneDeep} = require('lodash')
 const moment = require('moment')
 const Token = require('../model/token')
 const response = require('../model/response-format')
@@ -76,26 +77,27 @@ router.get('/get', async function (req, res, next) {
 //     "CMC": "市名称",
 //     "Shape_Area": "图斑图形面积"
 // }
-router.get('/getvisiblefields', async function (req, res, next) {
+router.get('/getfields', async function (req, res, next) {
     try {
-        const {Id} = req.query
+        const {Id, allfields} = req.query
+        let resFields = {}
         if(Id && Id !== 'zj') {
             let fields = ['FieldsDetails']
             const getRes = await task.find(fields, {Id}).then(res => res).catch(console.log)
-            let visibleFields = getRes && getRes.results[0] ? getRes.results[0]['FieldsDetails'] :'[]'
-            visibleFields = JSON.parse(visibleFields).filter(itm => itm['isVisible'] == '是')
-            const resData = {}
-            for (let visibleField of visibleFields) {
-                if(visibleField['nameEn'] != 'JCBH')
-                    resData[visibleField['nameEn']] = visibleField['name']
+            let dbFields = getRes && getRes.results[0] ? getRes.results[0]['FieldsDetails'] :'[]'
+            dbFields = allfields ? JSON.parse(dbFields) : JSON.parse(dbFields).filter(itm => itm['isVisible'] == '是')
+            for (let dbField of dbFields) {
+                resFields[dbField['nameEn']] = dbField['name']
             }
-            response.responseSuccess(resData, res)
         } else if(Id == 'zj') {
-            response.responseSuccess(zjVisibleFields, res)
+            resFields  = cloneDeep(zjVisibleFields)
         }
-
+        if(!allfields) {
+            delete resFields['JCBH']
+        }
+        response.responseSuccess(resFields, res)
     } catch (e) {
-        console.log('/task/getvisiblefields', e.message)
+        console.log('/task/getfields', e.message)
         response.responseFailed(res, e.message)
     }
 })
