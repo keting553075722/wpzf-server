@@ -145,6 +145,7 @@ const selectSQL = function (tableName, condition, fields = []) {
     let filedStr = fields.length ? fields.toString() : '*'
     let sql = `select ${filedStr}  from  ${tableName}`
     sql += SQL.where(condition)
+    console.log('sql',sql)
     return sql
 
 }

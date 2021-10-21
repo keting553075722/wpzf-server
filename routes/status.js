@@ -266,7 +266,7 @@ router.get('/getTBYears', async function (req, res, next) {
 
         let {Id} = req.query
         let dbRes = await Tuban.queryTBTables(Id).then(res => res).catch(console.log)
-        let years = dbRes.length ? dbRes.map(tableName => tableName.substr(3,4)) : []
+        let years = dbRes.length ? dbRes.map(tableName => tableName.substr(0,2)==='zj'?tableName.substr(3,4):tableName.substr(5,4)) : []
         response.responseSuccess(years, res, 'success', [uniqueArr])
     } catch (e) {
         console.log('/status/getTBYears', e.message)
