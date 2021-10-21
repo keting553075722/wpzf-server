@@ -19,9 +19,9 @@ module.exports = {
      * @param condition
      * @returns {Promise<unknown>}
      */
-    find(tableName, condition) {
+    find(tableName, condition, limit) {
         return new Promise((resolve, reject) => {
-            const sql = SQL.selectSQL(tableName, condition)
+            const sql = SQL.selectSQL(tableName, condition, limit)
             db.query(sql).then(
                 res => {
                     resolve(res)
@@ -57,6 +57,22 @@ module.exports = {
     update(tableName, content, condition) {
         return new Promise((resolve, reject) => {
             let sql = SQL.updateSQL(tableName, content, condition)
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
+    /**
+     * 获取指定表的数量
+     * @param tableName
+     * @returns {Promise<unknown>}
+     */
+    getSum(tableName, condition) {
+        return new Promise((resolve, reject) => {
+            let sql =  SQL.getSumSQL(tableName, condition)
             db.query(sql).then(
                 res => {
                     resolve(res)

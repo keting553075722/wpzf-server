@@ -19,13 +19,19 @@ router.post('/getJDTB', async function (req, res, next) {
         let {name, code, permission} = Token.de(token)
         let {tableName, currentPage, pageSize} = req.body
         let condition = generalQuery(req.body, code)
-        let dbRes = await Tuban.find(tableName, condition)
-
-        dbRes && dbRes.results ? (function () {
-            let data = actions.modifyTubanByPermission(dbRes.results, permission)
-            let resData = pagenate(data, pageSize, currentPage)
-            response.responseSuccess(resData, res)
-        })() : response.responseFailed(res)
+        let sumRes = await Tuban.getSum(tableName, condition)
+        let size = sumRes.results[0]['size']
+        let startIndex = pagenate(size, pageSize, currentPage)
+        if(startIndex == 'overflow') {
+            response.responseSuccess({size, pageData:[]}, res)
+        } else {
+            let limit = [startIndex, pageSize]
+            let getRes = await Tuban.find(tableName, condition, limit)
+            getRes && getRes.results ? (function () {
+                let resData = {size, pageData:getRes.results}
+                response.responseSuccess(resData, res)
+            })()  : response.responseFailed(res)
+        }
     } catch (e) {
         console.log('/tuban/getJDTB', e.message)
         response.responseFailed(res, e.message)
@@ -45,13 +51,26 @@ router.post('/getReport', async function (req, res, next) {
         let {tableName, pageSize, currentPage} = req.body
         let condition = reportQuery(req.body, code)
 
-        let dbRes = await Tuban.find(tableName, condition)
+        // let dbRes = await Tuban.find(tableName, condition)
 
-        dbRes && dbRes.results ? (function () {
-            let data = actions.modifyTubanByPermission(dbRes.results, permission)
-            let resData = pagenate(data, pageSize, currentPage)
-            response.responseSuccess(resData, res)
-        })() : response.responseFailed(res)
+        // dbRes && dbRes.results ? (function () {
+        //     let data = actions.modifyTubanByPermission(dbRes.results, permission)
+        //     let resData = pagenate(data, pageSize, currentPage)
+        //     response.responseSuccess(resData, res)
+        // })() : response.responseFailed(res)
+        let sumRes = await Tuban.getSum(tableName, condition)
+        let size = sumRes.results[0]['size']
+        let startIndex = pagenate(size, pageSize, currentPage)
+        if(startIndex == 'overflow') {
+            response.responseSuccess({size, pageData:[]}, res)
+        } else {
+            let limit = [startIndex, pageSize]
+            let getRes = await Tuban.find(tableName, condition, limit)
+            getRes && getRes.results ? (function () {
+                let resData = {size, pageData:getRes.results}
+                response.responseSuccess(resData, res)
+            })()  : response.responseFailed(res)
+        }
     } catch (e) {
         console.log('/tuban/getReport', e.message)
         response.responseFailed(res, e.message)
@@ -71,13 +90,26 @@ router.post('/getCheck', async function (req, res, next) {
         // 构造condition
         let condition = checkQuery(req.body, code)
 
-        let dbRes = await Tuban.find(tableName, condition)
+        // let dbRes = await Tuban.find(tableName, condition)
 
-        dbRes && dbRes.results ? (function () {
-            let data = actions.modifyTubanByPermission(dbRes.results, permission)
-            let resData = pagenate(data, pageSize, currentPage)
-            response.responseSuccess(resData, res)
-        })() : response.responseFailed(res)
+        // dbRes && dbRes.results ? (function () {
+        //     let data = actions.modifyTubanByPermission(dbRes.results, permission)
+        //     let resData = pagenate(data, pageSize, currentPage)
+        //     response.responseSuccess(resData, res)
+        // })() : response.responseFailed(res)
+        let sumRes = await Tuban.getSum(tableName, condition)
+        let size = sumRes.results[0]['size']
+        let startIndex = pagenate(size, pageSize, currentPage)
+        if(startIndex == 'overflow') {
+            response.responseSuccess({size, pageData:[]}, res)
+        } else {
+            let limit = [startIndex, pageSize]
+            let getRes = await Tuban.find(tableName, condition, limit)
+            getRes && getRes.results ? (function () {
+                let resData = {size, pageData:getRes.results}
+                response.responseSuccess(resData, res)
+            })()  : response.responseFailed(res)
+        }
     } catch (e) {
         console.log('/tuban/getCheck', e.message)
         response.responseFailed(res, e.message)

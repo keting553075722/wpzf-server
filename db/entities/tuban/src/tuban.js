@@ -10,13 +10,13 @@ const tubanInitializeProps = require('../../../properties/tuban-initialize')
 module.exports = {
 
     /**
-     * 查询指定条件的图斑记录
+     * 查询指定条件的图斑记录,分页查询
      * @param tableName
      * @param condition
      * @returns {Promise<unknown>}
      */
-    find(tableName, condition) {
-        return db.find(tableName, condition)
+    find(tableName, condition, limit) {
+        return db.find(tableName, condition, limit)
     },
 
     /**
@@ -57,13 +57,24 @@ module.exports = {
      */
     async importTuban(tableName, objs) {
         try {
+            let msg = ''
             let exist = await db.exist(tableName)
             !exist.results.length && await this.create(tableName)
-            let insertStatus = await this.insert(tableName, objs)
-            let initialStatus = await this.update(tableName, tubanInitializeProps)
-            return insertStatus
+            let insertStatus = await this.insert(tableName, objs).then(res=>res).catch(err=>{console.log(err.message);msg = err.message})
+            !insertStatus && await this.dropTable(tableName)
+            return msg ? msg : insertStatus
         } catch (e) {
             console.log('import failed ', e.message)
+        }
+    },
+
+    async dropTable(tableName) {
+        try {
+            let exist = await db.exist(tableName)
+            exist.results.length && await db.drop(tableName)
+            return true
+        } catch (e) {
+            console.log('drop failed ', e.message)
         }
     },
 
@@ -73,6 +84,10 @@ module.exports = {
      */
     queryTBTables() {
         return db.queryTBTables()
+    },
+
+    getSum (tableName, condition){
+        return db.getSum(tableName, condition)
     }
 
 }

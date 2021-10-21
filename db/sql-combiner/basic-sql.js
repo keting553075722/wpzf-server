@@ -115,15 +115,30 @@ const updateSQL = function (tableName, content, condition = {}) {
 }
 
 /**
- * 查询指定表的指定记录
+ * 获取指定条件的表的数量
  * @param tableName
  * @param condition
  * @returns {string}
  */
-const selectSQL = function (tableName, condition) {
+const getSumSQL = function (tableName, condition = {}) {
+    let sql = `select count(*)  as size from ${tableName}`
+    sql += SQL.where(condition)
+    return sql
+}
 
+/**
+ * 查询指定表的指定记录
+ * @param tableName
+ * @param condition
+ * @param limit
+ * @returns {string}
+ */
+const selectSQL = function (tableName, condition, limit) {
     let sql = `select *  from  ${tableName}`
     sql += SQL.where(condition)
+    if(limit && limit.length !== 0) {
+        sql += `LIMIT ${limit.toString()}`
+    }
     return sql
 
 }
@@ -136,7 +151,8 @@ module.exports = {
     quaryAllTableNameSQL,
     deleteSQL,
     updateSQL,
-    selectSQL
+    selectSQL,
+    getSumSQL
 }
 
 
