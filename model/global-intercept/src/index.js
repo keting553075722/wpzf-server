@@ -15,7 +15,7 @@ const permissionMap = require('../../../db/properties/permission-mapper')['role'
  * @returns {boolean}
  */
 module.exports = function (req, res, next) {
-    const loginUrls = ['/dd/ddLogin', 'user/login']
+    const loginUrls = ['/dd/ddLogin', '/user/login']
     let url = getUrl(req.method, req.url)
     if(loginUrls.includes(url)) {
         next() // 登录放行
