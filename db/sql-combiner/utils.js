@@ -21,7 +21,6 @@ const where = function (condition, isTubanSearch, isSplit = false, JCBH) {
         } else {
             return isSplit ? ` where JCBH like '${JCBH}-%' ` : ` where JCBH not like '%-%'`
         }
-
     }
     for (let key in condition) {
         // condition[key]可能是Number/字符串类型/数组类型

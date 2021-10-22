@@ -20,13 +20,6 @@ router.post('/getJDTB', async function (req, res, next) {
         let {name, code, permission} = Token.de(token)
         let {tableName, currentPage, pageSize} = req.body
         let condition = generalQuery(req.body, code)
-        // let dbRes = await Tuban.find(tableName, condition)
-        //
-        // dbRes && dbRes.results ? (function () {
-        //     let data = actions.modifyTubanByPermission(dbRes.results, permission)
-        //     let resData = pagenate(data, pageSize, currentPage)
-        //     response.responseSuccess(resData, res)
-        // })() : response.responseFailed(res)
         let sumRes = await Tuban.getCount(tableName, condition)
         let size = sumRes.results[0]['size']
         let startIndex = pagenate(size, pageSize, currentPage)
@@ -59,12 +52,6 @@ router.post('/getReport', async function (req, res, next) {
         let {tableName, pageSize, currentPage} = req.body
         let condition = reportQuery(req.body, code)
 
-        // let dbRes = await Tuban.find(tableName, condition)
-        // dbRes && dbRes.results ? (function () {
-        //     let data = actions.modifyTubanByPermission(dbRes.results, permission)
-        //     let resData = pagenate(data, pageSize, currentPage)
-        //     response.responseSuccess(resData, res)
-        // })() : response.responseFailed(res)
         let sumRes = await Tuban.getCount(tableName, condition)
         let size = sumRes.results[0]['size']
         let startIndex = pagenate(size, pageSize, currentPage)
@@ -97,12 +84,6 @@ router.post('/getCheck', async function (req, res, next) {
         // 构造condition
         let condition = checkQuery(req.body, code)
 
-        // let dbRes = await Tuban.find(tableName, condition)
-        // dbRes && dbRes.results ? (function () {
-        //     let data = actions.modifyTubanByPermission(dbRes.results, permission)
-        //     let resData = pagenate(data, pageSize, currentPage)
-        //     response.responseSuccess(resData, res)
-        // })() : response.responseFailed(res)
         let sumRes = await Tuban.getCount(tableName, condition)
         let size = sumRes.results[0]['size']
         let startIndex = pagenate(size, pageSize, currentPage)
@@ -356,17 +337,16 @@ router.post('/fieldVerification', async function (req, res, next) {
 /**
  * 省级审核界面点击查看或许图斑及拆分图斑信息
  */
-router.post('/lookJDTB', async function (req, res, next) {
+router.get('/getSplitInfo', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let {name, code, permission} = Token.de(token)
-        let {tableName,JCBH} = req.body
-        let condition = JCBH
-        let dbRes = await Tuban.likefind(tableName, condition)
+        let {tableName, JCBH} = req.query
+        let dbRes = await Tuban.getSplitInfo(tableName, JCBH)
 
         dbRes && dbRes.results && response.responseSuccess(dbRes.results, res)
     } catch (e) {
-        console.log('/tuban/lookJDTB', e.message)
+        console.log('/tuban/getSplitInfo', e.message)
         response.responseFailed(res, e.message)
     }
 });
