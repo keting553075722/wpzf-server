@@ -95,4 +95,5 @@ String.prototype.toBytes = function (encoding) {
 global.$statusObj = {}
 global.environmentPRODEV = config.serverEnv
 global.environmentPort = config.appPort
+global.taskBatchPattern = config.taskBatchPattern
 module.exports = app;

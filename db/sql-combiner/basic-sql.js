@@ -141,12 +141,42 @@ const updateSQL = function (tableName, content, condition = {}) {
  * @param{array} fields
  * @returns {string}
  */
-const selectSQL = function (tableName, condition, fields = []) {
+const selectSQL = function (tableName, condition, fields = [], limit) {
     let filedStr = fields.length ? fields.toString() : '*'
     let sql = `select ${filedStr}  from  ${tableName}`
-    sql += SQL.where(condition)
+    // let isTubanSearch = taskBatchPattern.test(tableName)
+    sql += SQL.where(condition, taskBatchPattern.test(tableName))
+    if(limit && limit.length !== 0) {
+        sql += `LIMIT ${limit.toString()}`
+    }
     return sql
+}
 
+/**
+ * 针对图斑的表格，根据JCBH查询分割的图斑信息，拼成的SQL
+ * @param tableName
+ * @param JCBH
+ * @param condition
+ * @param fields
+ * @returns {string}
+ */
+const selectSplitSQL = function (tableName, JCBH, condition, fields = []) {
+    let filedStr = fields.length ? fields.toString() : '*'
+    let sql = `select ${filedStr}  from  ${tableName}`
+    sql += SQL.where(condition, true,true, JCBH)
+    return sql
+}
+
+/**
+ * 获取所有记录数量，剔除%-%模式的
+ * @param tableName
+ * @param condition
+ * @returns {string}
+ */
+const countSQL = function (tableName, condition = {}) {
+    let sql = `select count(*)  as size from ${tableName}`
+    sql += SQL.where(condition, true, false)
+    return sql
 }
 
 module.exports = {
@@ -158,6 +188,8 @@ module.exports = {
     deleteSQL,
     updateSQL,
     selectSQL,
+    selectSplitSQL,
+    countSQL,
     createExcelTableSQL
 }
 

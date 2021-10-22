@@ -7,15 +7,15 @@ const db = require('../../../table-operator')
 const excelInitializeProps = require('../../../properties/excel/excel-initialize')
 
 module.exports = {
-
     /**
      * 查询指定条件的图斑记录
      * @param tableName
      * @param condition
+     * @param limit
      * @returns {Promise<unknown>}
      */
-    find(tableName, condition) {
-        return db.find(tableName, condition)
+    find(tableName, condition, limit) {
+        return db.find(tableName, condition, [], limit)
     },
 
     /**
@@ -56,6 +56,28 @@ module.exports = {
      */
     create(tableName) {
         return db.create(tableName)
+    },
+
+    /**
+     * 获取图斑个数，不包含分割图斑
+     * @param tableName
+     * @param condition
+     * @returns {Promise<unknown>}
+     */
+    getCount(tableName, condition) {
+        return db.getCount(tableName, condition)
+    },
+
+    /**
+     * 获取指定图斑编号的分割图斑
+     * @param tableName
+     * @param JCBH
+     * @param condition
+     * @param fields
+     * @returns {Promise<unknown>}
+     */
+    getSplitInfo(tableName, JCBH, condition, fields) {
+        return db.getSplit(tableName, JCBH, condition, fields)
     },
 
     /**

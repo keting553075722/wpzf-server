@@ -18,9 +18,27 @@ module.exports = {
      * @param{array} fields
      * @returns {Promise<unknown>}
      */
-    find(tableName, condition, fields) {
+    find(tableName, condition, fields, limit) {
         return new Promise((resolve, reject) => {
-            const sql = SQL.selectSQL(tableName, condition, fields)
+            const sql = SQL.selectSQL(tableName, condition, fields, limit)
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+    /**
+     * 获取指定表中指定图斑的分割图斑
+     * @param tableName
+     * @param JCBH
+     * @param condition
+     * @param fields
+     * @returns {Promise<unknown>}
+     */
+    getSplit(tableName, JCBH, condition, fields) {
+        return new Promise((resolve, reject) => {
+            const sql = SQL.selectSplitSQL(tableName, JCBH,  condition, fields)
             db.query(sql).then(
                 res => {
                     resolve(res)
@@ -140,6 +158,22 @@ module.exports = {
     clearUp(tableName) {
         return new Promise((resolve, reject) => {
             let sql = `TRUNCATE TABLE ${tableName};`
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
+    /**
+     * 获取指定表的数量,不包含分割图斑【图斑表含JCBH字段适用，否则报错】
+     * @param tableName
+     * @returns {Promise<unknown>}
+     */
+    getCount(tableName, condition) {
+        return new Promise((resolve, reject) => {
+            let sql =  SQL.countSQL(tableName, condition)
             db.query(sql).then(
                 res => {
                     resolve(res)
