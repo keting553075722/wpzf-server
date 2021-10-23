@@ -39,6 +39,16 @@ module.exports = {
     },
 
     /**
+     * 删除图斑表中指定condition的记录
+     * @param tableName
+     * @param condition
+     * @returns {Promise<unknown>}
+     */
+    delete(tableName, condition) {
+        return db.delete(tableName, condition)
+    },
+
+    /**
      *
      * @param tableName
      * @param content

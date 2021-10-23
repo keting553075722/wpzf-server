@@ -112,8 +112,10 @@ const quaryAllTableNameSQL = function (identifier = 'zj') {
  * @param tableName
  * @param condition
  */
-const deleteSQL = function (tableName, condition,) {
-
+const deleteSQL = function (tableName, condition={}) {
+    let sql = `DELETE from  ${tableName}`
+    sql += SQL.where(condition)
+    return sql
 }
 
 /**

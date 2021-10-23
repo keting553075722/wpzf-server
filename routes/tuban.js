@@ -9,6 +9,7 @@ const {checkQuery, reportQuery, generalQuery} = require('../model/query-construc
 const pagenate = require('../model/pagenation')
 const response = require('../model/response-format')
 const {role} = require('../db/properties/permission-mapper')
+const moment = require('moment')
 
 /* GET tuban listing. */
 /**
@@ -280,7 +281,7 @@ router.post('/evidence', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {JZLX, WFLX, WFMJ, BZ, JCBHs, tableName} = req.body
+        let {JZLX = '', WFLX = '', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
         // 构建condition
         let {content, condition} = actions.evidence(user, JZLX, WFLX, WFMJ, BZ, JCBHs)
 
@@ -293,6 +294,52 @@ router.post('/evidence', async function (req, res, next) {
         response.responseFailed(res, e.message)
     }
 });
+
+/**
+ * 删除指定图斑
+ */
+router.post('/deletesplitedtuban', async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let user = Token.de(token)
+        let {tableName, JCBH} = req.body
+        let condition = {JCBH: `${JCBH}-%`}
+        let dbRes = await Tuban.delete(tableName, condition)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+
+    } catch (e) {
+        console.log('/tuban/deletetuban', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
+router.post('/addsplitedtuban', async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let user = Token.de(token)
+        let {tableName, JCBH, objs} = req.body
+        let condition = {JCBH: `${JCBH}-%`}
+        objs.forEach(itm => {
+            itm['SJXFSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['SJSHSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['CJJZSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['CJXFSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['CJSBSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['CJSHSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['XJJZSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['XJSBSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+        })
+        let clearRes = await Tuban.delete(tableName, condition)
+        let dbRes = await Tuban.insert(tableName, objs)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+
+    } catch (e) {
+        console.log('/tuban/deletetuban', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
+
 
 router.get('/getdisplayfields', async function (req, res, next) {
     try {

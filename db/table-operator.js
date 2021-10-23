@@ -199,6 +199,23 @@ module.exports = {
     },
 
     /**
+     * 删除tableName中指定condition的记录
+     * @param tableName
+     * @param condition
+     * @returns {Promise<unknown>}
+     */
+    delete(tableName, condition) {
+        return new Promise((resolve, reject) => {
+            let sql = SQL.deleteSQL(tableName, condition)
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
+    /**
      * 查询所有的表
      * @returns {Promise<unknown>}
      */
