@@ -32,7 +32,8 @@ const config = {
     serverIp: getServerIp,
     serverMac: getMac(),
     ddConfig: ddConfig,
-    taskBatchPattern : /^[a-z0-9A-Z]+\_[0-9]{4}\_[0-9]+/
+    taskBatchPattern : /^[a-z0-9A-Z]+\_[0-9]{4}\_[0-9]+/,
+    staticReqPattern : /^\/evidence.*\.[\w]+$/  //静态资源路径请求匹配
 }
 
 module.exports = config
