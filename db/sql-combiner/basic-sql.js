@@ -5,9 +5,10 @@
  */
 const db = require('../db')
 const SQL = require('./utils')
-const tuban = require('../properties/tuban-definition.json')
-const user = require('../properties/user_definition.json')
-const status = require('../properties/status_definition.json')
+const getSchema = require('../../model/combine-fields')
+const excel = require('../properties/excel/excel-definition.json')
+const user = require('../properties/user/user_definition.json')
+const status = require('../properties/status/status_definition.json')
 
 /**
  * 根据entry实体创建表
@@ -15,7 +16,26 @@ const status = require('../properties/status_definition.json')
  * @param entity 默认是图斑
  * @returns {string}
  */
-const createTableSQL = function (tableName, entity = tuban) {
+const createTableSQL =async function (tableName) {
+    // 根据tableName，entry实体创建表
+    // 组装sql
+    let id = getId(tableName)
+    let schema = await getSchema(id).then(res=>res).catch(console.log)
+    let fields = Object.keys(schema)
+    let sql = `CREATE TABLE ${tableName} (`
+    fields.forEach(field => {
+        sql += field + " " + schema[field] + ","
+    })
+    sql = sql.substring(0, sql.length - 1) + ")"
+    return sql
+}
+/**
+ * 根据entry实体创建表
+ * @param tableName
+ * @param entity 默认是图斑
+ * @returns {string}
+ */
+const createExcelTableSQL = function (tableName, entity = excel) {
     // 根据tableName，entry实体创建表
     // 组装sql
     let fields = Object.keys(entity)
@@ -92,8 +112,10 @@ const quaryAllTableNameSQL = function (identifier = 'zj') {
  * @param tableName
  * @param condition
  */
-const deleteSQL = function (tableName, condition,) {
-
+const deleteSQL = function (tableName, condition={}) {
+    let sql = `DELETE from  ${tableName}`
+    sql += SQL.where(condition)
+    return sql
 }
 
 /**
@@ -115,32 +137,48 @@ const updateSQL = function (tableName, content, condition = {}) {
 }
 
 /**
- * 获取指定条件的表的数量
- * @param tableName
- * @param condition
- * @returns {string}
- */
-const getSumSQL = function (tableName, condition = {}) {
-    let sql = `select count(*)  as size from ${tableName}`
-    sql += SQL.where(condition)
-    return sql
-}
-
-/**
  * 查询指定表的指定记录
- * @param tableName
- * @param condition
- * @param limit
+ * @param{string} tableName
+ * @param{object} condition
+ * @param{array} fields
  * @returns {string}
  */
-const selectSQL = function (tableName, condition, limit) {
-    let sql = `select *  from  ${tableName}`
-    sql += SQL.where(condition)
+const selectSQL = function (tableName, condition, fields = [], limit) {
+    let filedStr = fields.length ? fields.toString() : '*'
+    let sql = `select ${filedStr}  from  ${tableName}`
+    // let isTubanSearch = taskBatchPattern.test(tableName)
+    sql += SQL.where(condition, taskBatchPattern.test(tableName))
     if(limit && limit.length !== 0) {
         sql += `LIMIT ${limit.toString()}`
     }
     return sql
+}
 
+/**
+ * 针对图斑的表格，根据JCBH查询分割的图斑信息，拼成的SQL
+ * @param tableName
+ * @param JCBH
+ * @param condition
+ * @param fields
+ * @returns {string}
+ */
+const selectSplitSQL = function (tableName, JCBH, condition, fields = []) {
+    let filedStr = fields.length ? fields.toString() : '*'
+    let sql = `select ${filedStr}  from  ${tableName}`
+    sql += SQL.where(condition, true,true, JCBH)
+    return sql
+}
+
+/**
+ * 获取所有记录数量，剔除%-%模式的
+ * @param tableName
+ * @param condition
+ * @returns {string}
+ */
+const countSQL = function (tableName, condition = {}) {
+    let sql = `select count(*)  as size from ${tableName}`
+    sql += SQL.where(condition, true, false)
+    return sql
 }
 
 module.exports = {
@@ -152,7 +190,9 @@ module.exports = {
     deleteSQL,
     updateSQL,
     selectSQL,
-    getSumSQL
+    selectSplitSQL,
+    countSQL,
+    createExcelTableSQL
 }
 
 

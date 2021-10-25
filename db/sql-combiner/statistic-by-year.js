@@ -29,8 +29,8 @@ const proStatistic = (year, condition, dbRes) => {
         SMC,
         SDM,
         COUNT( *) COUNT_TB, -- 季度图斑总数
-        SUM(Shape_Area) SUM_Area, -- 季度图斑总面积
-        SUM(mj) SUM_MJ, -- 季度图斑总面积（平方米）
+        SUM(AREA) SUM_Area, -- 季度图斑总面积
+        SUM(AREA) SUM_MJ, -- 季度图斑总面积（平方米）
         COUNT( SJXF = '1' or null) COUNT_XF, 
         COUNT( JZLX = '合法' or null) COUNT_HF, 
         COUNT( JZLX = '违法' or null) COUNT_WF, 
@@ -55,8 +55,8 @@ const proStatistic = (year, condition, dbRes) => {
         SMC,
         SDM,
         COUNT( *) COUNT_TB, -- 季度图斑总数
-        SUM(Shape_Area) SUM_Area, -- 季度图斑总面积
-        SUM(mj) SUM_MJ, -- 季度图斑总面积（平方米）
+        SUM(AREA) SUM_Area, -- 季度图斑总面积
+        SUM(AREA) SUM_MJ, -- 季度图斑总面积（平方米）
         COUNT( SJXF = '1' or null) COUNT_XF, 
         COUNT( JZLX = '合法' or null) COUNT_HF, 
         COUNT( JZLX = '违法' or null) COUNT_WF, 
@@ -93,8 +93,8 @@ const cityStatistic = (year, condition, dbRes) => {
         CMC,
         CDM,
         COUNT( *) COUNT_TB, -- 季度图斑总数
-        SUM(Shape_Area) SUM_Area, -- 季度图斑总面积
-        SUM(mj) SUM_MJ, -- 季度图斑总面积（平方米）
+        SUM(AREA) SUM_Area, -- 季度图斑总面积
+        SUM(AREA) SUM_MJ, -- 季度图斑总面积（平方米）
         COUNT( SJXF = '1' or null) COUNT_XF, 
         COUNT( JZLX = '合法' or null) COUNT_HF, 
         COUNT( JZLX = '违法' or null) COUNT_WF, 
@@ -120,8 +120,8 @@ const cityStatistic = (year, condition, dbRes) => {
         CMC,
         CDM,
         COUNT( *) COUNT_TB, -- 季度图斑总数
-        SUM(Shape_Area) SUM_Area, -- 季度图斑总面积
-        SUM(mj) SUM_MJ, -- 季度图斑总面积（平方米）
+        SUM(AREA) SUM_Area, -- 季度图斑总面积
+        SUM(AREA) SUM_MJ, -- 季度图斑总面积（平方米）
         COUNT( SJXF = '1' or null) COUNT_XF, 
         COUNT( JZLX = '合法' or null) COUNT_HF, 
         COUNT( JZLX = '违法' or null) COUNT_WF, 
@@ -158,8 +158,8 @@ const countyStatistic = (year, condition, dbRes) => {
         XMC,
         XDM,
         COUNT( *) COUNT_TB, -- 季度图斑总数
-        SUM(Shape_Area) SUM_Area, -- 季度图斑总面积
-        SUM(mj) SUM_MJ, -- 季度图斑总面积（平方米）
+        SUM(AREA) SUM_Area, -- 季度图斑总面积
+        SUM(AREA) SUM_MJ, -- 季度图斑总面积（平方米）
         COUNT( SJXF = '1' or null) COUNT_XF, 
         COUNT( JZLX = '合法' or null) COUNT_HF, 
         COUNT( JZLX = '违法' or null) COUNT_WF, 
@@ -185,8 +185,8 @@ const countyStatistic = (year, condition, dbRes) => {
         XMC,
         XDM,
         COUNT( *) COUNT_TB, -- 季度图斑总数
-        SUM(Shape_Area) SUM_Area, -- 季度图斑总面积
-        SUM(mj) SUM_MJ, -- 季度图斑总面积（平方米）
+        SUM(AREA) SUM_Area, -- 季度图斑总面积
+        SUM(AREA) SUM_MJ, -- 季度图斑总面积（平方米）
         COUNT( SJXF = '1' or null) COUNT_XF, 
         COUNT( JZLX = '合法' or null) COUNT_HF, 
         COUNT( JZLX = '违法' or null) COUNT_WF, 

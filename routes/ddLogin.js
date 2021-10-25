@@ -31,6 +31,7 @@ router.get('/ddLogin', async function (req, res, next) {
                         cluster : dbUser['cluster'],
                     }
                     let token = Token.en(resInfo)
+                    let menu = await Rights(resInfo.code)
                     response.status = true
                     response.msg = 'success'
                     response.data = {
@@ -38,7 +39,7 @@ router.get('/ddLogin', async function (req, res, next) {
                         role: resInfo.role,
                         cluster : resInfo.cluster,
                         token,
-                        rights: Rights(resInfo.code)
+                        rights: menu
                     }
                 }
                 res.send(response)

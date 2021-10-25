@@ -6,6 +6,7 @@ var logger = require('morgan');
 var fs = require('fs')
 var cors = require('cors')
 var config = require('./deploy-config/src/config')
+var reqIntercept = require('./model/global-intercept')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/user');
@@ -13,9 +14,12 @@ var tubanRouter = require('./routes/tuban');
 var uploadRouter = require('./routes/upload');
 var statusRouter = require('./routes/status');
 var ddLoginRouter = require('./routes/ddLogin');
+var taskRouter = require('./routes/task')
 
 
 var app = express();
+
+app.use(reqIntercept)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -36,6 +40,8 @@ app.use('/tuban', tubanRouter);
 app.use('/upload', uploadRouter);
 app.use('/status', statusRouter);
 app.use('/dd', ddLoginRouter);
+app.use('/task', taskRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -57,24 +63,41 @@ app.use(function (err, req, res, next) {
 global.$workTablesPath = __dirname + config.activeTableRelativePath;
 global.$workTables = JSON.parse(fs.readFileSync($workTablesPath).toString());
 
+
+// 根据表名获取Id
+global.getId = (tableName) => {
+    return tableName.split('_')[0]
+}
+
+global.getInfo = (tableName) => {
+    const [Id, year, batch] = tableName.split('_')
+    return {Id, year, batch}
+}
+
 Array.prototype['pushItem'] = function (item) {
     if (this.includes(item)) return
     this.push(item)
-    fs.writeFileSync($workTablesPath, JSON.stringify(this))
+    let Id = getId(item)
+    $workTables[Id] = this
+    fs.writeFileSync($workTablesPath, JSON.stringify($workTables))
 }
 Array.prototype['removeItem'] = function (item) {
     if (!this.includes(item)) return
     let index = this.indexOf(item)
     this.splice(index, 1)
-    fs.writeFileSync($workTablesPath, JSON.stringify(this))
+    let Id = getId(item)
+    $workTables[Id] = this
+    fs.writeFileSync($workTablesPath, JSON.stringify($workTables))
 }
-
 
 String.prototype.toBytes = function (encoding) {
     let buff = new Buffer(this, encoding)
     return buff
 }
+
+
 global.$statusObj = {}
 global.environmentPRODEV = config.serverEnv
 global.environmentPort = config.appPort
+global.taskBatchPattern = config.taskBatchPattern
 module.exports = app;

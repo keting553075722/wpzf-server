@@ -10,18 +10,17 @@ const {proStatistic, cityStatistic, countyStatistic} = require('./sql-combiner/s
 const dbConfig = require('./db')
 const db = require('./db')
 
-
-
 module.exports = {
     /**
      * 指定表中查询记录
-     * @param tableName
-     * @param condition
+     * @param{string} tableName
+     * @param{object} condition
+     * @param{array} fields
      * @returns {Promise<unknown>}
      */
-    find(tableName, condition, limit) {
+    find(tableName, condition, fields, limit) {
         return new Promise((resolve, reject) => {
-            const sql = SQL.selectSQL(tableName, condition, limit)
+            const sql = SQL.selectSQL(tableName, condition, fields, limit)
             db.query(sql).then(
                 res => {
                     resolve(res)
@@ -29,6 +28,43 @@ module.exports = {
             ).catch(reject)
         })
     },
+    /**
+     * 获取指定表中指定图斑的分割图斑
+     * @param tableName
+     * @param JCBH
+     * @param condition
+     * @param fields
+     * @returns {Promise<unknown>}
+     */
+    getSplit(tableName, JCBH, condition, fields) {
+        return new Promise((resolve, reject) => {
+            const sql = SQL.selectSplitSQL(tableName, JCBH,  condition, fields)
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
+    /**
+     * 指定表中模糊查询记录
+     * @param tableName
+     * @param condition
+     * @returns {Promise<unknown>}
+     */
+    likefind(tableName, condition) {
+        return new Promise((resolve, reject) => {
+            let len=condition.length
+            let sql = `select *  from  ${tableName} where left(${tableName}.JCBH,${len}) ='${condition}'`
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
 
     /**
      * 指定表中插入记录
@@ -66,22 +102,6 @@ module.exports = {
     },
 
     /**
-     * 获取指定表的数量
-     * @param tableName
-     * @returns {Promise<unknown>}
-     */
-    getSum(tableName, condition) {
-        return new Promise((resolve, reject) => {
-            let sql =  SQL.getSumSQL(tableName, condition)
-            db.query(sql).then(
-                res => {
-                    resolve(res)
-                }
-            ).catch(reject)
-        })
-    },
-
-    /**
      * 判断是否存在
      * @param tableName
      * @returns {Promise<unknown>}
@@ -103,8 +123,25 @@ module.exports = {
      * @returns {Promise<unknown>}
      */
     create(tableName) {
+        return new Promise(async (resolve, reject) => {
+            let sql = await SQL.createTableSQL(tableName)
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
+
+    /**
+     * 创建一张指定schema的表，默认是tuban
+     * @param tableName
+     * @returns {Promise<unknown>}
+     */
+    createExcelTable(tableName) {
         return new Promise((resolve, reject) => {
-            let sql = SQL.createTableSQL(tableName)
+            let sql = SQL.createExcelTableSQL(tableName)
             db.query(sql).then(
                 res => {
                     resolve(res)
@@ -130,6 +167,22 @@ module.exports = {
     },
 
     /**
+     * 获取指定表的数量,不包含分割图斑【图斑表含JCBH字段适用，否则报错】
+     * @param tableName
+     * @returns {Promise<unknown>}
+     */
+    getCount(tableName, condition) {
+        return new Promise((resolve, reject) => {
+            let sql =  SQL.countSQL(tableName, condition)
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
+    /**
      * 删除指定的表
      * @param tableName
      * @returns {Promise<unknown>}
@@ -137,6 +190,23 @@ module.exports = {
     drop(tableName) {
         return new Promise((resolve, reject) => {
             let sql = `DROP TABLE ${tableName};`
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
+    /**
+     * 删除tableName中指定condition的记录
+     * @param tableName
+     * @param condition
+     * @returns {Promise<unknown>}
+     */
+    delete(tableName, condition) {
+        return new Promise((resolve, reject) => {
+            let sql = SQL.deleteSQL(tableName, condition)
             db.query(sql).then(
                 res => {
                     resolve(res)
@@ -163,6 +233,26 @@ module.exports = {
             ).catch(reject)
         })
     },
+
+    /**
+     * 查询所有的表
+     * @returns {Promise<unknown>}
+     */
+    sjshqueryTBTables(mode = 'sjsh') {
+        return new Promise((resolve, reject) => {
+            let sql = `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${dbConfig.name}' and t.TABLE_NAME like '${mode}%' `
+            db.query(sql).then(
+                res => {
+                    let result = []
+                    res.results.forEach(itm => {
+                        result.push(itm['table_name'])
+                    })
+                    resolve(result)
+                }
+            ).catch(reject)
+        })
+    },
+
 
     /**
      * 省市县查询进度
@@ -204,12 +294,13 @@ module.exports = {
      * 按年统计，0统计省级，1统计市级，2统计县级
      * @param year
      * @param type
+     * @param Id
      * @param condition
      * @returns {Promise<unknown>}
      */
-    statisticByYear(year, type, condition = {}) {
+    statisticByYear(year, type, Id, condition = {}) {
         return new Promise(async (resolve, reject) => {
-            let dbRes = await this.queryTBTables()
+            let dbRes = await this.queryTBTables(Id)
             if (type == '0') {
                 let sqlRes = proStatistic(year, condition, dbRes)
                 sqlRes ? db.query(sqlRes).then(
@@ -243,10 +334,11 @@ module.exports = {
     /**
      * 一个年度的批次的查询
      * @param year
+     * @param Id 可缺省，默认是zj
      * @returns {Promise<*>}
      */
-    async batchOfYear(year) {
-        let res = await this.queryTBTables()
+    async batchOfYear(year, Id) {
+        let res = await this.queryTBTables(Id)
         return res.filter(x => x.indexOf(year) > -1)
     }
 }

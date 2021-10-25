@@ -1,0 +1,9 @@
+{
+  "SMC": "VARCHAR(255)",
+  "SDM": "VARCHAR(255)",
+  "CMC": "VARCHAR(255)",
+  "CDM": "VARCHAR(255)",
+  "XMC": "VARCHAR(255)",
+  "XDM": "VARCHAR(255)",
+  "coordinates": "TEXT (65535)"
+}

@@ -18,7 +18,6 @@ selenium-debug.log
 *.njsproj
 *.sln
 secret/
-work-tables.propertries
 /logs/
 
 /test/flat.js

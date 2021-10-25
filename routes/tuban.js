@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Tuban = require('../db/entities/tuban')
+const Task = require('../db/entities/Task')
 const Token = require('../model/token')
 const actions = require('../model/utils/actions')
 const observer = require('../model/status-observer/index')
@@ -8,6 +9,7 @@ const {checkQuery, reportQuery, generalQuery} = require('../model/query-construc
 const pagenate = require('../model/pagenation')
 const response = require('../model/response-format')
 const {role} = require('../db/properties/permission-mapper')
+const moment = require('moment')
 
 /* GET tuban listing. */
 /**
@@ -19,7 +21,7 @@ router.post('/getJDTB', async function (req, res, next) {
         let {name, code, permission} = Token.de(token)
         let {tableName, currentPage, pageSize} = req.body
         let condition = generalQuery(req.body, code)
-        let sumRes = await Tuban.getSum(tableName, condition)
+        let sumRes = await Tuban.getCount(tableName, condition)
         let size = sumRes.results[0]['size']
         let startIndex = pagenate(size, pageSize, currentPage)
         if(startIndex == 'overflow') {
@@ -51,14 +53,7 @@ router.post('/getReport', async function (req, res, next) {
         let {tableName, pageSize, currentPage} = req.body
         let condition = reportQuery(req.body, code)
 
-        // let dbRes = await Tuban.find(tableName, condition)
-
-        // dbRes && dbRes.results ? (function () {
-        //     let data = actions.modifyTubanByPermission(dbRes.results, permission)
-        //     let resData = pagenate(data, pageSize, currentPage)
-        //     response.responseSuccess(resData, res)
-        // })() : response.responseFailed(res)
-        let sumRes = await Tuban.getSum(tableName, condition)
+        let sumRes = await Tuban.getCount(tableName, condition)
         let size = sumRes.results[0]['size']
         let startIndex = pagenate(size, pageSize, currentPage)
         if(startIndex == 'overflow') {
@@ -90,14 +85,7 @@ router.post('/getCheck', async function (req, res, next) {
         // 构造condition
         let condition = checkQuery(req.body, code)
 
-        // let dbRes = await Tuban.find(tableName, condition)
-
-        // dbRes && dbRes.results ? (function () {
-        //     let data = actions.modifyTubanByPermission(dbRes.results, permission)
-        //     let resData = pagenate(data, pageSize, currentPage)
-        //     response.responseSuccess(resData, res)
-        // })() : response.responseFailed(res)
-        let sumRes = await Tuban.getSum(tableName, condition)
+        let sumRes = await Tuban.getCount(tableName, condition)
         let size = sumRes.results[0]['size']
         let startIndex = pagenate(size, pageSize, currentPage)
         if(startIndex == 'overflow') {
@@ -119,12 +107,13 @@ router.post('/getCheck', async function (req, res, next) {
 /**
  * 获取数据库中存在的图斑的表,省级角色才能查询
  */
-router.post('/queryTBTables', async function (req, res, next) {
+router.get('/queryTBTables', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let dbRes = await Tuban.queryTBTables().then(res => res).catch(console.log)
-        dbRes.length ? response.responseSuccess(dbRes.slice().reverse(), res) : response.responseFailed(res)
+        let {Id} = req.query
+        let dbRes = await Tuban.queryTBTables(Id).then(res => res).catch(console.log)
+        dbRes ? response.responseSuccess(dbRes.slice().reverse(), res) : response.responseFailed(res)
     } catch (e) {
         console.log('/tuban/queryTBTables', e.message)
         response.responseFailed(res, e.message)
@@ -248,7 +237,7 @@ router.post('/giveNotice', async function (req, res, next) {
 
         dbRes && dbRes.results ? (function () {
             response.responseSuccess(dbRes.results.message, res)
-            dbRes.results.matchRows && observer.giveNotice(tableName, permission, JCBHs)
+            dbRes.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
         })() : response.responseFailed(res)
     } catch (e) {
         console.log('/tuban/giveNotice', e.message)
@@ -275,7 +264,7 @@ router.post('/reback', async function (req, res, next) {
 
         dbRes && dbRes.results ? (function () {
             response.responseSuccess(dbRes.results.message, res)
-            dbRes.results.matchRows && observer.reback(tableName, code, type)
+            dbRes.results.affectedRows && observer.reback(tableName, code, type)
         })() : response.responseFailed(res)
     } catch (e) {
         console.log('/tuban/giveNotice', e.message)
@@ -292,7 +281,7 @@ router.post('/evidence', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {JZLX, WFLX, WFMJ, BZ, JCBHs, tableName} = req.body
+        let {JZLX = '', WFLX = '', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
         // 构建condition
         let {content, condition} = actions.evidence(user, JZLX, WFLX, WFMJ, BZ, JCBHs)
 
@@ -307,6 +296,76 @@ router.post('/evidence', async function (req, res, next) {
 });
 
 /**
+ * 删除指定图斑
+ */
+router.post('/deletesplitedtuban', async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let user = Token.de(token)
+        let {tableName, JCBH} = req.body
+        let condition = {JCBH: `${JCBH}-%`}
+        let dbRes = await Tuban.delete(tableName, condition)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+
+    } catch (e) {
+        console.log('/tuban/deletetuban', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
+router.post('/addsplitedtuban', async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let user = Token.de(token)
+        let {tableName, JCBH, objs} = req.body
+        let condition = {JCBH: `${JCBH}-%`}
+        objs.forEach(itm => {
+            itm['SJXFSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['SJSHSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['CJJZSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['CJXFSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['CJSBSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['CJSHSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['XJJZSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['XJSBSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+        })
+        let clearRes = await Tuban.delete(tableName, condition)
+        let dbRes = await Tuban.insert(tableName, objs)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+
+    } catch (e) {
+        console.log('/tuban/deletetuban', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
+
+
+router.get('/getdisplayfields', async function (req, res, next) {
+    try {
+        // 全局权限校验模块
+        // let token = req.headers.authorization
+        // let user = Token.de(token)
+        // let {JZLX, WFLX, WFMJ, BZ, JCBHs, tableName} = req.body
+        // 构建condition
+        // let {content, condition} = actions.evidence(user, JZLX, WFLX, WFMJ, BZ, JCBHs)
+        let {Id} = req.query
+        let condition = {Id}
+        let findRes = await Task.find(['FieldsDetails'], condition).then(res => res).catch(console.log)
+
+
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+
+    } catch (e) {
+        console.log('/tuban/evidence', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
+
+
+
+/**
  * 外业核查，只有县级才回触发此按钮
  */
 router.post('/fieldVerification', async function (req, res, next) {
@@ -319,5 +378,23 @@ router.post('/fieldVerification', async function (req, res, next) {
     let dbRes = await Tuban.update(tableName, content, condition)
     dbRes && dbRes.results && response.responseSuccess(dbRes.results, res)
 
+});
+
+/* GET tuban Info. */
+/**
+ * 省级审核界面点击查看或许图斑及拆分图斑信息
+ */
+router.get('/getSplitInfo', async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let {name, code, permission} = Token.de(token)
+        let {tableName, JCBH} = req.query
+        let dbRes = await Tuban.getSplitInfo(tableName, JCBH)
+
+        dbRes && dbRes.results && response.responseSuccess(dbRes.results, res)
+    } catch (e) {
+        console.log('/tuban/getSplitInfo', e.message)
+        response.responseFailed(res, e.message)
+    }
 });
 module.exports = router;

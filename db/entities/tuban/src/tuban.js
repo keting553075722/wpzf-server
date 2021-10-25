@@ -4,19 +4,28 @@
  * @createTime 2021/4/1
  */
 const db = require('../../../table-operator')
-const tubanInitializeProps = require('../../../properties/tuban-initialize')
-
+const excelInitializeProps = require('../../../properties/excel/excel-initialize')
 
 module.exports = {
+    /**
+     * 查询指定条件的图斑记录
+     * @param tableName
+     * @param condition
+     * @param limit
+     * @returns {Promise<unknown>}
+     */
+    find(tableName, condition, limit) {
+        return db.find(tableName, condition, [], limit)
+    },
 
     /**
-     * 查询指定条件的图斑记录,分页查询
+     * 模糊查询指定条件的图斑记录（用于图斑拆分）
      * @param tableName
      * @param condition
      * @returns {Promise<unknown>}
      */
-    find(tableName, condition, limit) {
-        return db.find(tableName, condition, limit)
+    likefind(tableName, condition) {
+        return db.likefind(tableName, condition)
     },
 
     /**
@@ -27,6 +36,16 @@ module.exports = {
      */
     insert(tableName, objs) {
         return db.insert(tableName, objs)
+    },
+
+    /**
+     * 删除图斑表中指定condition的记录
+     * @param tableName
+     * @param condition
+     * @returns {Promise<unknown>}
+     */
+    delete(tableName, condition) {
+        return db.delete(tableName, condition)
     },
 
     /**
@@ -47,6 +66,37 @@ module.exports = {
      */
     create(tableName) {
         return db.create(tableName)
+    },
+
+    /**
+     * 获取图斑个数，不包含分割图斑
+     * @param tableName
+     * @param condition
+     * @returns {Promise<unknown>}
+     */
+    getCount(tableName, condition) {
+        return db.getCount(tableName, condition)
+    },
+
+    /**
+     * 获取指定图斑编号的分割图斑
+     * @param tableName
+     * @param JCBH
+     * @param condition
+     * @param fields
+     * @returns {Promise<unknown>}
+     */
+    getSplitInfo(tableName, JCBH, condition, fields) {
+        return db.getSplit(tableName, JCBH, condition, fields)
+    },
+
+    /**
+     * 创建一张表
+     * @param tableName
+     * @returns {Promise<unknown>}
+     */
+    createExcelTable(tableName) {
+        return db. createExcelTable(tableName)
     },
 
     /**
@@ -79,15 +129,42 @@ module.exports = {
     },
 
     /**
-     * 查询储存图斑的所有的表，模式zj%
+     * 导入Excel表，新建批次或者在原批次导入
+     * @param tableName
+     * @param objs
      * @returns {Promise<unknown>}
      */
-    queryTBTables() {
-        return db.queryTBTables()
+    async importExcel(tableName, objs) {
+        try {
+            let exist = await db.exist(tableName)
+            !exist.results.length && await this.createExcelTable(tableName)
+            let insertStatus = await this.insert(tableName, objs)
+            let initialStatus = await this.update(tableName,excelInitializeProps)
+            return insertStatus
+        } catch (e) {
+            console.log('import failed ', e.message)
+        }
     },
 
-    getSum (tableName, condition){
-        return db.getSum(tableName, condition)
+
+    /**
+     * 查询储存图斑的所有的表，模式zj%
+     * @param Id 默认是zj
+     * @returns {Promise<unknown>}
+     */
+    // queryTBTables() {
+    //     return db.queryTBTables()
+    // },
+
+    /**
+     * 查询储存图斑的所有的表，模式sjsh%
+     * @returns {Promise<unknown>}
+     */
+    sjshqueryTBTables() {
+        return db.sjshqueryTBTables()
+    },
+    queryTBTables(Id) {
+        return db.queryTBTables(Id)
     }
 
 }

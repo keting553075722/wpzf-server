@@ -4,7 +4,6 @@
  * @createTime 2021/4/1
  */
 const db = require('../../../table-operator')
-
 module.exports = {
     /**
      * 接收一个用户名密码的user对象作为查询条件

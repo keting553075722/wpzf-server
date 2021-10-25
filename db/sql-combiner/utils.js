@@ -7,13 +7,20 @@
  * 简单where语句组合，支持like = ,and的组合
  * or的话可以将condition调整为condition数组对象
  * @param condition
+ * @param isTubanSearch 只有图斑搜索时才会用到这个
+ * @param isSplit 当为true时JCBH为必填
+ * @param JCBH
  * @returns {string}
  */
-const where = function (condition) {
+const where = function (condition, isTubanSearch, isSplit = false, JCBH) {
     let sql1 = ` where`
-    // 先判断是不是存不存在或者是不是空对象
+    // 先判断是不是存不存在或者是不是空对象,还要判断查询的是不是图斑的表格
     if (!condition || JSON.stringify(condition) === "{}") {
-        return " "
+        if(!isTubanSearch) {
+            return ' '
+        } else {
+            return isSplit ? ` where JCBH like '${JCBH}-%' ` : ` where JCBH not like '%-%'`
+        }
     }
     for (let key in condition) {
         // condition[key]可能是Number/字符串类型/数组类型
@@ -37,7 +44,11 @@ const where = function (condition) {
 
     }
     sql1 = sql1.slice(0, sql1.length - 3)
-    return sql1
+    if(!isTubanSearch) {
+        return sql1
+    } else {
+        return isSplit ? sql1 + ` and JCBH like '${JCBH}-%' ` : sql1 + ` and JCBH not like '%-%'`
+    }
 }
 
 const groupBy = function (name) {

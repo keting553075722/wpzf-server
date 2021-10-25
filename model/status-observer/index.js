@@ -15,16 +15,23 @@ const _ = require('lodash');
  *  @description 程序启动时执行，初始化workTable的状态并将其全部挂载到$statusObj
  */
 const init = () => {
-    $workTables.length && $workTables.forEach((tableName) => {
-        initTableStatus(tableName)
-    })
+    const Ids = Object.keys($workTables)
+    if(Ids.length) {
+        for (let id of Ids) {
+            $workTables[id].length && $workTables[id].forEach((tableName) => {
+                initTableStatus(tableName)
+            })
+        }
+    }
 };
+
 
 /**
  * @description 初始化指定table的status状态并将其挂载到$statusObj
  * @param tableName
  */
 const initTableStatus = (tableName) => {
+    let Id = getId(tableName)
     Tuban.find(tableName,
         {}).then(
         res => {
@@ -149,7 +156,8 @@ const initTableStatus = (tableName) => {
                 }
             }
             values = result
-            global.$statusObj[tableName] = tempStatus.filter(x => x['XF'] === '1')
+            !global.$statusObj[Id] && (global.$statusObj[Id] = {})
+            global.$statusObj[Id][tableName] = tempStatus.filter(x => x['XF'] === '1')
         }
     )
 };
@@ -165,6 +173,7 @@ const initTableStatus = (tableName) => {
  * @param type
  */
 const check = (tableName, code, permission) => {
+    let Id = getId(tableName)
     let type = permission === "province" ? '1' : '2'
     let subLen = permission === "province" ? 4 : 6
     let XFField = permission === "province" ? 'SJXF' : 'CJXF'
@@ -178,8 +187,8 @@ const check = (tableName, code, permission) => {
     Tuban.find(tableName, {}).then(
         (res) => {
             let results = res.results
-
-            let status = global.$statusObj[tableName]
+            !global.$statusObj[Id] && (global.$statusObj[Id] = {})
+            let status = global.$statusObj[Id][tableName]
             let len = status.length
             for (let i = 0; i < len; i++) {
                 let itm = status[i]
@@ -243,7 +252,9 @@ const check = (tableName, code, permission) => {
  * @param code
  */
 const report = (tableName, code) => {
-    let status = global.$statusObj[tableName]
+    let Id = getId(tableName)
+    !global.$statusObj[Id] && (global.$statusObj[Id] = {})
+    let status = global.$statusObj[Id][tableName]
     let len = status.length
     for (let i = 0; i < len; i++) {
         let itm = status[i]
@@ -274,13 +285,14 @@ const reback = (tableName, code, type) => {
     let XFField = type === "1" ? 'SJXF' : 'CJXF'
     let SHField = type === "1" ? 'SJSH' : 'CJSH'
     let TGFField = type === "1" ? 'SJTG' : 'CJTG'
-
-    global.$statusObj[tableName].forEach((itm, index) => {
+    let Id = getId(tableName)
+    !global.$statusObj[Id] && (global.$statusObj[Id] = {})
+    global.$statusObj[Id][tableName].forEach((itm, index) => {
         if (itm['CODE'] === code) {
-            global.$statusObj[tableName][index]['TH'] = '1'
-            global.$statusObj[tableName][index]['SB'] = '0'
-            global.$statusObj[tableName][index]['TG'] = ''
-            global.$statusObj[tableName][index]['SH'] = '1'
+            global.$statusObj[Id][tableName][index]['TH'] = '1'
+            global.$statusObj[Id][tableName][index]['SB'] = '0'
+            global.$statusObj[Id][tableName][index]['TG'] = ''
+            global.$statusObj[Id][tableName][index]['SH'] = '1'
         }
     })
 };
@@ -297,15 +309,17 @@ const giveNotice = (tableName, permission, JCBHs) => {
     if (subLen === 4) {
         codes = codes.map(x => x + '00')
     }
+    let Id = getId(tableName)
+    !global.$statusObj[Id] && (global.$statusObj[Id] = {})
 
     codes.forEach((code, idx, arr) => {
-        let obj = global.$statusObj[tableName].find(x => x.CODE === code)
+        let obj = global.$statusObj[Id][tableName].find(x => x.CODE === code)
         if (obj) {
             obj['XF'] = 1
         } else {
             let statusObj = statusSchema.filter(x => x.CODE === code)[0]
             statusObj['XF'] = 1
-            global.$statusObj[tableName].push(statusObj)
+            global.$statusObj[Id][tableName].push(statusObj)
         }
     })
 };
@@ -315,13 +329,16 @@ const giveNotice = (tableName, permission, JCBHs) => {
  * @param tableName
  */
 const statusAdd = (tableName) => {
-    if (!global.$workTables.includes(tableName)) {
-        global.$workTables.pushItem(tableName);
-        initTableStatus(tableName); // 添加挂载
-        console.log(`${tableName}不存在workTables,新增挂载到statusObj`);
-    } else {
-        initTableStatus(tableName); // 已经存在的更新
-        console.log(`${tableName}已存在workTables,更新statusObj[${tableName}]`);
+    let Id = getId(tableName)
+    // 有没有对应的Id,
+    if(!global.$workTables[Id]) {
+        global.$workTables[Id] = []
+        console.log(`workTables[${Id}]不存在，创建成功`);
+    }
+    if(!global.$workTables[Id].includes(tableName)){
+        global.$workTables[Id].pushItem(tableName);
+        initTableStatus(tableName);
+        console.log(`workTables[${Id}][${tableName}]不存在,创建成功`);
     }
 };
 
@@ -330,12 +347,12 @@ const statusAdd = (tableName) => {
  * @param tableName
  */
 const statusDel = (tableName) => {
-    if (!global.$workTables.includes(tableName)) {
+    let Id = getId(tableName)
+    if (!global.$workTables[Id].includes(tableName)) {
         console.log(`statusObj[${tableName}]不存在,无需删除`);
     } else {
-        global.$workTables.removeItem(tableName);
-        delete global.$statusObj[tableName];
-        console.log(`statusObj[${tableName}]删除成功`);
+        global.$workTables[Id].removeItem(tableName);
+        console.log(`statusObj[${Id}][${tableName}]删除成功`);
     }
 };
 
