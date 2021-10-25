@@ -159,10 +159,11 @@ router.post('/excel', excelUpload, async function (req, res, next) {
     try {
         let user = Token.de(req.headers.authorization)
         let file = req.file
-        let {year, jd, ly} = JSON.parse(req.body.info)
-        let incomeTable = `sjsh_${year}_${jd}`
-        let fileName = `${moment().format("HH时mm分ss秒")}--${user.name}--${file.originalname}`
-        let filePath = path.join(__dirname, "../resources/uploads/excel/") + incomeTable + '/' + moment().format("YYYY-MM-DD")
+       /* let {Id, year, jd, ly} = JSON.parse(req.body.info)*/
+        let {Id, year, jd, ly} = req.query
+        let incomeTable = `${Id}_${year}_${jd}`
+        let fileName = git`${moment().format("HH时mm分ss秒")}--${user.name}--${file.originalname}`
+        let filePath = path.join(__dirname, "../resources/uploads/excel/") + `${Id}/${year}/${jd}` + '/' + moment().format("YYYY-MM-DD")
         mkdirp.sync(filePath)
 
         filePath = filePath + '/' + fileName
@@ -197,7 +198,7 @@ router.post('/excel', excelUpload, async function (req, res, next) {
 
 
     } catch (e) {
-        console.log('/upload/shapefile ', e.message)
+        console.log('/upload/excel ', e.message)
         response.responseFailed(res, e.message)
     }
 });
