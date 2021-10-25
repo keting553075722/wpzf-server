@@ -136,11 +136,12 @@ module.exports = {
      */
     async importExcel(tableName, objs) {
         try {
+            let msg = ''
             let exist = await db.exist(tableName)
             !exist.results.length && await this.createExcelTable(tableName)
-            let insertStatus = await this.insert(tableName, objs)
-            let initialStatus = await this.update(tableName,excelInitializeProps)
-            return insertStatus
+            let insertStatus = await this.insert(tableName, objs).then(res=>res).catch(err=>{console.log(err.message);msg = err.message})
+            !insertStatus && await this.dropTable(tableName)
+            return msg ? msg : insertStatus
         } catch (e) {
             console.log('import failed ', e.message)
         }
