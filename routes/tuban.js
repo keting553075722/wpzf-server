@@ -30,7 +30,7 @@ router.post('/getJDTB', async function (req, res, next) {
             let limit = [startIndex, pageSize]
             let getRes = await Tuban.find(tableName, condition, limit)
             getRes && getRes.results ? (function () {
-                let resData = {size, pageData:getRes.results}
+                let resData = {size, pageData: actions.modifyTubanByPermission(getRes.results, permission)}
                 response.responseSuccess(resData, res)
             })()  : response.responseFailed(res)
         }
@@ -62,7 +62,7 @@ router.post('/getReport', async function (req, res, next) {
             let limit = [startIndex, pageSize]
             let getRes = await Tuban.find(tableName, condition, limit)
             getRes && getRes.results ? (function () {
-                let resData = {size, pageData:getRes.results}
+                let resData = {size, pageData: actions.modifyTubanByPermission(getRes.results, permission)}
                 response.responseSuccess(resData, res)
             })()  : response.responseFailed(res)
         }
@@ -94,7 +94,7 @@ router.post('/getCheck', async function (req, res, next) {
             let limit = [startIndex, pageSize]
             let getRes = await Tuban.find(tableName, condition, limit)
             getRes && getRes.results ? (function () {
-                let resData = {size, pageData:getRes.results}
+                let resData = {size, pageData: actions.modifyTubanByPermission(getRes.results, permission)}
                 response.responseSuccess(resData, res)
             })()  : response.responseFailed(res)
         }
