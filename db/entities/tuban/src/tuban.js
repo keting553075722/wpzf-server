@@ -149,13 +149,13 @@ module.exports = {
 
 
     /**
-     * 查询储存图斑的所有的表，模式zj%
-     * @param Id 默认是zj
+     * 查询指定表的所有字段
+     * @tableName
      * @returns {Promise<unknown>}
      */
-    // queryTBTables() {
-    //     return db.queryTBTables()
-    // },
+    getFields(tableName) {
+        return db.getFields(tableName)
+    },
 
     /**
      * 查询储存图斑的所有的表，模式sjsh%

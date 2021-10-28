@@ -10,6 +10,7 @@ const pagenate = require('../model/pagenation')
 const response = require('../model/response-format')
 const {role} = require('../db/properties/permission-mapper')
 const moment = require('moment')
+const filterDirtyFields = require('../model/utils/filterDirtyFields')
 
 /* GET tuban listing. */
 /**
@@ -318,6 +319,16 @@ router.post('/addsplitedtuban', async function (req, res, next) {
         let token = req.headers.authorization
         let user = Token.de(token)
         let {tableName, JCBH, objs} = req.body
+
+        if(objs.length) {
+            let getFieldsRes = await Tuban.getFields(tableName).then(res => res).catch(console.log)
+            let schema = []
+            getFieldsRes.results.forEach(item => {
+                schema.push(item['COLUMN_NAME'])
+            })
+            // let {COLUMN_NAME} = await Tuban.getFields(tableName).then(res => res).catch(console.log)
+            objs = filterDirtyFields(objs, schema)
+        }
         let condition = {JCBH: `${JCBH}-%`}
         objs.forEach(itm => {
             itm['SJXFSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')

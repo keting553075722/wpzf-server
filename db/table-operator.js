@@ -166,6 +166,18 @@ module.exports = {
         })
     },
 
+
+    getFields(tableName) {
+        return new Promise((resolve, reject) => {
+            let sql = SQL.getColumnSQL(tableName)
+            db.query(sql).then(
+                res => {
+                    resolve(res)
+                }
+            ).catch(reject)
+        })
+    },
+
     /**
      * 获取指定表的数量,不包含分割图斑【图斑表含JCBH字段适用，否则报错】
      * @param tableName
