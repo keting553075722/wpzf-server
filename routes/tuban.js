@@ -158,6 +158,7 @@ router.post('/report', async function (req, res, next) {
         let user = Token.de(token)
         let {permission, code, name} = user
         let {tableName} = req.body
+        let {Id, year, batch} = getInfo(tableName)
 
         // 先看有没有退回
 
@@ -193,7 +194,7 @@ router.post('/report', async function (req, res, next) {
             if (finishCheck) {
                 let {content, condition} = actions.report(user)
                 // 上报逻辑 两条线
-                let selfStatus = global.$statusObj[tableName].find(x => x.CODE === code)
+                let selfStatus = global.$statusObj[Id][tableName].find(x => x.CODE === code)
                 if (selfStatus['TH'] === '1') {
                     condition[THField] = '1' //只上报退回图斑
                     content[THField] = ''
