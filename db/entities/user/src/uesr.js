@@ -11,7 +11,7 @@ module.exports = {
      * @param user
      * @param callback
      */
-    find(user, callback) {
+    find(user) {
         return db.find('users', user)
     },
     insert() {

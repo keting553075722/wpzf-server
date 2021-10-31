@@ -11,6 +11,8 @@ router.post('/login', async function (req, res, next) {
     try {
         // post请求参数存在body中
         let user = req.body
+        console.log(JSON.stringify(user) == '{}')
+        if(JSON.stringify(user) == '{}') return response.responseFailed(res, '参数无效')
         // 数据库的操作
         let dbRes = await User.find(user)
         let dbUser = dbRes.results[0]

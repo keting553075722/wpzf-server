@@ -6,16 +6,17 @@ const ddUser = require('../db/entities/dd-user')
 const Rights = require('../model/build-rights')
 const Token = require('../model/token')
 const response = require('../model/response-format')
-const ddLogin = require('../model/ddLogin')
+const zzdLogin = require('../model/zzd-login')
 
 /* GET user listing. */
 router.get('/ddLogin', async function (req, res, next) {
     try {
-
-        const ddLoginRes = await ddLogin(req)
+        let {code} = req.query
+        const ddLoginRes = await zzdLogin(code)
         // success
-        if(ddLoginRes && ddLoginRes.data.errcode == 0 && ddLoginRes.data.user_info) {
-            const uid = ddLoginRes.data.user_info.unionid
+        if(ddLoginRes && ddLoginRes.success && ddLoginRes.content.data) {
+            const uid = ddLoginRes.content.data.accountId
+            const nickNameCn = ddLoginRes.content.data.nickNameCn
             let ddUserRes = await ddUser.find( uid )
             // dd auth success
             if(ddUserRes.results.length) {
@@ -45,10 +46,10 @@ router.get('/ddLogin', async function (req, res, next) {
                 res.send(response)
             }
             else { // 找不到
-                response.responseFailed(res, '您的钉钉账户未授权,请联系管理员进行授权')
+                response.responseFailed(res, '您的浙政钉账户未授权,请联系管理员进行授权')
             }
         } else {
-            response.responseFailed(res, '请使用钉钉扫码!')
+            response.responseFailed(res, '请使用浙政钉扫码!')
         }
     } catch (e) {
         console.log(e.message)

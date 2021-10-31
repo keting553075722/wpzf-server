@@ -80,8 +80,8 @@ const province = [
         children: [],
     }, {
         id: 15,
-        authName: "监控台",
-        icon: "el-icon-monitor",
+        authName: "任务进度",
+        icon: "el-icon-s-operation",
         path: "/main/tbjk",
         tag: "tbjk",
         rights: [],

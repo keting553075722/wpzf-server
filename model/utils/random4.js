@@ -7,6 +7,4 @@ const getRandom = () => {
     return num.toString()
 }
 
-module.exports = {
-    ramdom4 : getRandom()
-}
+module.exports = getRandom
