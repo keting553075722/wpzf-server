@@ -12,6 +12,7 @@ const {role} = require('../db/properties/permission-mapper')
 const Token = require('../model/token')
 const Status = require('../db/entities/status')
 const Tuban = require('../db/entities/tuban')
+const User = require('../db/entities/zzd-user')
 const uniqueArr = require('../model/utils/removeTheSame')
 const {aggregateObjs, objsByCityGroup, objsByCountyGroup} = require('../model/obj-aggregate')
 
@@ -44,9 +45,11 @@ router.get('/get', function (req, res, next) {
 router.get('/getMenu',async function (req, res, next) {
     try {
         let token = req.headers.authorization
-        let {name, code, permission} = Token.de(token)
+        let {name, code, permission, uid} = Token.de(token)
         // todo 需要进行校验
-        let menuRes = await Rights(code)
+        let userRes = await User.findByUid(uid)
+        let auth = userRes ? userRes.results[0].auth : ''
+        let menuRes = await Rights(code, auth)
         menuRes ? response.responseSuccess(menuRes, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/status/get ', e.message)

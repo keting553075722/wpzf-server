@@ -13,8 +13,9 @@ var usersRouter = require('./routes/user');
 var tubanRouter = require('./routes/tuban');
 var uploadRouter = require('./routes/upload');
 var statusRouter = require('./routes/status');
-var ddLoginRouter = require('./routes/ddLogin');
+var ddLoginRouter = require('./routes/zzdLogin');
 var taskRouter = require('./routes/task')
+var visitorRouter = require('./routes/visitor')
 
 
 var app = express();
@@ -39,8 +40,9 @@ app.use('/user', usersRouter);
 app.use('/tuban', tubanRouter);
 app.use('/upload', uploadRouter);
 app.use('/status', statusRouter);
-app.use('/dd', ddLoginRouter);
+app.use('/zzd', ddLoginRouter);
 app.use('/task', taskRouter);
+app.use('/visitor', visitorRouter);
 
 
 // catch 404 and forward to error handler

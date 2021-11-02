@@ -24,8 +24,9 @@ module.exports = {
      * @param res
      * @param msg
      * @param fns data的处理函数数组，并且第一个参数是要输入处理的data,返回处理后的data
+     * @param status 状态标识
      */
-    responseSuccess(data, res, msg = 'success', fns) {
+    responseSuccess(data, res, msg = 'success', fns, status) {
         let responseData
         if (fns && fns.length != 0) {
             let tempData
@@ -39,7 +40,7 @@ module.exports = {
             responseData = data
         }
 
-        this.status = true
+        this.status = status || true
         this.msg = msg
         this.data = responseData
         res.send(this)
@@ -50,9 +51,10 @@ module.exports = {
      *  失败消息格式化
      * @param res
      * @param msg
+     * @param status 状态标识
      */
-    responseFailed(res, msg = 'failed') {
-        this.status = false
+    responseFailed(res, msg = 'failed', status) {
+        this.status = status || false
         this.msg = msg
         this.data = {}
         res.send(this)

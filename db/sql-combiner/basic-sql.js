@@ -143,7 +143,7 @@ const updateSQL = function (tableName, content, condition = {}) {
  * @param{array} fields
  * @returns {string}
  */
-const selectSQL = function (tableName, condition, fields = [], limit) {
+const selectSQL = function (tableName, condition, fields = [], limit = []) {
     let filedStr = fields.length ? fields.toString() : '*'
     let sql = `select ${filedStr}  from  ${tableName}`
     // let isTubanSearch = taskBatchPattern.test(tableName)

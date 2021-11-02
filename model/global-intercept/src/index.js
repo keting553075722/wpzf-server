@@ -16,7 +16,7 @@ const staticPattern = require('../../../deploy-config/index').staticReqPattern
  * @returns {boolean}
  */
 module.exports = function (req, res, next) {
-    const loginUrls = ['/dd/ddLogin', '/user/login']
+    const loginUrls = ['/zzd/zzdLogin', '/user/login', '/visitor/applyforvisit']
     let url = getUrl(req.method, req.url)
     if(loginUrls.includes(url)) {
         next() // 登录放行

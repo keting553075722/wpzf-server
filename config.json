@@ -3,9 +3,10 @@
   "serverEnv": "windows",
   "activeTableRelativePath": "/work-tables.propertries",
   "ddConfig": {
-    "appid": "dingoa3ehg64tkdxwge7el",
-    "appkey": "dingoa3ehg64tkdxwge7el",
-    "appsecret": "r2Xz4FB8EDLZ-vwModMZh1UinKqGIaeknP5-94XVim6gs7GDXeBbxS6Fh0GdxKsN",
+    "domain": "https://openplatform.dg-work.cn",
+    "appid": "wpzf_dingoa-JFyyCo81V2EYyEVN3m",
+    "appkey": "wpzf_dingoa-JFyyCo81V2EYyEVN3m",
+    "appsecret": "YuE274if7KQQqLVpELWsIFjl901hU7WI0BAMf2qg",
     "REDIRECT_URI": "http://localhost:8083/"
   }
 }

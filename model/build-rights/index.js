@@ -25,6 +25,19 @@ const templateItem = (Id, Name, idx) => {
     }
 }
 
+const userManage = () => {
+    return {
+        id: 1999,
+        authName: `访客管理`,
+        icon: "el-icon-user",
+        path: `/main/userManage`,
+        tag: `userManage`,
+        cascade: [],
+        rights: [],
+        children: [],
+    }
+}
+
 
 const getMenu = async (code) => {
     let addMenus = []
@@ -67,13 +80,16 @@ const getBasicMenu = () => {
     return {provinceBasic, cityBasic, countyBasic}
 }
 
-const build = async (code) => {
+const build = async (code, auth = '') => {
     // 重置菜单
     const {provinceBasic, cityBasic, countyBasic} = getBasicMenu()
     cityBasic[0]['cascade'] = getCascade(code)
     let addMenus = await getMenu(code)
     if (code.substring(2, 6) === '0000') {
         provinceBasic[0].children.splice(3, 0, ...addMenus)
+        if(auth == 'super_sa') {
+            provinceBasic.push(userManage())
+        }
         return provinceBasic
     } else if (code.substring(4, 6) === '00') {
         cityBasic.splice(1, 0, ...addMenus)
