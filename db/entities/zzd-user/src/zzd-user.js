@@ -1,5 +1,5 @@
 /**
- * @Description: dd-user
+ * @Description: zzd-user
  * @author zzh
  * @createTime 2021/10/3
  */
@@ -41,11 +41,29 @@ module.exports = {
         return db.insert(tableName, [user])
     },
     /**
-     * 根据Id移除访客
+     * 更新用户分组
+     * @param uid
+     * @param group_code
+     * @returns {Promise<unknown>}
+     */
+    updateGroup(uid, group_code) {
+        return db.update(tableName, {group_code: group_code}, {uid:uid})
+    },
+    /**
+     * 更新用户权限
+     * @param uid
+     * @param auth
+     * @returns {Promise<unknown>}
+     */
+    updateAuth(uid, auth = '') {
+        return db.update(tableName, {auth: auth}, {uid:uid})
+    },
+    /**
+     * 根据Id移除用户
      * @param accountId
      * @returns {Promise<unknown>}
      */
-    removeByAccountId(uid) {
+    removeByUid(uid) {
         return db.delete(tableName, {uid: uid})
     },
     setPassword(uid, password) {
