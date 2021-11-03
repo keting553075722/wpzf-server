@@ -28,7 +28,7 @@ const templateItem = (Id, Name, idx) => {
 const userManage = () => {
     return {
         id: 1999,
-        authName: `访客管理`,
+        authName: `用户管理`,
         icon: "el-icon-user",
         path: `/main/userManage`,
         tag: `userManage`,

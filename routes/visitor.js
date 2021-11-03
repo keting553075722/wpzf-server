@@ -8,7 +8,7 @@
 
 var express = require('express');
 var router = express.Router();
-
+const currentTime = require('../model/get-current-time')
 const Visitor = require('../db/entities/visitor')
 const ZZDUser = require('../db/entities/zzd-user')
 const response = require('../model/response-format')
@@ -29,7 +29,7 @@ router.post('/applyforvisit', async function (req, res, next) {
   try {
     // post请求参数存在body中
     let applyUser = req.body
-    applyUser = Object.assign(applyUser, {'_is_allow' : '0'})
+    applyUser = Object.assign(applyUser, {'_is_allow' : '0', 'apply_time': currentTime()})
     let visitorAddRes =await Visitor.add(applyUser).then(res=>res).catch(console.log)
     visitorAddRes && visitorAddRes.results ? response.responseSuccess(visitorAddRes.results.message, res) : response.responseFailed(res)
   } catch (e) {
