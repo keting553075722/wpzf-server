@@ -10,6 +10,7 @@ const pagenate = require('../model/pagenation')
 const response = require('../model/response-format')
 const {role} = require('../db/properties/permission-mapper')
 const moment = require('moment')
+const getCurrentTime = require('../model/get-current-time')
 const filterDirtyFields = require('../model/utils/filterDirtyFields')
 
 /* GET tuban listing. */
@@ -229,18 +230,30 @@ router.post('/giveNotice', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {code, permission} = user
-        let {tableName, JZSJ, JCBHs} = req.body
+        let {name, code, permission} = user
+        let {tableName, JZSJ, JCBHs, type=''} = req.body
 
         // 构建condition
-        let {content, condition} = actions.dispatch(user, JCBHs, JZSJ)
-
-        let dbRes = await Tuban.update(tableName, content, condition)
-
-        dbRes && dbRes.results ? (function () {
-            response.responseSuccess(dbRes.results.message, res)
+        if(type == 'direct') {
+            let {content, condition} = actions.dispatch(user, JCBHs, JZSJ)
+            let dbRes = await Tuban.update(tableName, content, condition)
             dbRes.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
-        })() : response.responseFailed(res)
+            permission = 'city'
+            let dispatchRes = actions.dispatch({name, permission}, JCBHs, JZSJ)
+            let dbRes1 = await Tuban.update(tableName, dispatchRes.content, dispatchRes.condition)
+            dbRes1.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
+            response.responseSuccess(dbRes1.results.message, res)
+        } else {
+            let {content, condition} = actions.dispatch(user, JCBHs, JZSJ)
+            let dbRes = await Tuban.update(tableName, content, condition)
+            dbRes && dbRes.results ? (function () {
+                response.responseSuccess(dbRes.results.message, res)
+                dbRes.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
+            })() : response.responseFailed(res)
+        }
+
+
+
     } catch (e) {
         console.log('/tuban/giveNotice', e.message)
         response.responseFailed(res, e.message)
@@ -331,15 +344,17 @@ router.post('/addsplitedtuban', async function (req, res, next) {
             objs = filterDirtyFields(objs, schema)
         }
         let condition = {JCBH: `${JCBH}-%`}
+        let curretTime = getCurrentTime()
         objs.forEach(itm => {
-            itm['SJXFSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
-            itm['SJSHSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
-            itm['CJJZSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
-            itm['CJXFSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
-            itm['CJSBSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
-            itm['CJSHSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
-            itm['XJJZSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
-            itm['XJSBSJ'] = moment().format('YYYY-MM-DD HH:mm:ss')
+            itm['SJXFSJ'] = curretTime
+            itm['SJSHSJ'] = curretTime
+            itm['CJJZSJ'] = curretTime
+            itm['CJXFSJ'] = curretTime
+            itm['CJSBSJ'] = curretTime
+            itm['CJSHSJ'] = curretTime
+            itm['XJJZSJ'] = curretTime
+            itm['XJSBSJ'] = curretTime
+            itm['JZWCSJ'] = curretTime
         })
         let clearRes = await Tuban.delete(tableName, condition)
         let dbRes = await Tuban.insert(tableName, objs)

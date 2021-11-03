@@ -6,6 +6,7 @@ module.exports = {
      * @param {object} user 用户信息
      * @param {array} tubans 下发的图斑
      * @param {string} tubans 上报的截止时间
+     * @param {string} type 下发类型
      * @returns 返回下发的条件和内容
      */
     dispatch(user, JCBHs, JZSJ) {
@@ -22,14 +23,12 @@ module.exports = {
         content[dispatchTimeField] = moment().format("YYYY-MM-DD HH:mm:ss")
         content[reportTimeField] = JZSJ
         // 如果是省级一步到位下发给县级
-        if(user.permission === "province") {
-            content['CJXF'] = "1"
-            content['CJXFR'] = user.name
-            content['CJXFSJ'] = moment().format("YYYY-MM-DD HH:mm:ss")
-            content['XJJZSJ'] = JZSJ
-
-        }
-
+        // if(user.permission === "province") {
+        //     content['CJXF'] = "1"
+        //     content['CJXFR'] = user.name
+        //     content['CJXFSJ'] = moment().format("YYYY-MM-DD HH:mm:ss")
+        //     content['XJJZSJ'] = JZSJ
+        // }
 
         let condition = {
             JCBH: JCBHs
