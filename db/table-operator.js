@@ -233,7 +233,7 @@ module.exports = {
      */
     queryTBTables(mode = 'zj') {
         return new Promise((resolve, reject) => {
-            let sql = `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${dbConfig.name}' and t.TABLE_NAME like '${mode}%' `
+            let sql = `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${dbConfig.name}' and t.TABLE_NAME like '${mode}_%' `
             db.query(sql).then(
                 res => {
                     let result = []
@@ -252,7 +252,7 @@ module.exports = {
      */
     sjshqueryTBTables(mode = 'sjsh') {
         return new Promise((resolve, reject) => {
-            let sql = `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${dbConfig.name}' and t.TABLE_NAME like '${mode}%' `
+            let sql = `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${dbConfig.name}' and t.TABLE_NAME like '${mode}_%' `
             db.query(sql).then(
                 res => {
                     let result = []

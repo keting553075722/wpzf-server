@@ -12,7 +12,7 @@ module.exports = {
      * @param user {uid}
      * @param callback
      */
-    find(uid) {
+    findByUid(uid) {
         return db.find('dd_user', {uid: uid})
     },
     insert() {

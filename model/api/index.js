@@ -1,2 +1,2 @@
-const {api} = require('./src/myaxios')
-module.exports = {api}
+const ddLogin = require('./src/zzdLogin')
+module.exports = ddLogin

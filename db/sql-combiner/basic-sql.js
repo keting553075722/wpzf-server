@@ -104,7 +104,7 @@ const exisTableSQL = function (tableName) {
  * @returns {string}
  */
 const quaryAllTableNameSQL = function (identifier = 'zj') {
-    return `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${db.name}' and t.TABLE_NAME like '${identifier}%' `
+    return `select t.table_name from information_schema.TABLES t where t.TABLE_SCHEMA ='${db.name}' and t.TABLE_NAME like '${identifier}_%' `
 }
 
 /**
@@ -143,7 +143,7 @@ const updateSQL = function (tableName, content, condition = {}) {
  * @param{array} fields
  * @returns {string}
  */
-const selectSQL = function (tableName, condition, fields = [], limit) {
+const selectSQL = function (tableName, condition, fields = [], limit = []) {
     let filedStr = fields.length ? fields.toString() : '*'
     let sql = `select ${filedStr}  from  ${tableName}`
     // let isTubanSearch = taskBatchPattern.test(tableName)
