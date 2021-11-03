@@ -16,6 +16,7 @@ var statusRouter = require('./routes/status');
 var ddLoginRouter = require('./routes/zzdLogin');
 var taskRouter = require('./routes/task')
 var visitorRouter = require('./routes/visitor')
+var assetsRouter = require('./routes/assets')
 
 
 var app = express();
@@ -43,6 +44,7 @@ app.use('/status', statusRouter);
 app.use('/zzd', ddLoginRouter);
 app.use('/task', taskRouter);
 app.use('/visitor', visitorRouter);
+app.use('/assets', assetsRouter);
 
 
 // catch 404 and forward to error handler
