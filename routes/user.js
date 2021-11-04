@@ -58,9 +58,21 @@ router.post('/login', async function (req, res, next) {
 router.get('/getall',async function (req, res, next) {
     try {
         let dbRes = await User.findAll().then(res=>res).catch(console.log)
-        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/user/getall', e.message)
+        response.responseFailed(res)
+    }
+});
+
+// todo 需要鉴权，超管接口
+router.get('/getbygroupcode',async function (req, res, next) {
+    try {
+        let {code} = req.query
+        let dbRes = await User.findByGroupCode(code).then(res=>res).catch(console.log)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
+    } catch (e) {
+        console.log('/user/getbygroupcode', e.message)
         response.responseFailed(res)
     }
 });
@@ -78,10 +90,12 @@ router.get('/removeuser',async function (req, res, next) {
 });
 
 // todo 需要二次鉴权，超管接口
-router.get('/updategroup',async function (req, res, next) {
+router.post('/updategroup',async function (req, res, next) {
     try {
-        let {uid, group_code} = req.query
-        let dbRes = await User.updateGroup(uid, group_code).then(res=>res).catch(console.log)
+        let token = req.headers.authorization
+        let {name} = Token.de(token)
+        let {uid, group_code, userName} = req.body
+        let dbRes = await User.updateGroup(uid, group_code, name).then(res=>res).catch(console.log)
         dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/user/updategroup', e.message)
@@ -89,10 +103,13 @@ router.get('/updategroup',async function (req, res, next) {
     }
 });
 
-router.get('/updateauth',async function (req, res, next) {
+// todo 需要二次鉴权，超管接口
+router.post('/updateauth',async function (req, res, next) {
     try {
-        let {uid, auth} = req.query
-        let dbRes = await User.updateAuth(uid, auth).then(res=>res).catch(console.log)
+        let token = req.headers.authorization
+        let {name} = Token.de(token)
+        let {uid, auth} = req.body
+        let dbRes = await User.updateAuth(uid, auth, name).then(res=>res).catch(console.log)
         dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
     } catch (e) {
         console.log('/user/updateauth', e.message)
@@ -102,8 +119,10 @@ router.get('/updateauth',async function (req, res, next) {
 
 router.post('/setpwd',async function (req, res, next) {
     try {
+        let token = req.headers.authorization
+        let {name} = Token.de(token)
         let {uid, password} = req.body
-        let setPwdRes =await User.setPassword(uid, password).then(res=>res).catch(console.log)
+        let setPwdRes =await User.setPassword(uid, password, name).then(res=>res).catch(console.log)
         setPwdRes && setPwdRes.results ? response.responseSuccess(setPwdRes.results.message, res) : response.responseFailed(res)
 
     } catch (e) {

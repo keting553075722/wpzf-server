@@ -8,6 +8,7 @@
 
 var express = require('express');
 var router = express.Router();
+const Token = require('../model/token')
 const currentTime = require('../model/get-current-time')
 const Visitor = require('../db/entities/visitor')
 const ZZDUser = require('../db/entities/zzd-user')
@@ -40,6 +41,8 @@ router.post('/applyforvisit', async function (req, res, next) {
 
 router.post('/visitorauthorization',async function (req, res, next) {
   try {
+    let token = req.headers.authorization
+    let {name} = Token.de(token)
     const {accountId, group_code, auth} = req.body
     let visitorInfoRes =await Visitor.findByAccountId(accountId).then(res=>res).catch(console.log)
     if(visitorInfoRes && visitorInfoRes.results.length){
@@ -49,6 +52,8 @@ router.post('/visitorauthorization',async function (req, res, next) {
         name:visitorInfo.nickNameCn,
         group_code:group_code,
         auth: auth || '',
+        authorizer: name || '',
+        last_update_time: currentTime()
       }
       let zzdUserAddRes = await ZZDUser.add(zzduser)
       let visitorRemoveRes = await Visitor.removeByAccountId(accountId)
