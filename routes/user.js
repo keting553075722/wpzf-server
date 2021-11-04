@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-// const User = require('../db/entities/user')
 const User = require('../db/entities/zzd-user')
 const Group = require('../db/entities/group')
 const Rights = require('../model/build-rights')
@@ -55,15 +54,75 @@ router.post('/login', async function (req, res, next) {
     }
 });
 
+// todo 需要鉴权，超管接口
+router.get('/getall',async function (req, res, next) {
+    try {
+        let dbRes = await User.findAll().then(res=>res).catch(console.log)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
+    } catch (e) {
+        console.log('/user/getall', e.message)
+        response.responseFailed(res)
+    }
+});
 
-router.get('/loginOut', function (req, res, next) {
-    res.send('loginOut success');
+// todo 需要鉴权，超管接口
+router.get('/getbygroupcode',async function (req, res, next) {
+    try {
+        let {code} = req.query
+        let dbRes = await User.findByGroupCode(code).then(res=>res).catch(console.log)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results, res) : response.responseFailed(res)
+    } catch (e) {
+        console.log('/user/getbygroupcode', e.message)
+        response.responseFailed(res)
+    }
+});
+
+// todo 需要鉴权，超管接口,删除指定用户
+router.get('/removeuser',async function (req, res, next) {
+    try {
+        let {uid} = req.query
+        let dbRes = await User.removeByUid(uid).then(res=>res).catch(console.log)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+    } catch (e) {
+        console.log('/user/removeuser', e.message)
+        response.responseFailed(res)
+    }
+});
+
+// todo 需要二次鉴权，超管接口
+router.post('/updategroup',async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let {name} = Token.de(token)
+        let {uid, group_code, userName} = req.body
+        let dbRes = await User.updateGroup(uid, group_code, name).then(res=>res).catch(console.log)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+    } catch (e) {
+        console.log('/user/updategroup', e.message)
+        response.responseFailed(res)
+    }
+});
+
+// todo 需要二次鉴权，超管接口
+router.post('/updateauth',async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let {name} = Token.de(token)
+        let {uid, auth} = req.body
+        let dbRes = await User.updateAuth(uid, auth, name).then(res=>res).catch(console.log)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+    } catch (e) {
+        console.log('/user/updateauth', e.message)
+        response.responseFailed(res)
+    }
 });
 
 router.post('/setpwd',async function (req, res, next) {
     try {
+        let token = req.headers.authorization
+        let {name} = Token.de(token)
         let {uid, password} = req.body
-        let setPwdRes =await User.setPassword(uid, password)
+        let setPwdRes =await User.setPassword(uid, password, name).then(res=>res).catch(console.log)
         setPwdRes && setPwdRes.results ? response.responseSuccess(setPwdRes.results.message, res) : response.responseFailed(res)
 
     } catch (e) {
