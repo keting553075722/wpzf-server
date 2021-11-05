@@ -58,7 +58,8 @@ async function get(code) {
   let getUserInfoRes = await getUserInfo(token, code)
   let zzdUserInfo
   if (getUserInfoRes && getUserInfoRes.data && getUserInfoRes.data.success) {
-    zzdUserInfo = getUserInfoRes.data.content.data
+    let {accountId, lastName, clientId, realmId, tenantName, realmName, namespace, tenantId, nickNameCn, tenantUserId, account} = getUserInfoRes.data.content.data
+    zzdUserInfo = {accountId, lastName, clientId, realmId, tenantName, realmName, namespace, tenantId, nickNameCn, tenantUserId, account}
   }
 
   return  zzdUserInfo ? zzdUserInfo : false

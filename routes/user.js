@@ -117,6 +117,20 @@ router.post('/updateauth',async function (req, res, next) {
     }
 });
 
+// todo 需要二次鉴权，超管接口
+router.post('/updateuserinfo',async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let {name} = Token.de(token)
+        let {uid, group_code, auth} = req.body
+        let dbRes = await User.updateUserInfo(uid, group_code, auth, name).then(res=>res).catch(console.log)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+    } catch (e) {
+        console.log('/user/updateuserinfo', e.message)
+        response.responseFailed(res)
+    }
+});
+
 router.post('/setpwd',async function (req, res, next) {
     try {
         let token = req.headers.authorization

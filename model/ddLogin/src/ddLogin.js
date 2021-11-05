@@ -1,5 +1,5 @@
 
-const {appid, appsecret, REDIRECT_URI} = require('../../../config.json').ddConfig
+const {appid, appsecret, REDIRECT_URI} = require('../../../config.js').ddConfig
 
 const axios = require('axios')
 const api = axios.create({

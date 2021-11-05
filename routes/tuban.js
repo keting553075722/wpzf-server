@@ -282,7 +282,7 @@ router.post('/reback', async function (req, res, next) {
             dbRes.results.affectedRows && observer.reback(tableName, code, type)
         })() : response.responseFailed(res)
     } catch (e) {
-        console.log('/tuban/giveNotice', e.message)
+        console.log('/tuban/reback', e.message)
         response.responseFailed(res, e.message)
     }
 

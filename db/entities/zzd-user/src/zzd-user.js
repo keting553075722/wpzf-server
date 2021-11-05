@@ -68,6 +68,10 @@ module.exports = {
   updateAuth(uid, auth = '', name = '') {
     return db.update(tableName, {auth: auth, authorizer: name, last_update_time: currentTime()}, {uid: uid})
   },
+
+  updateUserInfo(uid, group_code, auth = '', name = '') {
+    return db.update(tableName, {auth: auth, group_code: group_code, authorizer: name, last_update_time: currentTime()}, {uid: uid})
+  },
   /**
    * 更新用户名
    * @param uid

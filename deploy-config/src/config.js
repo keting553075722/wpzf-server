@@ -1,7 +1,7 @@
 const ip = require('ip')
 const publicIp = require('public-ip')
 const os = require('os')
-const Config = require('../../config.json')
+const Config = require('../../config.js')
 
 const splitCharMap = function (env) {
     return env == 'linux' ? "\/" : "\\"

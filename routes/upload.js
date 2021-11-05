@@ -82,8 +82,9 @@ router.post('/img', imageUpload, async function (req, res, next) {
         let {tubanId, tableName} = req.query
         let tableInfo = getInfo(tableName)
         let fileName
-        // let filePath = path.join(__dirname, "../resources/evidence/") + `${Id}/${year}/${jd}/${tubanId}`
-        let filePath = path.join(__dirname, "../resources/evidence/") + `${tableInfo.Id}\\${tableInfo.year}\\${tableInfo.batch}\\${tubanId}`+`\\images`
+        let filePathWin = path.join(__dirname, "../resources/evidence/") + `${tableInfo.Id}\\${tableInfo.year}\\${tableInfo.batch}\\${tubanId}`+`\\images`
+        let filePathLin = path.join(__dirname, "../resources/evidence/") + `${tableInfo.Id}/${tableInfo.year}/${tableInfo.batch}/${tubanId}/images`
+        let filePath = config.serverEnv == 'windows' ? filePathWin : filePathLin
         mkdirp.sync(filePath)
         let filePathArr = []
         for (let file of files) {
@@ -96,11 +97,10 @@ router.post('/img', imageUpload, async function (req, res, next) {
 
         let tblj = []
         let serverIp = await config.serverIp().then(res => res).catch(console.log)
-        let sliceNum = config.serverEnv == 'windows' ? 5 : 6
 
         for (let filePathArrElement of filePathArr) {
             let pathArr = filePathArrElement.split(config.splitChar)
-            pathArr = pathArr.slice(sliceNum)
+            pathArr = pathArr.slice(-6)
             let path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
             tblj.push(path)
         }
@@ -122,7 +122,9 @@ router.post('/attachment', attachmentUpload, async function (req, res, next) {
         let {tubanId, tableName, Id} = req.query
         let tableInfo = getInfo(tableName)
         let fileName
-        let filePath = path.join(__dirname, "../resources/evidence/") + `${tableInfo.Id}\\${tableInfo.year}\\${tableInfo.batch}\\${tubanId}`+`\\attachments`
+        let filePathWin = path.join(__dirname, "../resources/evidence/") + `${tableInfo.Id}\\${tableInfo.year}\\${tableInfo.batch}\\${tubanId}`+`\\attachments`
+        let filePathLin = path.join(__dirname, "../resources/evidence/") + `${tableInfo.Id}/${tableInfo.year}/${tableInfo.batch}/${tubanId}/attachments`
+        let filePath = config.serverEnv == 'windows' ? filePathWin : filePathLin
         mkdirp.sync(filePath)
         let filePathArr = []
         for (let file of files) {
@@ -135,11 +137,10 @@ router.post('/attachment', attachmentUpload, async function (req, res, next) {
 
         let fjlj = []
         let serverIp = await config.serverIp().then(res => res).catch(console.log)
-        let sliceNum = config.serverEnv == 'windows' ? 5 : 6
 
         for (let filePathArrElement of filePathArr) {
             let pathArr = filePathArrElement.split(config.splitChar)
-            pathArr = pathArr.slice(sliceNum)
+            pathArr = pathArr.slice(-6)
             let path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
             fjlj.push(path)
         }
