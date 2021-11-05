@@ -226,16 +226,51 @@ router.post('/report', async function (req, res, next) {
 /**
  * 下发图斑，// 县级不会出发此按钮
  */
+// router.post('/giveNotice', async function (req, res, next) {
+//     try {
+//         let token = req.headers.authorization
+//         let user = Token.de(token)
+//         let {name, code, permission} = user
+//         let {tableName, JZSJ, JCBHs, type=''} = req.body
+//
+//         // 构建condition
+//         if(type == 'direct') {
+//             let {content, condition} = actions.dispatch(user, JCBHs, JZSJ)
+//             let dbRes = await Tuban.update(tableName, content, condition)
+//             dbRes.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
+//             permission = 'city'
+//             let dispatchRes = actions.dispatch({name, permission}, JCBHs, JZSJ)
+//             let dbRes1 = await Tuban.update(tableName, dispatchRes.content, dispatchRes.condition)
+//             dbRes1.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
+//             response.responseSuccess(dbRes1.results.message, res)
+//         } else {
+//             let {content, condition} = actions.dispatch(user, JCBHs, JZSJ)
+//             let dbRes = await Tuban.update(tableName, content, condition)
+//             dbRes && dbRes.results ? (function () {
+//                 response.responseSuccess(dbRes.results.message, res)
+//                 dbRes.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
+//             })() : response.responseFailed(res)
+//         }
+//
+//     } catch (e) {
+//         console.log('/tuban/giveNotice', e.message)
+//         response.responseFailed(res, e.message)
+//     }
+// });
+
+/**
+ * 根据条件一键下发图斑，// 县级不会出发此按钮
+ */
 router.post('/giveNotice', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
         let {name, code, permission} = user
-        let {tableName, JZSJ, JCBHs, type=''} = req.body
-
+        let {tableName, JZSJ, JCBHs, type = '', district, dispatch} = req.body
+        console.log('user')
         // 构建condition
         if(type == 'direct') {
-            let {content, condition} = actions.dispatch(user, JCBHs, JZSJ)
+            let {content, condition} = actions.dispatch(user, JCBHs, JZSJ, district, dispatch)
             let dbRes = await Tuban.update(tableName, content, condition)
             dbRes.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
             permission = 'city'
@@ -244,16 +279,13 @@ router.post('/giveNotice', async function (req, res, next) {
             dbRes1.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
             response.responseSuccess(dbRes1.results.message, res)
         } else {
-            let {content, condition} = actions.dispatch(user, JCBHs, JZSJ)
+            let {content, condition} = actions.dispatch(user, JCBHs, JZSJ, district, dispatch)
             let dbRes = await Tuban.update(tableName, content, condition)
             dbRes && dbRes.results ? (function () {
                 response.responseSuccess(dbRes.results.message, res)
                 dbRes.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
             })() : response.responseFailed(res)
         }
-
-
-
     } catch (e) {
         console.log('/tuban/giveNotice', e.message)
         response.responseFailed(res, e.message)

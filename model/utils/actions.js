@@ -1,5 +1,5 @@
 const moment = require('moment')
-
+const handleDistrict = require('./handleDistrict')
 module.exports = {
     /**
      * 获得下发图版的条件和要更新的内容
@@ -9,7 +9,7 @@ module.exports = {
      * @param {string} type 下发类型
      * @returns 返回下发的条件和内容
      */
-    dispatch(user, JCBHs, JZSJ) {
+    dispatch(user, JCBHs, JZSJ, district, dispatch) {
         // 省级才能下发
         let dispatchField = user.permission === "province" ? "SJXF" : "CJXF"
         let dispatchPersonField = user.permission === "province" ? "SJXFR" : "CJXFR"
@@ -22,17 +22,12 @@ module.exports = {
         content[dispatchPersonField] = user.name
         content[dispatchTimeField] = moment().format("YYYY-MM-DD HH:mm:ss")
         content[reportTimeField] = JZSJ
-        // 如果是省级一步到位下发给县级
-        // if(user.permission === "province") {
-        //     content['CJXF'] = "1"
-        //     content['CJXFR'] = user.name
-        //     content['CJXFSJ'] = moment().format("YYYY-MM-DD HH:mm:ss")
-        //     content['XJJZSJ'] = JZSJ
-        // }
 
-        let condition = {
-            JCBH: JCBHs
-        }
+        let condition = {}
+        JCBHs.length && (condition['JCBH'] = JCBHs)
+        dispatch && (condition[dispatchField] = dispatch)
+        if (district) district.toString() && (condition['XZQDM'] = handleDistrict(district, user.code))
+
         return {content, condition}
     },
 

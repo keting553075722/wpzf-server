@@ -39,6 +39,7 @@ router.post('/login', async function (req, res, next) {
             response.data = {
                 name: resInfo.name,
                 role: resInfo.role,
+                code: resInfo.code,
                 cluster : resInfo.cluster,
                 token,
                 rights:menu
