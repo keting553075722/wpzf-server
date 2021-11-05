@@ -19,7 +19,7 @@ const province = [
         path: "/main",
         tag: "jdtb",
         cascade: cityCascade[0].children,
-        rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'upload', 'sendDown', 'view', 'details-reback'],
+        rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'upload', 'sendDownProv', 'view', 'details-reback'],
         children: [
             {
                 id: 111,
@@ -37,7 +37,7 @@ const province = [
                 path: "/main/jdtb",
                 tag: "",
                 cascade: cityCascade[0].children,
-                rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'upload', 'sendDown', 'view', 'details-reback'],
+                rights: ['batch', 'district', 'dispatch', 'codeKey', 'refresh', 'upload', 'sendDownProv', 'view', 'details-reback'],
                 children: [],
             }, {
                 id: 113,

@@ -267,7 +267,6 @@ router.post('/giveNotice', async function (req, res, next) {
         let user = Token.de(token)
         let {name, code, permission} = user
         let {tableName, JZSJ, JCBHs, type = '', district, dispatch} = req.body
-        console.log('user')
         // 构建condition
         if(type == 'direct') {
             let {content, condition} = actions.dispatch(user, JCBHs, JZSJ, district, dispatch)
