@@ -90,7 +90,7 @@ router.post('/img', imageUpload, async function (req, res, next) {
         for (let file of files) {
             let tempPath = ''
             fileName = `${moment().format("YYYY-MM-DD HH时mm分ss秒")}--${user.name}--${file.originalname}`
-            tempPath = filePath + '/' + fileName
+            tempPath = filePath + config.splitChar + fileName
             fs.writeFileSync(tempPath, file.buffer)
             filePathArr.push(tempPath)
         }
@@ -100,7 +100,7 @@ router.post('/img', imageUpload, async function (req, res, next) {
 
         for (let filePathArrElement of filePathArr) {
             let pathArr = filePathArrElement.split(config.splitChar)
-            pathArr = pathArr.slice(-6)
+            pathArr = pathArr.slice(-7)
             let path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
             tblj.push(path)
         }
@@ -130,7 +130,7 @@ router.post('/attachment', attachmentUpload, async function (req, res, next) {
         for (let file of files) {
             let tempPath = ''
             fileName = `${moment().format("YYYY-MM-DD HH时mm分ss秒")}--${user.name}--${file.originalname}`
-            tempPath = filePath + '/' + fileName
+            tempPath = filePath + config.splitChar + fileName
             fs.writeFileSync(tempPath, file.buffer)
             filePathArr.push(tempPath)
         }
@@ -140,7 +140,7 @@ router.post('/attachment', attachmentUpload, async function (req, res, next) {
 
         for (let filePathArrElement of filePathArr) {
             let pathArr = filePathArrElement.split(config.splitChar)
-            pathArr = pathArr.slice(-6)
+            pathArr = pathArr.slice(-7)
             let path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
             fjlj.push(path)
         }
