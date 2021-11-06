@@ -65,7 +65,9 @@ router.get('/get', async function (req, res, next) {
         Id && fields.push(Id)
         Name && fields.push(Name)
         const getRes = await task.find(fields).then(res => res).catch(console.log)
-        getRes && getRes.results ? response.responseSuccess(getRes.results, res) : response.responseFailed(res)
+        let appendData = [{"Id": "zj","Name": "省级卫片"},{"Id": "sjsh","Name": "省级审核"}]
+        // let returnData = appendData.concat(getRes.results)
+        getRes && getRes.results ? response.responseSuccess(appendData.concat(getRes.results), res) : response.responseFailed(res)
     } catch (e) {
         console.log('/task/get', e.message)
         response.responseFailed(res, e.message)
