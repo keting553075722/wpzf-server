@@ -42,6 +42,29 @@ router.get('/get', function (req, res, next) {
     }
 })
 
+/**
+ * 获取指定任务指定批次的状态
+ */
+router.get('/getself', function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let {name, code, permission} = Token.de(token)
+        let {Id, tableName} = req.query
+        let type = permission === role["province"] ? "0" : permission === role["city"] ? '1' : '2'  // 0  1  2
+        let len = permission === role["province"] ? 2 : permission === role["city"] ? '4' : '6'  // 2  4  6
+        let result
+        if($statusObj[Id][tableName] && $statusObj[Id][tableName].length == 0) {
+            result = []
+        } else {
+            $statusObj[Id][tableName] && $statusObj[Id][tableName].length && (result = $statusObj[Id][tableName].filter((itm) => itm["CODE"] === code))
+        }
+        result.length ? response.responseSuccess(result[0], res) : response.responseFailed(res)
+    } catch (e) {
+        console.log('/status/getself ', e.message)
+        response.responseFailed(res, e.message)
+    }
+})
+
 router.get('/getMenu',async function (req, res, next) {
     try {
         let token = req.headers.authorization

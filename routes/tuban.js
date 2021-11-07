@@ -177,6 +177,7 @@ router.post('/report', async function (req, res, next) {
             condition["SJXF"] = '1'
         } else {
             condition["XZQDM"] = code
+            condition["SJXF"] = '1'
             condition["CJXF"] = '1'
         }
 
@@ -193,6 +194,7 @@ router.post('/report', async function (req, res, next) {
             let finishCheck = user.permission === role['city'] ? values.every(itm => itm['CJSH'] === '1') : values.every(itm => itm['XJJZ'] === '1')
 
             if (finishCheck) {
+                observer.report(tableName, code)
                 let {content, condition} = actions.report(user)
                 // 上报逻辑 两条线
                 let selfStatus = global.$statusObj[Id][tableName].find(x => x.CODE === code)
@@ -206,7 +208,7 @@ router.post('/report', async function (req, res, next) {
                 /*updateRes && updateRes.results ? response.responseSuccess(updateRes.results.message, res) : response.responseFailed(res)*/
                 updateRes && updateRes.results ? (function () {
                     response.responseSuccess(updateRes.results.message, res)
-                    observer.report(tableName, code)
+
                 })() : response.responseFailed(res)
 
 

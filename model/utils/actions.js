@@ -1,5 +1,6 @@
 const moment = require('moment')
 const handleDistrict = require('./handleDistrict')
+const {role} = require('../../db/properties/permission-mapper')
 module.exports = {
     /**
      * 获得下发图版的条件和要更新的内容
@@ -11,20 +12,28 @@ module.exports = {
      */
     dispatch(user, JCBHs, JZSJ, district, dispatch) {
         // 省级才能下发
+        let code = user.code
         let dispatchField = user.permission === "province" ? "SJXF" : "CJXF"
         let dispatchPersonField = user.permission === "province" ? "SJXFR" : "CJXFR"
         let dispatchTimeField = user.permission === "province" ? "SJXFSJ" : "CJXFSJ"
         let reportTimeField = user.permission === "province" ? "CJJZSJ" : "XJJZSJ"
+        let codeLike = user.permission = role['province'] ? code.substring(0,2) + '%' : code.substring(0,4) + '%'
 
         let content = {}
         content[dispatchField] = "1"
-
         content[dispatchPersonField] = user.name
         content[dispatchTimeField] = moment().format("YYYY-MM-DD HH:mm:ss")
         content[reportTimeField] = JZSJ
 
         let condition = {}
-        JCBHs.length && (condition['JCBH'] = JCBHs)
+        condition['JCBH'] = codeLike
+        if(JCBHs.length) { // 直接通过选定图斑下发
+            condition['JCBH'] = JCBHs
+        } else {
+            if(user.permission = role['city']) {
+                condition['SJXF'] = '1'
+            }
+        }
         dispatch && (condition[dispatchField] = dispatch)
         if (district) district.toString() && (condition['XZQDM'] = handleDistrict(district, user.code))
 
@@ -204,6 +213,8 @@ module.exports = {
                 supTH: "", // 父级退回
                 YJ: "",// 上一级意见
 
+                SHTG:'SJTG',
+                SHYJ:'SJYJ',
                 // 上报界面需要
                 SB: "",// 省级上报
                 SBSJ: "",// 省级上报时间
@@ -221,7 +232,8 @@ module.exports = {
                 TH: "CJTH", // 观察退回状态(本级退回)
                 supTH: "SJTH", // 父级退回
                 YJ: "SJYJ",// 上一级意见
-
+                SHTG:'CJTG',
+                SHYJ:'CJYJ',
                 // 上报界面需要
                 SB: "CJSB",// 市级上报
                 SBSJ: "CJSBSJ",// 市级上报时间

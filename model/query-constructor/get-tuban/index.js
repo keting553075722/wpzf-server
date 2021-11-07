@@ -28,6 +28,7 @@ const queryBuild = (body, code) => {
         report && (queryObj['CJSB'] = report)
     } else {
         queryObj["XZQDM"] = code
+        queryObj["SJXF"] = '1'
         queryObj["CJXF"] = '1'
         //kind 字段缺省或者 '' 0 1 2
         kind && (queryObj['TBLY'] = kind)
