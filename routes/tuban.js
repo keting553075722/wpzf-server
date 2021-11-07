@@ -270,12 +270,12 @@ router.post('/giveNotice', async function (req, res, next) {
         let {name, code, permission} = user
         let {tableName, JZSJ, JCBHs, type = '', district, dispatch} = req.body
         // 构建condition
-        if(type == 'direct') {
+        if(type == 'direct') { //省级才会以此方式下发
             let {content, condition} = actions.dispatch(user, JCBHs, JZSJ, district, dispatch)
             let dbRes = await Tuban.update(tableName, content, condition)
             dbRes.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
             permission = 'city'
-            let dispatchRes = actions.dispatch({name, permission}, JCBHs, JZSJ)
+            let dispatchRes = actions.dispatch({name, permission, type}, JCBHs, JZSJ)
             let dbRes1 = await Tuban.update(tableName, dispatchRes.content, dispatchRes.condition)
             dbRes1.results.affectedRows && observer.giveNotice(tableName, permission, JCBHs)
             response.responseSuccess(dbRes1.results.message, res)

@@ -17,7 +17,13 @@ module.exports = {
         let dispatchPersonField = user.permission === "province" ? "SJXFR" : "CJXFR"
         let dispatchTimeField = user.permission === "province" ? "SJXFSJ" : "CJXFSJ"
         let reportTimeField = user.permission === "province" ? "CJJZSJ" : "XJJZSJ"
-        let codeLike = user.permission = role['province'] ? code.substring(0,2) + '%' : code.substring(0,4) + '%'
+        let codeLike
+        if(user.permission == role['city'] && !user['type']) {
+            codeLike = code.substring(0,4) + '%'
+        } else {
+            codeLike = '33%'
+        }
+        // let codeLike = user.permission = role['province'] ? code.substring(0,2) + '%' : user['type'] ? '33%' : code.substring(0,4) + '%'
 
         let content = {}
         content[dispatchField] = "1"
