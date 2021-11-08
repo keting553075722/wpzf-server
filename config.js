@@ -46,11 +46,11 @@ const zjGovConfig = {
   'serverEnv': 'windows',
   'activeTableRelativePath': '/work-tables.propertries',
   'ddConfig': {
-    'domain': '',
-    'appid': '',
-    'appkey': '',
-    'appsecret': '',
-    'REDIRECT_URI': ''
+    'domain': 'https://openplatform-pro.ding.zj.gov.cn',
+    'appid': 'zrzywpzfzw_dingoa-40Bl3GmUv6Bv',
+    'appkey': 'zrzywpzfzw_dingoa-40Bl3GmUv6Bv',
+    'appsecret': 'Mk7QpHM7miv08YOROK43CwdlWxqidpo28zb47cAM',
+    'REDIRECT_URI': 'https://txdc.zrzyt.zj.gov.cn:8083/'
   }
 }
 // {localConfig, linux8083Config, linux9999Config, zjGovConfig}

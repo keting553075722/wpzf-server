@@ -32,11 +32,14 @@ module.exports = {
         content[reportTimeField] = JZSJ
 
         let condition = {}
-        condition['JCBH'] = codeLike
+        // condition['JCBH'] = codeLike
         if(JCBHs.length) { // 直接通过选定图斑下发
             condition['JCBH'] = JCBHs
         } else {
-            if(user.permission = role['city']) {
+            if(user.permission = role['province']) {
+                //condition['SJXF'] = '1'
+            }
+            if(user.permission == role['city']) {
                 condition['SJXF'] = '1'
             }
         }
