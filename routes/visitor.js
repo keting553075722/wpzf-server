@@ -12,6 +12,7 @@ const Token = require('../model/token')
 const currentTime = require('../model/get-current-time')
 const Visitor = require('../db/entities/visitor')
 const ZZDUser = require('../db/entities/zzd-user')
+const {getRandom} = require('../model/utils/random')
 const response = require('../model/response-format')
 
 /* GET user listing. */
@@ -43,13 +44,14 @@ router.post('/visitorauthorization',async function (req, res, next) {
   try {
     let token = req.headers.authorization
     let {name} = Token.de(token)
-    const {accountId, group_code, auth} = req.body
+    const {accountId, group_code, auth, givePwd} = req.body
     let visitorInfoRes =await Visitor.findByAccountId(accountId).then(res=>res).catch(console.log)
     if(visitorInfoRes && visitorInfoRes.results.length){
       let visitorInfo = visitorInfoRes.results[0]
       const zzduser = {
         uid:visitorInfo.accountId,
         name:visitorInfo.nickNameCn,
+        password: givePwd ? group_code + '@' +getRandom() : '',
         group_code:group_code,
         auth: auth || '',
         authorizer: name || '',
