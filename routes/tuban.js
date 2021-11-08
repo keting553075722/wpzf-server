@@ -306,7 +306,7 @@ router.post('/reback', async function (req, res, next) {
         let {tableName, name, code, type} = req.body
 
         // 构建condition
-        let {content, condition} = actions.reback(user)
+        let {content, condition} = actions.reback(user, code)
 
         let dbRes = await Tuban.update(tableName, content, condition)
 

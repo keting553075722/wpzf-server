@@ -181,19 +181,22 @@ module.exports = {
     /**
      * 返回退回需要更新的内容和条件
      * @param {user} 执行退回操作的用户
+     * @param {user} 要退回的单位
      * @returns 需要更新的内容和条件
      */
-    reback(user) {
+    reback(user, code) {
         let XFField = user.permission === "province" ? "SJXF" : "CJXF"
         let SHField = user.permission === "province" ? "SJSH" : "CJSH"
         let TGField = user.permission === "province" ? "SJTG" : "CJTG"
         let THField = user.permission === "province" ? "SJTH" : "CJTH"
         let SBField = user.permission === "province" ? "CJSB" : "XJSB"
+        let codeLike = user.permission === "province" ? code.substring(0,4) + '%' : code
         // 找到审核状态为1并且通过状态为0的图斑,将其退回字段置为1
         let condition = {}
         condition[XFField] = '1'
         condition[SHField] = '1'
         condition[TGField] = '0'
+        condition['XZQDM'] = codeLike
         let content = {}
         content[THField] = "1"
         content[SBField] = "0"
