@@ -113,13 +113,14 @@ module.exports = {
      * @param {array} JCBHs 需要举证的图斑监测编号
      * @returns 返回审核字段更新后的图斑数组
      */
-    evidence(user, JZLX, WFLX, WFMJ = "", BZ = "", JCBHs) {
+    evidence(user, JZLX, WFLX, WFMJ = "", SFYJZ, BZ = "", JCBHs) {
         // 省级审核状态
         let content = {}
         content["XJJZ"] = '1'
         content["JZLX"] = JZLX
         content["WFLX"] = WFLX
         content["WFMJ"] = WFMJ
+        content["SFYJZ"] = SFYJZ
         content["BZ"] = BZ
         content["XJJZR"] = user.name
         content["JZWCSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
@@ -132,13 +133,14 @@ module.exports = {
         }
         return {content, condition}
     },
-    saveEvidence(user, JZLX, WFLX, WFMJ = "", BZ = "", JCBHs) {
+    saveEvidence(user, JZLX, WFLX, WFMJ = "", SFYJZ, BZ = "", JCBHs) {
         // 省级审核状态
         let content = {}
         //content["XJJZ"] = '1'
         content["JZLX"] = JZLX
         content["WFLX"] = WFLX
         content["WFMJ"] = WFMJ
+        content["SFYJZ"] = SFYJZ
         content["BZ"] = BZ
         content["XJJZR"] = user.name
         content["JZWCSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
@@ -152,18 +154,13 @@ module.exports = {
         return {content, condition}
     },
     /**
-     * 县级举证
-     * @param {object} user 用户信息
-     * @param {string} JZLX 举证结果
-     * @param {string} WFLX 违法类型
-     * @param {string} WFMJ 违法面积
-     * @param {array} JCBHs 需要举证的图斑监测编号
-     * @returns 返回审核字段更新后的图斑数组
+     * 外业举证
      */
-    addNotes(user, BZ = "", JCBHs) {
+    addNotes(user, SFYJZ, BZ = "", JCBHs) {
         // 省级审核状态
         let content = {}
         content["BZ"] = BZ
+        content["SFYJZ"] = SFYJZ
         content["XJJZR"] = user.name
         content["JZWCSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
         // 不需要外业核查

@@ -329,9 +329,9 @@ router.post('/evidence', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {JZLX = '', WFLX = '', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
+        let {JZLX = '', WFLX = '', SFYJZ = '否', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
         // 构建condition
-        let {content, condition} = actions.evidence(user, JZLX, WFLX, WFMJ, BZ, JCBHs)
+        let {content, condition} = actions.evidence(user, JZLX, WFLX, WFMJ, SFYJZ, BZ, JCBHs)
 
         let dbRes = await Tuban.update(tableName, content, condition)
 
@@ -350,9 +350,9 @@ router.post('/addNotes', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {BZ = '', JCBHs, tableName} = req.body
+        let {BZ = '', SFYJZ, JCBHs, tableName} = req.body
         // 构建condition
-        let {content, condition} = actions.addNotes(user, BZ, JCBHs)
+        let {content, condition} = actions.addNotes(user, SFYJZ, BZ, JCBHs)
 
         let dbRes = await Tuban.update(tableName, content, condition)
 
@@ -371,9 +371,9 @@ router.post('/saveEvidence', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {JZLX = '', WFLX = '', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
+        let {JZLX = '', WFLX = '', WFMJ = '', SFYJZ = '否', BZ = '', JCBHs, tableName} = req.body
         // 构建condition
-        let {content, condition} = actions.saveEvidence(user, JZLX, WFLX, WFMJ, BZ, JCBHs)
+        let {content, condition} = actions.saveEvidence(user, JZLX, WFLX, WFMJ, SFYJZ, BZ, JCBHs)
 
         let dbRes = await Tuban.update(tableName, content, condition)
 
