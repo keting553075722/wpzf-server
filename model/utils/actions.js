@@ -143,8 +143,8 @@ module.exports = {
         content["SFCF"] = SFCF
         content["SFYJZ"] = SFYJZ
         content["BZ"] = BZ
-        content["XJJZR"] = user.name
-        content["JZWCSJ"] = getCurrentTime()
+        //content["XJJZR"] = user.name
+        //content["JZWCSJ"] = getCurrentTime()
         // 不需要外业核查
         content["WYHC"] = '0'
         content["HCSB"] = '0'
@@ -162,8 +162,8 @@ module.exports = {
         let content = {}
         content["BZ"] = BZ
         content["SFYJZ"] = SFYJZ
-        content["XJJZR"] = user.name
-        content["JZWCSJ"] = getCurrentTime()
+        //content["XJJZR"] = user.name
+        //content["JZWCSJ"] = getCurrentTime()
         // 不需要外业核查
         content["WYHC"] = '0'
         content["HCSB"] = '0'
