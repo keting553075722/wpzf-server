@@ -134,7 +134,7 @@ const county = [
         icon: "el-icon-menu",
         path: "/main/jdtb",
         tag: "jdtb",
-        rights: ['batch', 'evidence', 'codeKey', 'refresh', 'view', 'evidence'], //县级图斑界面的权限
+        rights: ['batch', 'evidence', 'codeKey', 'refresh', 'view', 'evidence', 'townsFilter'], //县级图斑界面的权限
         children: [],
     }
     , {
