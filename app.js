@@ -3,9 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var fs = require('fs')
+
 var cors = require('cors')
-var config = require('./deploy-config/src/config')
+var globalBind = require('./model/global-bind')
 var reqIntercept = require('./model/global-intercept')
 
 var indexRouter = require('./routes/index');
@@ -63,45 +63,7 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-
-global.$workTablesPath = __dirname + config.activeTableRelativePath;
-global.$workTables = JSON.parse(fs.readFileSync($workTablesPath).toString());
+globalBind()
 
 
-// 根据表名获取Id
-global.getId = (tableName) => {
-    return tableName.split('_')[0]
-}
-
-global.getInfo = (tableName) => {
-    const [Id, year, batch] = tableName.split('_')
-    return {Id, year, batch}
-}
-
-Array.prototype['pushItem'] = function (item) {
-    if (this.includes(item)) return
-    this.push(item)
-    let Id = getId(item)
-    $workTables[Id] = this
-    fs.writeFileSync($workTablesPath, JSON.stringify($workTables))
-}
-Array.prototype['removeItem'] = function (item) {
-    if (!this.includes(item)) return
-    let index = this.indexOf(item)
-    this.splice(index, 1)
-    let Id = getId(item)
-    $workTables[Id] = this
-    fs.writeFileSync($workTablesPath, JSON.stringify($workTables))
-}
-
-String.prototype.toBytes = function (encoding) {
-    let buff = new Buffer(this, encoding)
-    return buff
-}
-
-
-global.$statusObj = {}
-global.environmentPRODEV = config.serverEnv
-global.environmentPort = config.appPort
-global.taskBatchPattern = config.taskBatchPattern
 module.exports = app;

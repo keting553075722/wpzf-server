@@ -48,7 +48,7 @@ module.exports = function (user) {
         let content = {}
         content[dispatchField] = '1'
         content[dispatchPersonField] = name
-        content[dispatchTimeField] = moment().format("YYYY-MM-DD HH:mm:ss")
+        content[dispatchTimeField] = getCurrentTime()
         content[reportTimeField] = JZSJ
 
         return {condition, content}

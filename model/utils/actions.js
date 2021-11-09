@@ -1,4 +1,3 @@
-const moment = require('moment')
 const handleDistrict = require('./handleDistrict')
 const {role} = require('../../db/properties/permission-mapper')
 module.exports = {
@@ -28,7 +27,7 @@ module.exports = {
         let content = {}
         content[dispatchField] = "1"
         content[dispatchPersonField] = user.name
-        content[dispatchTimeField] = moment().format("YYYY-MM-DD HH:mm:ss")
+        content[dispatchTimeField] = getCurrentTime()
         content[reportTimeField] = JZSJ
 
         let condition = {}
@@ -64,7 +63,7 @@ module.exports = {
         let content = {}
         content[reportField] = "1"
         content[reportPersonField] = user.name
-        content[reportTimeField] = moment().format("YYYY-MM-DD HH-mm-ss")
+        content[reportTimeField] = getCurrentTime()
         let condition = {}
         condition[XFField] = '1' //上级下发的才上报
         condition[conditionField] = user.code
@@ -87,14 +86,14 @@ module.exports = {
             content["CJTG"] = SHTG
             content["CJYJ"] = SHYJ
             content["CJSHR"] = user.name
-            content["CJSHSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
+            content["CJSHSJ"] = getCurrentTime()
             content["CJTH"] = '0'
         } else {
             content["SJSH"] = '1'
             content["SJTG"] = SHTG
             content["SJYJ"] = SHYJ
             content["SJSHR"] = user.name
-            content["SJSHSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
+            content["SJSHSJ"] = getCurrentTime()
             content["SJTH"] = '0'
         }
 
@@ -113,7 +112,7 @@ module.exports = {
      * @param {array} JCBHs 需要举证的图斑监测编号
      * @returns 返回审核字段更新后的图斑数组
      */
-    evidence(user, JZLX, WFLX, WFMJ = "", SFYJZ, BZ = "", JCBHs) {
+    evidence(user, JZLX, WFLX, WFMJ = "", SFYJZ, SFCF, BZ = "", JCBHs) {
         // 省级审核状态
         let content = {}
         content["XJJZ"] = '1'
@@ -121,9 +120,10 @@ module.exports = {
         content["WFLX"] = WFLX
         content["WFMJ"] = WFMJ
         content["SFYJZ"] = SFYJZ
+        content["SFCF"] = SFCF
         content["BZ"] = BZ
         content["XJJZR"] = user.name
-        content["JZWCSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
+        content["JZWCSJ"] = getCurrentTime()
         // 不需要外业核查
         content["WYHC"] = '0'
         content["HCSB"] = '0'
@@ -133,17 +133,18 @@ module.exports = {
         }
         return {content, condition}
     },
-    saveEvidence(user, JZLX, WFLX, WFMJ = "", SFYJZ, BZ = "", JCBHs) {
+    saveEvidence(user, JZLX, WFLX, WFMJ = "", SFYJZ, SFCF, BZ = "", JCBHs) {
         // 省级审核状态
         let content = {}
         //content["XJJZ"] = '1'
         content["JZLX"] = JZLX
         content["WFLX"] = WFLX
         content["WFMJ"] = WFMJ
+        content["SFCF"] = SFCF
         content["SFYJZ"] = SFYJZ
         content["BZ"] = BZ
         content["XJJZR"] = user.name
-        content["JZWCSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
+        content["JZWCSJ"] = getCurrentTime()
         // 不需要外业核查
         content["WYHC"] = '0'
         content["HCSB"] = '0'
@@ -162,7 +163,7 @@ module.exports = {
         content["BZ"] = BZ
         content["SFYJZ"] = SFYJZ
         content["XJJZR"] = user.name
-        content["JZWCSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
+        content["JZWCSJ"] = getCurrentTime()
         // 不需要外业核查
         content["WYHC"] = '0'
         content["HCSB"] = '0'
@@ -207,7 +208,7 @@ module.exports = {
         content["WFMJ"] = WFMJ
         content["BZ"] = BZ
         content["XJJZR"] = user.name
-        content["JZWCSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
+        content["JZWCSJ"] = getCurrentTime()
         // 不需要外业核查
         content["WYHC"] = '1'
         content["HCSB"] = '1'

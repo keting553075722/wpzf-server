@@ -19,7 +19,7 @@ router.post('/add', async function (req, res, next) {
         const {name, code, permission} = Token.de(token) // 权限判断一下
 
         const {Id, Name, FieldsDetails, Define, Description} = req.body
-        const CreateTime = moment().format("YYYY-MM-DD HH:mm:ss")
+        const CreateTime = getCurrentTime()
         const Creator = name
         const lastUpdateTime = CreateTime
         const lastUpdateName = Creator
@@ -44,7 +44,7 @@ router.post('/updateTemplate', async function (req, res, next) {
         const token = req.headers.authorization
         const {name, code, permission} = Token.de(token) // 权限判断一下
         let {Id, Name,FieldsDetails} = req.body
-        const lastUpdateTime = moment().format("YYYY-MM-DD HH:mm:ss")
+        const lastUpdateTime = getCurrentTime()
         const lastUpdateName = name
         FieldsDetails = JSON.stringify(FieldsDetails)
         const content = {Name,FieldsDetails,lastUpdateTime,lastUpdateName}

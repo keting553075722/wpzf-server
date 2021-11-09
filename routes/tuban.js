@@ -10,7 +10,7 @@ const pagenate = require('../model/pagenation')
 const response = require('../model/response-format')
 const {role} = require('../db/properties/permission-mapper')
 const moment = require('moment')
-const getCurrentTime = require('../model/get-current-time')
+
 const filterDirtyFields = require('../model/utils/filterDirtyFields')
 
 /* GET tuban listing. */
@@ -329,9 +329,9 @@ router.post('/evidence', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {JZLX = '', WFLX = '', SFYJZ = '否', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
+        let {JZLX = '', WFLX = '', SFCF, SFYJZ = '否', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
         // 构建condition
-        let {content, condition} = actions.evidence(user, JZLX, WFLX, WFMJ, SFYJZ, BZ, JCBHs)
+        let {content, condition} = actions.evidence(user, JZLX, WFLX, WFMJ, SFYJZ, SFCF, BZ, JCBHs)
 
         let dbRes = await Tuban.update(tableName, content, condition)
 
@@ -371,9 +371,9 @@ router.post('/saveEvidence', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {JZLX = '', WFLX = '', WFMJ = '', SFYJZ = '否', BZ = '', JCBHs, tableName} = req.body
+        let {JZLX = '', WFLX = '', SFCF, WFMJ = '', SFYJZ = '否', BZ = '', JCBHs, tableName} = req.body
         // 构建condition
-        let {content, condition} = actions.saveEvidence(user, JZLX, WFLX, WFMJ, SFYJZ, BZ, JCBHs)
+        let {content, condition} = actions.saveEvidence(user, JZLX, WFLX, WFMJ, SFYJZ, SFCF, BZ, JCBHs)
 
         let dbRes = await Tuban.update(tableName, content, condition)
 
