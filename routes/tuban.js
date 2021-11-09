@@ -344,6 +344,50 @@ router.post('/evidence', async function (req, res, next) {
 });
 
 /**
+ * 添加图斑备注
+ */
+router.post('/addNotes', async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let user = Token.de(token)
+        let {BZ = '', JCBHs, tableName} = req.body
+        // 构建condition
+        let {content, condition} = actions.addNotes(user, BZ, JCBHs)
+
+        let dbRes = await Tuban.update(tableName, content, condition)
+
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+
+    } catch (e) {
+        console.log('/tuban/addNotes', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
+/**
+ * 添加图斑备注
+ */
+router.post('/saveEvidence', async function (req, res, next) {
+    try {
+        let token = req.headers.authorization
+        let user = Token.de(token)
+        let {JZLX = '', WFLX = '', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
+        // 构建condition
+        let {content, condition} = actions.saveEvidence(user, JZLX, WFLX, WFMJ, BZ, JCBHs)
+
+        let dbRes = await Tuban.update(tableName, content, condition)
+
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+
+    } catch (e) {
+        console.log('/tuban/saveEvidence', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
+
+
+/**
  * 删除指定图斑
  */
 router.post('/deletesplitedtuban', async function (req, res, next) {

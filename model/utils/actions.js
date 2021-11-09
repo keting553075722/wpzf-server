@@ -132,6 +132,49 @@ module.exports = {
         }
         return {content, condition}
     },
+    saveEvidence(user, JZLX, WFLX, WFMJ = "", BZ = "", JCBHs) {
+        // 省级审核状态
+        let content = {}
+        //content["XJJZ"] = '1'
+        content["JZLX"] = JZLX
+        content["WFLX"] = WFLX
+        content["WFMJ"] = WFMJ
+        content["BZ"] = BZ
+        content["XJJZR"] = user.name
+        content["JZWCSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
+        // 不需要外业核查
+        content["WYHC"] = '0'
+        content["HCSB"] = '0'
+
+        let condition = {
+            JCBH: JCBHs
+        }
+        return {content, condition}
+    },
+    /**
+     * 县级举证
+     * @param {object} user 用户信息
+     * @param {string} JZLX 举证结果
+     * @param {string} WFLX 违法类型
+     * @param {string} WFMJ 违法面积
+     * @param {array} JCBHs 需要举证的图斑监测编号
+     * @returns 返回审核字段更新后的图斑数组
+     */
+    addNotes(user, BZ = "", JCBHs) {
+        // 省级审核状态
+        let content = {}
+        content["BZ"] = BZ
+        content["XJJZR"] = user.name
+        content["JZWCSJ"] = moment().format("YYYY-MM-DD HH-mm-ss")
+        // 不需要外业核查
+        content["WYHC"] = '0'
+        content["HCSB"] = '0'
+
+        let condition = {
+            JCBH: JCBHs
+        }
+        return {content, condition}
+    },
     /**
      * 调转图斑外业核查
      * @param {object} user 用户信息

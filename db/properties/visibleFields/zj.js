@@ -6,7 +6,7 @@ module.exports = {
     "SSDS": "所属地市",
     "SSXS": "所属县市",
     "SSXZ": "所属乡镇",
-    "SSC": "所属村",
+    // "SSC": "所属村",
     "QSIMG": "前时相影像名",
     "HSIMG": "后时相影像名",
     "QSX": "前时相",
