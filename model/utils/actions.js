@@ -192,26 +192,18 @@ module.exports = {
         return {content, condition}
     },
     /**
-     * 县级外业核查举证
-     * @param {object} user 用户信息
-     * @param {string} JZLX 举证结果
-     * @param {string} WFLX 违法类型
-     * @param {string} WFMJ 违法面积
-     * @param {array} JCBHs 需要举证的图斑监测编号
-     * @returns 返回审核字段更新后的图斑数组
+     * 核查上报
+     * @returns
      */
-    fieldVerificationReport(user, JZLX, WFLX, WFMJ, BZ, JCBHs) {
+    fieldVerificationReport(user, SFYJZ, BZ = "", JCBHs) {
         let content = {}
-        content["XJJZ"] = '1'
-        content["JZLX"] = JZLX
-        content["WFLX"] = WFLX
-        content["WFMJ"] = WFMJ
         content["BZ"] = BZ
-        content["XJJZR"] = user.name
-        content["JZWCSJ"] = getCurrentTime()
-        // 不需要外业核查
-        content["WYHC"] = '1'
+        content["SFYJZ"] = SFYJZ
+        // content["WYHC"] = '1'
         content["HCSB"] = '1'
+        content["HCSBR"] = user.name
+        content["HCWCSJ"] = getCurrentTime()
+
         let condition = {
             JCBH: JCBHs
         }

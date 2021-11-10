@@ -467,10 +467,8 @@ router.get('/getdisplayfields', async function (req, res, next) {
 });
 
 
-
-
 /**
- * 外业核查，只有县级才回触发此按钮
+ * 触发外业核查，只有县级才会触发此按钮
  */
 router.post('/fieldVerification', async function (req, res, next) {
     let token = req.headers.authorization
@@ -481,8 +479,48 @@ router.post('/fieldVerification', async function (req, res, next) {
 
     let dbRes = await Tuban.update(tableName, content, condition)
     dbRes && dbRes.results && response.responseSuccess(dbRes.results, res)
-
 });
+
+/**
+ * 获取外业核查，外业核查人员进入H5界面拉取的图斑，只有县级才回触发此按钮
+ */
+router.post('/getVerificationTB', async function (req, res, next) {
+    let token = req.headers.authorization
+    let {name, code, permission} = Token.de(token)
+    let {pageSize, currentPage, tableName} = req.body
+    // 构建condition
+    let condition = generalQuery(req.body, code)
+    condition['WYHC'] = '1'
+    let sumRes = await Tuban.getCount(tableName, condition)
+    let size = sumRes.results[0]['size']
+    let startIndex = pagenate(size, pageSize, currentPage)
+    if(startIndex == 'overflow') {
+        response.responseSuccess({size, pageData:[]}, res)
+    } else {
+        let limit = [startIndex, pageSize]
+        let getRes = await Tuban.find(tableName, condition, limit)
+        getRes && getRes.results ? (function () {
+            let resData = {size, pageData: actions.modifyTubanByPermission(getRes.results, permission)}
+            response.responseSuccess(resData, res)
+        })()  : response.responseFailed(res)
+    }
+});
+
+
+
+/**
+ * 核查上报，只有县级才回触发此按钮
+ */
+router.post('/verificationReport', async function (req, res, next) {
+    let token = req.headers.authorization
+    let user = Token.de(token)
+    let {BZ = '', SFYJZ, JCBHs, tableName} = req.body
+    // 构建condition
+    let {content, condition} = actions.fieldVerificationReport(user, SFYJZ, BZ , JCBHs)
+    let dbRes = await Tuban.update(tableName, content, condition)
+    dbRes && dbRes.results && response.responseSuccess(dbRes.results, res)
+});
+
 
 /* GET tuban Info. */
 /**
