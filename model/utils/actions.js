@@ -112,7 +112,7 @@ module.exports = {
      * @param {array} JCBHs 需要举证的图斑监测编号
      * @returns 返回审核字段更新后的图斑数组
      */
-    evidence(user, JZLX, WFLX, WFMJ = "", SFYJZ, SFCF, BZ = "", JCBHs) {
+    evidence(user, JZLX, WFLX,XMLX,  WFMJ = "", SFYJZ, SFCF, BZ = "", JCBHs) {
         // 省级审核状态
         let content = {}
         content["XJJZ"] = '1'
@@ -121,19 +121,18 @@ module.exports = {
         content["WFMJ"] = WFMJ
         content["SFYJZ"] = SFYJZ
         content["SFCF"] = SFCF
+        content["XMLX"] = XMLX
         content["BZ"] = BZ
         content["XJJZR"] = user.name
         content["JZWCSJ"] = getCurrentTime()
         // 不需要外业核查
-        content["WYHC"] = '0'
-        content["HCSB"] = '0'
 
         let condition = {
             JCBH: JCBHs
         }
         return {content, condition}
     },
-    saveEvidence(user, JZLX, WFLX, WFMJ = "", SFYJZ, SFCF, BZ = "", JCBHs) {
+    saveEvidence(user, JZLX, WFLX, XMLX,WFMJ = "", SFYJZ, SFCF, BZ = "", JCBHs) {
         // 省级审核状态
         let content = {}
         //content["XJJZ"] = '1'
@@ -141,13 +140,11 @@ module.exports = {
         content["WFLX"] = WFLX
         content["WFMJ"] = WFMJ
         content["SFCF"] = SFCF
+        content["XMLX"] = XMLX
         content["SFYJZ"] = SFYJZ
         content["BZ"] = BZ
         //content["XJJZR"] = user.name
         //content["JZWCSJ"] = getCurrentTime()
-        // 不需要外业核查
-        content["WYHC"] = '0'
-        content["HCSB"] = '0'
 
         let condition = {
             JCBH: JCBHs
