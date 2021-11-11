@@ -8,7 +8,7 @@ const cityCascade = require('../../common-data/city-cascade')
 const queryBuild = (body, code) => {
     let userType = code.substring(2, 6) === "0000" ? 0 : code.substring(4, 6) === "00" ? 1 : 2
     let queryObj = {}
-    const {kind, dispatch, district, check, report, evidence, town} = body
+    const {kind, dispatch, district, check, report, evidence, town, SFCD} = body
     if (userType === 0) {
         //kind 字段缺省或者 '' 0 1 2
         kind && (queryObj['TBLY'] = kind)
@@ -39,6 +39,7 @@ const queryBuild = (body, code) => {
         report && (queryObj['CJSB'] = report)//kind 字段缺省或者 '' 0 1 2
         evidence && (queryObj['XJJZ'] = evidence)
         town && (queryObj['SSXZ'] = town)
+        SFCD && (queryObj['SFCD'] = SFCD)
     }
     return queryObj
 }
