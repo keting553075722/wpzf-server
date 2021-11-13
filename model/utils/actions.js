@@ -112,17 +112,18 @@ module.exports = {
      * @param {array} JCBHs 需要举证的图斑监测编号
      * @returns 返回审核字段更新后的图斑数组
      */
-    evidence(user, JZLX, WFLX,XMLX,  WFMJ = "", SFYJZ, SFCF, BZ = "", JCBHs) {
+    evidence(user, JZLX, WFLX,XMLX,  WFMJ = "", SFYXMGC, SFCF, BZ = "", JCBHs,TBSM) {
         // 省级审核状态
         let content = {}
         content["XJJZ"] = '1'
         content["JZLX"] = JZLX
         content["WFLX"] = WFLX
-        content["WFMJ"] = WFMJ
-        content["SFYJZ"] = SFYJZ
-        content["SFCF"] = SFCF
         content["XMLX"] = XMLX
+        content["WFMJ"] = WFMJ
+        content["SFYXMGC"] = SFYXMGC
+        content["SFCF"] = SFCF
         content["BZ"] = BZ
+        content["TBSM"] = TBSM
         content["XJJZR"] = user.name
         content["JZWCSJ"] = getCurrentTime()
         // 不需要外业核查
@@ -132,17 +133,18 @@ module.exports = {
         }
         return {content, condition}
     },
-    saveEvidence(user, JZLX, WFLX, XMLX,WFMJ = "", SFYJZ, SFCF, BZ = "", JCBHs) {
+    saveEvidence(user, JZLX, WFLX, XMLX, WFMJ, SFYXMGC, SFCF, BZ = '', JCBHs, TBSM = '') {
         // 省级审核状态
         let content = {}
         //content["XJJZ"] = '1'
         content["JZLX"] = JZLX
         content["WFLX"] = WFLX
-        content["WFMJ"] = WFMJ
-        content["SFCF"] = SFCF
         content["XMLX"] = XMLX
-        content["SFYJZ"] = SFYJZ
+        content["WFMJ"] = WFMJ
+        content["SFYXMGC"] = SFYXMGC
+        content["SFCF"] = SFCF
         content["BZ"] = BZ
+        content["TBSM"] = TBSM
         //content["XJJZR"] = user.name
         //content["JZWCSJ"] = getCurrentTime()
 
@@ -192,14 +194,64 @@ module.exports = {
      * 核查上报
      * @returns
      */
-    fieldVerificationReport(user, SFYJZ, BZ = "", JCBHs) {
-        let content = {}
-        content["BZ"] = BZ
+    fieldVerificationReport(user, TBSM = '', SFYJZ,JCBHs) {
+        let c
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ontent = {}
+        content["TBSM"] = TBSM
         content["SFYJZ"] = SFYJZ
         // content["WYHC"] = '1'
         content["HCSB"] = '1'
         content["HCSBR"] = user.name
         content["HCWCSJ"] = getCurrentTime()
+
+        let condition = {
+            JCBH: JCBHs
+        }
+        return {content, condition}
+    },
+
+    clipReport(user, SFYJZ, TBSM = "", JCBHs) {
+        let content = {}
+        content["TBSM"] = TBSM
+        content["SFYJZ"] = SFYJZ
+        // content["WYHC"] = '1'
+        // content["HCSB"] = '1'
+        // content["HCSBR"] = user.name
+        // content["HCWCSJ"] = getCurrentTime()
 
         let condition = {
             JCBH: JCBHs

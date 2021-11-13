@@ -156,6 +156,47 @@ router.post('/attachment', attachmentUpload, async function (req, res, next) {
     }
 });
 
+router.post('/projectattachment', attachmentUpload, async function (req, res, next) {
+    try {
+        let user = Token.de(req.headers.authorization)
+        let files = req.files
+        let {tubanId, tableName, Id} = req.query
+        let tableInfo = getInfo(tableName)
+        let fileName
+        let filePathWin = path.join(__dirname, "../resources/evidence/") + `${tableInfo.Id}\\${tableInfo.year}\\${tableInfo.batch}\\${tubanId}`+`\\projectAttachments`
+        let filePathLin = path.join(__dirname, "../resources/evidence/") + `${tableInfo.Id}/${tableInfo.year}/${tableInfo.batch}/${tubanId}/projectAttachments`
+        let filePath = config.serverEnv == 'windows' ? filePathWin : filePathLin
+        mkdirp.sync(filePath)
+        let filePathArr = []
+        for (let file of files) {
+            let tempPath = ''
+            fileName = `${moment().format("YYYY-MM-DD HH时mm分ss秒")}--${user.name}--${file.originalname}`
+            tempPath = filePath + config.splitChar + fileName
+            fs.writeFileSync(tempPath, file.buffer)
+            filePathArr.push(tempPath)
+        }
+
+        let fjlj = []
+        let serverIp = await config.serverIp().then(res => res).catch(console.log)
+
+        for (let filePathArrElement of filePathArr) {
+            let pathArr = filePathArrElement.split(config.splitChar)
+            pathArr = pathArr.slice(-7)
+            let path = `http://${serverIp}:${config.appPort}/${pathArr.join("/")}`
+            fjlj.push(path)
+        }
+
+        let condition = {JCBH: tubanId}
+        let content = {XMFJ: JSON.stringify(fjlj)}
+
+        let dbRes = await Tuban.update(tableName, content, condition).then(res => res).catch(console.log)
+        dbRes && dbRes.results ? response.responseSuccess(dbRes.results.message, res) : response.responseFailed(res)
+    } catch (e) {
+        console.log('/upload/projectattachment', e.message)
+        response.responseFailed(res, e.message)
+    }
+});
+
 router.post('/excel', excelUpload, async function (req, res, next) {
     try {
         let user = Token.de(req.headers.authorization)

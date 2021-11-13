@@ -51,7 +51,8 @@ router.post('/visitorauthorization',async function (req, res, next) {
       const zzduser = {
         uid:visitorInfo.accountId,
         name:visitorInfo.nickNameCn,
-        password: givePwd ? group_code + '@' +getRandom() : '',
+        // password: givePwd ? group_code + '@' +getRandom() : '',
+        password: 'Password@2021',
         group_code:group_code,
         auth: auth || '',
         authorizer: name || '',

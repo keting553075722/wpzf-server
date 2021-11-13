@@ -329,9 +329,9 @@ router.post('/evidence', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {JZLX = '', WFLX = '', SFCF, SFYJZ = '否',XMLX='', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
+        let {TBSM='', JZLX = '', WFLX = '', SFCF, SFYXMGC = '', XMLX='', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
         // 构建condition
-        let {content, condition} = actions.evidence(user, JZLX, WFLX, XMLX, WFMJ, SFYJZ, SFCF, BZ, JCBHs)
+        let {content, condition} = actions.evidence(user, JZLX, WFLX, XMLX, WFMJ, SFYXMGC, SFCF, BZ, JCBHs, TBSM)
 
         let dbRes = await Tuban.update(tableName, content, condition)
 
@@ -371,9 +371,9 @@ router.post('/saveEvidence', async function (req, res, next) {
     try {
         let token = req.headers.authorization
         let user = Token.de(token)
-        let {JZLX = '', WFLX = '', SFCF, WFMJ = '', XMLX = '', SFYJZ = '否', BZ = '', JCBHs, tableName} = req.body
+        let {TBSM, JZLX = '', WFLX = '', SFCF, SFYXMGC = '', XMLX='', WFMJ = '', BZ = '', JCBHs, tableName} = req.body
         // 构建condition
-        let {content, condition} = actions.saveEvidence(user, JZLX, WFLX, XMLX,WFMJ, SFYJZ, SFCF, BZ, JCBHs)
+        let {content, condition} = actions.saveEvidence(user, JZLX, WFLX, XMLX, WFMJ, SFYXMGC, SFCF, BZ, JCBHs, TBSM)
 
         let dbRes = await Tuban.update(tableName, content, condition)
 
@@ -432,6 +432,7 @@ router.post('/addsplitedtuban', async function (req, res, next) {
             itm['XJJZSJ'] = curretTime
             itm['XJSBSJ'] = curretTime
             itm['JZWCSJ'] = curretTime
+            itm['HCWCSJ'] = curretTime
         })
         let clearRes = await Tuban.delete(tableName, condition)
         let dbRes = await Tuban.insert(tableName, objs)
@@ -514,9 +515,22 @@ router.post('/getVerificationTB', async function (req, res, next) {
 router.post('/verificationReport', async function (req, res, next) {
     let token = req.headers.authorization
     let user = Token.de(token)
-    let {BZ = '', SFYJZ, JCBHs, tableName} = req.body
+    let {TBSM = '', SFYJZ, JCBHs, tableName} = req.body
     // 构建condition
-    let {content, condition} = actions.fieldVerificationReport(user, SFYJZ, BZ , JCBHs)
+    let {content, condition} = actions.fieldVerificationReport(user, TBSM = '', SFYJZ, JCBHs)
+    let dbRes = await Tuban.update(tableName, content, condition)
+    dbRes && dbRes.results && response.responseSuccess(dbRes.results, res)
+});
+
+/**
+ * 核查上报，只有县级才回触发此按钮
+ */
+router.post('/clipReport', async function (req, res, next) {
+    let token = req.headers.authorization
+    let user = Token.de(token)
+    let {TBSM = '', SFYJZ, JCBHs, tableName} = req.body
+    // 构建condition
+    let {content, condition} = actions.clipReport(user, SFYJZ, TBSM , JCBHs)
     let dbRes = await Tuban.update(tableName, content, condition)
     dbRes && dbRes.results && response.responseSuccess(dbRes.results, res)
 });
